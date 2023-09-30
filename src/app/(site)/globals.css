@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  @apply text-tl-dark-blue;
+  @apply text-sm;
+  @apply sm:text-base;
+}
+
+main a {
+  @apply text-tl-light-blue;
+  transition: color 0.3s ease;
+}
+
+main a:hover {
+  color: #0d55a1;
+}
+
+main h1 {
+  @apply text-3xl;
+  @apply sm:text-5xl;
+  @apply font-bold;
+}
+
+main h2 {
+  @apply text-base;
+  @apply sm:text-3xl;
+  @apply font-bold;
+}
+
+main h3 {
+  @apply text-base;
+  @apply sm:text-xl;
+  @apply font-semibold;
+}
+
+text h2 {
+  @apply mb-3;
+}
+
+text p {
+  @apply mb-5;
+}
