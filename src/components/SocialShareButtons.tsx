@@ -16,7 +16,7 @@ const SocialShareButtons = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`https://thelessen.com${pathname}`);
+    navigator.clipboard.writeText(`https://weasker.com${pathname}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -26,15 +26,15 @@ const SocialShareButtons = () => {
       <div className="text-lg font-semibold">Share</div>
       <div className="flex flex-row gap-1">
         <FacebookShareButton
-          url={`https://thelessen.com${pathname}`}
-          hashtag={"#thelessen"}
+          url={`https://weasker.com${pathname}`}
+          hashtag={"#weasker"}
         >
           <FacebookIcon size={25} round />
         </FacebookShareButton>
-        <LinkedinShareButton url={`https://thelessen.com${pathname}`}>
+        <LinkedinShareButton url={`https://weasker.com${pathname}`}>
           <LinkedinIcon size={25} round />
         </LinkedinShareButton>
-        <RedditShareButton url={`https://thelessen.com${pathname}`}>
+        <RedditShareButton url={`https://weasker.com${pathname}`}>
           <RedditIcon size={25} round />
         </RedditShareButton>
         <button onClick={handleCopy} className="focus:outline-none">

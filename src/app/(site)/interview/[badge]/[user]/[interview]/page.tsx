@@ -129,7 +129,7 @@ export default async function Interview({ params }: Props) {
         h1b={interviewTitle}
         excerpt={<PortableText value={bio} />}
         featuredImageSrc={featuredImage}
-        featuredImageAlt="thelessen logo"
+        featuredImageAlt="weasker logo"
         services={
           <UserServices
             services={data.user.services}
