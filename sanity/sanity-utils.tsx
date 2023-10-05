@@ -13,6 +13,7 @@ import { UserPageMetaData } from "../types/UserPageMeta-type";
 import { InnerPageMeta } from "../types/InnerPageMeta-type";
 import { InterviewPageMeta } from "../types/InterviewPageMeta-type";
 import { QuestionPageMeta } from "../types/questionPageMeta-type";
+import { SiteMapData } from "../types/SiteMapData-type";
 
 export async function getInnerPage(pageParam: string): Promise<InnerPage> {
   return createClient(clientConfig).fetch(
@@ -379,5 +380,36 @@ export async function getQuestionPageMeta(
                 }
             }`,
     { badgeParam, questionParam }
+  );
+}
+
+export async function getSiteMapData(): Promise<SiteMapData> {
+  return createClient(clientConfig).fetch(
+    groq`{
+      "questions": *[_type == "question" ][] {
+          "questionSlug": slug.current,
+          "badgeSlug": interview->badge->slug.current,
+          "updated": _updatedAt,
+        },
+      "interviews": *[_type == "answer" ][] {
+          "userSlug": user->slug.current,
+          "badgeSlug": interview->badge->slug.current,
+          "interviewSlug": interview->slug.current,
+          "updated": _updatedAt,
+        },
+      "users": *[_type == "user" ][] {
+          "userSlug": slug.current,
+          "updated": _updatedAt,
+        },
+      "badges": *[_type == "badge" ][] {
+          "badgeSlug": slug.current,
+          "updated": _updatedAt,
+        },
+      "pages": *[_type == "page" ][] {
+          "pageSlug": slug.current,
+          "updated": _updatedAt,
+        },
+                  }      
+      `
   );
 }

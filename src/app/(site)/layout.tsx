@@ -37,10 +37,12 @@ export default function RootLayout({
         <header className="top-0">
           <Navbar />
         </header>
+
         <main className="flex min-h-screen flex-col gap-8 items-center w-11/12 sm:max-w-7xl mx-auto">
           {children}
           <Analytics />
         </main>
+
         <footer>
           <Footer />
         </footer>

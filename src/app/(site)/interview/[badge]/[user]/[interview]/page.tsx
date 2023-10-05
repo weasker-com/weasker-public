@@ -19,7 +19,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const meta = await getInterviewPageMeta(params.user, params.interview);
-
+  console.log(meta.interview);
   const metaTitle = capitalize(
     meta.interview.seoTitle
       ? meta.interview.seoTitle
