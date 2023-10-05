@@ -20,9 +20,10 @@ export type InterviewPage = {
   questions: {
     number: number;
     question: string;
+    mediumQuestion: string;
     slug: string;
     answer: {
-      answers?: {
+      answers: {
         number: number;
         interviewAnswer: PortableTextBlock[];
         images: {

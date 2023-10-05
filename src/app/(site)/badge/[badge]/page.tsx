@@ -1,13 +1,46 @@
 import HeroBadge from "@/components/Hero-badge";
-import { getBadgePage } from "../../../../../sanity/sanity-utils";
+import {
+  getBadgePage,
+  getBadgePageMeta,
+} from "../../../../../sanity/sanity-utils";
 import Image from "next/image";
 import Link from "next/link";
-import Head from "next/head";
-import logo from "@/../public/logo/tl-logo-17-09.svg";
+import { Metadata } from "next";
+import capitalize from "@/helpers/capitalize";
 
 type Props = {
   params: { badge: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const meta = await getBadgePageMeta(params.badge);
+
+  const metaTitle = capitalize(
+    meta.seoTitle
+      ? meta.seoTitle
+      : `We interviewed the ${meta.usersAmount} best ${meta.name}`
+  );
+
+  const metaDescription = meta.seoDescription
+    ? meta.seoDescription
+    : `We interviewed ${meta.usersAmount} of the best ${meta.name}, read what each ${meta.singularName} had to say.`;
+
+  const ogImage = meta.ogImage;
+  const slug = meta.slug;
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    openGraph: {
+      images: [ogImage],
+      type: "website",
+      url: `https://www.weasker.com/badge/${slug}`,
+      title: metaTitle,
+      description: metaDescription,
+      siteName: "weasker",
+    },
+  };
+}
 
 async function getData(badgeParam: string) {
   const res = await getBadgePage(badgeParam);
@@ -24,49 +57,8 @@ export default async function Badge({ params }: Props) {
     return "no data";
   }
 
-  const metaTitle = data.badgeDetails.seoTitle;
-  const metaDescription = data.badgeDetails.seoDescription;
-  const badgeName = data.badgeDetails.name;
-  const badgeSingularName = data.badgeDetails.singularName;
-  const usersAmount = data.usersDetails.length;
-  const badgeImage = data.badgeDetails.image;
-
   return (
     <>
-      <Head>
-        <title className="capitalize">
-          {metaTitle
-            ? metaTitle
-            : `We interviewed the ${usersAmount} best ${badgeName}`}
-        </title>
-        <meta
-          name="description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We asked ${usersAmount} of the best ${badgeName} the same set of questions, read what each ${badgeSingularName} had to say.`
-          }
-          key="desc"
-        />
-        <meta
-          property="og:title"
-          className="capitalize"
-          content={
-            metaTitle
-              ? metaTitle
-              : `We interviewed the ${usersAmount} best ${badgeName}`
-          }
-        />
-        <meta
-          property="og:description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We asked ${usersAmount} ${badgeName} the same questions and compared their answers, read what each ${badgeSingularName} had to say.`
-          }
-        />
-        <meta property="og:image" content={badgeImage || logo} />
-      </Head>
       <div className="flex flex-col gap-5 sm:gap-10">
         <HeroBadge
           h1={data.badgeDetails.singularName}

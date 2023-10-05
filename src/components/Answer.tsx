@@ -45,13 +45,12 @@ const Answer: React.FC<AnswerProps> = ({
           />
         </Link>
         <div className="flex flex-col">
-          <Link
-            href={`/user/${user.slug}`}
-            className="text-base sm:text-xl font-semibold text-tl-dark-blue"
-          >
-            {user.name}
-          </Link>
-          <div className="flex flex-row">
+          <h2 className="text-base sm:text-xl font-semibold">
+            <Link className="text-tl-dark-blue" href={`/user/${user.slug}`}>
+              {user.name}
+            </Link>
+          </h2>
+          <h3 className="flex flex-row text-sm sm:text-base font-normal">
             <a
               className="text-tl-dark-blue"
               href={`/badge/${user.badges[0].slug}`}
@@ -62,7 +61,7 @@ const Answer: React.FC<AnswerProps> = ({
             </a>
             &nbsp;at&nbsp;
             <Link href={user.services[0].url}>{user.services[0].name}</Link>
-          </div>
+          </h3>
         </div>
       </div>
       <div className="m-auto sm:ml-[70px] font-light flex-col flex gap-5 sm:w-[80%]">

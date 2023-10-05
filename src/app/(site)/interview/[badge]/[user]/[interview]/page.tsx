@@ -1,17 +1,59 @@
-import { getInterviewPage } from "../../../../../../../sanity/sanity-utils";
-import { PortableText } from "@portabletext/react";
+import {
+  getInterviewPage,
+  getInterviewPageMeta,
+} from "../../../../../../../sanity/sanity-utils";
+import { PortableText, toPlainText } from "@portabletext/react";
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import UserServices from "@/components/UserServices";
 import QAndA from "@/components/QAndA";
 import Image from "next/image";
 import SidebarInterviewPage from "@/components/Sidebar-interviewPage";
-import Head from "next/head";
-import logo from "@/../public/logo/tl-logo-17-09.svg";
+import capitalize from "@/helpers/capitalize";
+import { Metadata } from "next";
+import { FAQPage, WithContext } from "schema-dts";
 
 type Props = {
   params: { badge: string; user: string; interview: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const meta = await getInterviewPageMeta(params.user, params.interview);
+
+  const metaTitle = capitalize(
+    meta.interview.seoTitle
+      ? meta.interview.seoTitle
+      : `Interview with ${meta.interview.badgeSingularName} ${meta.user.name} - ${meta.interview.name}`
+  );
+
+  const metaDescription = meta.interview.seoDescription
+    ? meta.interview.seoDescription
+    : `${meta.interview.badgeSingularName} ${meta.user.name} took the interview ${meta.interview.name} for ${meta.interview.badgeName}`;
+
+  const ogImage = meta.user.ogImage || meta.interview.ogImage;
+  const slugA = params.badge;
+  const slugB = params.user;
+  const slugC = params.interview;
+
+  const author = {
+    name: meta.user.name,
+    url: `https://www.weasker.com/user/${slugB}`,
+  };
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    authors: author,
+    openGraph: {
+      images: [ogImage],
+      type: "website",
+      url: `https://www.weasker.com/interview/${slugA}/${slugB}/${slugC}/`,
+      title: metaTitle,
+      description: metaDescription,
+      siteName: "weasker",
+    },
+  };
+}
 
 async function getData(userParam: string, interviewParam: string) {
   const res = await getInterviewPage(userParam, interviewParam);
@@ -33,51 +75,36 @@ export default async function Interview({ params }: Props) {
 
   const featuredImage = data.user.pfp;
   const interviewSlug = interviewParam;
-  const badgeImage = data.user.badges[0].image;
   const badgeSlug = data.user.badges[0].slug;
   const userName = data.user.name;
   const userSlug = data.user.slug;
   const userBadge = data.user.badges[0].singularName;
   const interviewTitle = data.interview.name;
   const bio = data.user.userBio;
-  const pfp = data.user.pfp;
-  const service = data.user.services[0].name;
-  const serviceUrl = data.user.services[0].url;
   const otherUsers = data.otherUsers;
   const otherUsersAmount = data.otherUsers.length;
-  const metaTitle = null;
-  const metaDescription = null;
+
+  const jsonLd: WithContext<FAQPage> = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: data.questions.map((item, index) => {
+      return {
+        "@type": "Question",
+        name: item.mediumQuestion,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: toPlainText(item.answer.answers.interviewAnswer),
+        },
+      };
+    }),
+  };
 
   return (
     <>
-      <Head>
-        <title className="capitalize">
-          {metaTitle ? metaTitle : interviewTitle}
-        </title>
-        <meta
-          name="description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We asked ${userBadge}, ${userName}, ${interviewTitle}`
-          }
-          key="desc"
-        />
-        <meta
-          property="og:title"
-          className="capitalize"
-          content={metaTitle ? metaTitle : interviewTitle}
-        />
-        <meta
-          property="og:description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We asked ${userBadge}, ${userName}, ${interviewTitle}`
-          }
-        />
-        <meta property="og:image" content={pfp || logo} />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Hero
         h1a={
           <>

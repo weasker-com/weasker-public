@@ -3,14 +3,48 @@ import Image from "next/image";
 import Link from "next/link";
 import HeroUser from "@/components/Hero-user";
 import { User } from "../../../../../types/user-type";
-import { getUserPage } from "../../../../../sanity/sanity-utils";
+import {
+  getUserPage,
+  getUserPageMeta,
+} from "../../../../../sanity/sanity-utils";
 import UserServices from "@/components/UserServices";
-import Head from "next/head";
-import logo from "@/../public/logo/tl-logo-17-09.svg";
+import capitalize from "@/helpers/capitalize";
+import { Metadata } from "next";
+import { ProfilePage, WithContext } from "schema-dts";
 
 type Props = {
   params: { user: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const meta = await getUserPageMeta(params.user);
+
+  const metaTitle = capitalize(
+    meta.seoTitle
+      ? meta.seoTitle
+      : `${meta.badgeSingularName} ${meta.name} - User page`
+  );
+
+  const metaDescription = meta.seoDescription
+    ? meta.seoDescription
+    : `Click here to view ${meta.badgeSingularName} ${meta.name} user page and view their interviews.`;
+
+  const ogImage = meta.ogImage;
+  const slug = meta.slug;
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    openGraph: {
+      images: [ogImage],
+      type: "website",
+      url: `https://www.weasker.com/user/${slug}`,
+      title: metaTitle,
+      description: metaDescription,
+      siteName: "weasker",
+    },
+  };
+}
 
 async function getData(userParam: string) {
   const res = await getUserPage(userParam);
@@ -82,42 +116,27 @@ export default async function User({ params }: Props) {
   const badgeSingularName = data.badges[0].singularName;
   const pfp = data.pfp;
 
+  const jsonLd: WithContext<ProfilePage> = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+      "@type": "Person",
+      name: userName,
+      jobTitle: badgeSingularName,
+      image: pfp,
+      url: `https://www.weasker.com/user/${params.user}`,
+      award: data.badges.map((item, index) => {
+        return `${item.name} Badge`;
+      }),
+    },
+  };
+
   return (
     <>
-      <Head>
-        <title className="capitalize">
-          {metaTitle
-            ? metaTitle
-            : `${badgeSingularName}, ${userName} answered our questions`}
-        </title>
-        <meta
-          name="description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We interviewed ${badgeSingularName}, ${userName}. Click here to read his answers.`
-          }
-          key="desc"
-        />
-        <meta
-          property="og:title"
-          className="capitalize"
-          content={
-            metaTitle
-              ? metaTitle
-              : `${badgeSingularName}, ${userName} answered our questions`
-          }
-        />
-        <meta
-          property="og:description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We interviewed ${badgeSingularName}, ${userName}. Click here to read his answers.`
-          }
-        />
-        <meta property="og:image" content={pfp || logo} />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HeroUser
         h1={data.name}
         badges={userBadges}

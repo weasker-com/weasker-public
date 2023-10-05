@@ -1,13 +1,56 @@
-import Head from "next/head";
 import Link from "next/link";
-import { getQuestionPage } from "../../../../../../sanity/sanity-utils";
+import {
+  getQuestionPage,
+  getQuestionPageMeta,
+} from "../../../../../../sanity/sanity-utils";
 import Hero from "@/components/Hero";
 import AnswersList from "@/components/AnswersList";
 import SidebarQuestionPage from "@/components/Sidebar-questionPage";
+import { Metadata } from "next";
+import capitalize from "@/helpers/capitalize";
+import { QAPage, WithContext } from "schema-dts";
+import { toPlainText } from "@portabletext/react";
 
 type Props = {
   params: { badge: string; question: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const meta = await getQuestionPageMeta(params.badge, params.question);
+
+  const metaTitle = capitalize(
+    meta.questionDetails.seoTitle
+      ? meta.questionDetails.seoTitle
+      : `We asked ${meta.answersAmount} ${meta.interviewDetails.badge.name}: ${meta.questionDetails.shortQuestion}`
+  );
+
+  const metaDescription = meta.questionDetails.seoDescription
+    ? meta.questionDetails.seoDescription
+    : `${meta.questionDetails.longQuestion}`;
+
+  const ogImage =
+    meta.interviewDetails.ogImage || meta.interviewDetails.badge.ogImage;
+  const slugA = params.badge;
+  const slugB = params.question;
+
+  const authors = meta.usersDetails.map((item, index) => {
+    return { name: item.name, url: `https://www.weasker/user/${item.slug}` };
+  });
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    authors: authors,
+    openGraph: {
+      images: [ogImage],
+      type: "website",
+      url: `https://www.weasker.com/question/${slugA}/${slugB}`,
+      title: metaTitle,
+      description: metaDescription,
+      siteName: "weasker",
+    },
+  };
+}
 
 async function getData(badgeParam: string, questionParam: string) {
   const res = await getQuestionPage(badgeParam, questionParam);
@@ -29,7 +72,6 @@ export default async function Question({ params }: Props) {
   const badge = data.interviewDetails.badge;
   const badgeName = data.interviewDetails.badge.name;
   const badgeSingularNameName = data.interviewDetails.badge.singularName;
-  const badgeImage = data.interviewDetails.badge.image;
   const interviewImage = data.interviewDetails.image;
   const questionText = data.questionDetails.question;
   const questionSlug = data.questionDetails.slug;
@@ -38,44 +80,31 @@ export default async function Question({ params }: Props) {
   const answers = data.answersDetails;
   const userList = data.answersDetails.map((detail) => detail.user);
   const otherQuestions = data.otherQuestions;
-  const metaTitle = data.questionDetails.seoTitle;
-  const metaDescription = data.questionDetails.seoDescription;
-  const ogImage = data.interviewDetails.ogImage;
+
+  const jsonLd: WithContext<QAPage> = {
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    mainEntity: {
+      "@type": "Question",
+      name: questionText,
+      text: longQuestionText,
+      answerCount: answers.length,
+      suggestedAnswer: answers.map((item, index) => {
+        return {
+          "@type": "Answer",
+          text: toPlainText(item.answers[0].interviewAnswer),
+          url: `https://www.weasker.com/question/${params.badge}/${params.question}#${item.user.slug}`,
+        };
+      }),
+    },
+  };
 
   return (
     <>
-      <Head>
-        <title className="capitalize">
-          {metaTitle ? metaTitle : `${badgeName}: ${shortQuestionText}`}
-        </title>
-        <meta
-          name="description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We asked ${answers.length} ${
-                  answers.length == 1 ? badgeSingularNameName : badgeName
-                }: ${questionText}`
-          }
-          key="desc"
-        />
-        <meta
-          property="og:title"
-          className="capitalize"
-          content={metaTitle ? metaTitle : `${badgeName}: ${shortQuestionText}`}
-        />
-        <meta
-          property="og:description"
-          content={
-            metaDescription
-              ? metaDescription
-              : `We asked ${answers.length} ${
-                  answers.length == 1 ? badgeSingularNameName : badgeName
-                }: ${questionText}`
-          }
-        />
-        <meta property="og:image" content={ogImage || badgeImage} />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Hero
         services={badgeName}
         h1a={

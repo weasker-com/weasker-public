@@ -8,6 +8,11 @@ import { BadgePage } from "../types/badgePage-type";
 import { questionResult } from "../types/questionResult-type";
 import { listItem } from "../types/listItem-type";
 import { InnerPage } from "../types/innerPage-type";
+import { BadgePageMetaData } from "../types/badgePageMeta-type";
+import { UserPageMetaData } from "../types/UserPageMeta-type";
+import { InnerPageMeta } from "../types/InnerPageMeta-type";
+import { InterviewPageMeta } from "../types/InterviewPageMeta-type";
+import { QuestionPageMeta } from "../types/questionPageMeta-type";
 
 export async function getInnerPage(pageParam: string): Promise<InnerPage> {
   return createClient(clientConfig).fetch(
@@ -109,6 +114,7 @@ export async function getInterviewPage(
       "questions": *[_type=="question" && references(^._id)]{
                   "number": number,
                   "question": shortQuestion,
+                  "mediumQuestion": question,
                   "slug": slug.current,
                   "answer": *[_type=="answer" && interview->slug.current == $interviewParam &&  user->slug.current == $userParam][0]{
                   answers[questionRef->_id == ^.^._id][0]{
@@ -265,4 +271,113 @@ export async function performSearch(searchTerm: string): Promise<listItem[]> {
     console.error("An error occurred during the search:", error);
     return [];
   }
+}
+
+export async function getBadgePageMeta(
+  badgeParam: string
+): Promise<BadgePageMetaData> {
+  return createClient(clientConfig).fetch(
+    groq`*[_type == "badge" && $badgeParam == slug.current][0] {
+      "name": name,
+      "excerpt": excerpt,
+      "slug": slug.current,
+      "singularName": singularName,
+      "image": image.asset -> url,
+      "seoTitle": seoTitle,
+      "seoDescription": seoDescription,
+      "ogImage": openGraphImage.asset->url,
+      "usersAmount": count(*[_type=="user" && references(^._id)])
+               }`,
+    { badgeParam }
+  );
+}
+
+export async function getUserPageMeta(
+  userParam: string
+): Promise<UserPageMetaData> {
+  return createClient(clientConfig).fetch(
+    groq`*[_type == "user" && $userParam == slug.current][0] {
+      "name": name,
+      "slug": slug.current,
+      "badgeName": badges[0]->name,
+      "badgeSingularName": badges[0]->singularName,
+      "image": image.asset -> url,
+      "seoTitle": seoTitle,
+      "seoDescription": seoDescription,
+      "ogImage": openGraphImage.asset->url,
+               }`,
+    { userParam }
+  );
+}
+
+export async function getInnerPageMeta(
+  pageParam: string
+): Promise<InnerPageMeta> {
+  return createClient(clientConfig).fetch(
+    groq`*[_type == "page" && slug.current == $pageParam][0]{
+      "name": name,
+      "image":image.asset->url,
+      "seoTitle": seoTitle,
+      "seoDescription": seoDescription,
+      "ogImage": openGraphImage.asset->url,
+    }`,
+    { pageParam }
+  );
+}
+
+export async function getInterviewPageMeta(
+  userParam: string,
+  interviewParam: string
+): Promise<InterviewPageMeta> {
+  return createClient(clientConfig).fetch(
+    groq`*[_type == "interview" &&  slug.current == $interviewParam][0]{
+      "interview": {
+                  "name": name,  
+                  "image":image.asset->url,
+                  "seoTitle":seoTitle,
+                  "seoDescription":seoDescription,
+                  "ogImage": openGraphImage.asset->url,
+                  "badgeName": badge->name,
+                  "badgeSingularName": badge->singularName,
+            },
+      "user": *[_type == "user" && slug.current == $userParam][0]{
+              "name":name,
+              "pfp": image.asset->url,
+              "ogImage": openGraphImage.asset->url,
+              },
+          }`,
+    { userParam, interviewParam }
+  );
+}
+
+export async function getQuestionPageMeta(
+  badgeParam: string,
+  questionParam: string
+): Promise<QuestionPageMeta> {
+  return createClient(clientConfig).fetch(
+    groq`*[_type == "question" && $badgeParam == interview->badge->slug.current && $questionParam == slug.current][0] {
+      "questionDetails": {
+            "question":question,
+            "longQuestion":longQuestion,
+            "shortQuestion":shortQuestion,
+            "seoTitle":seoTitle,
+            "seoDescription":seoDescription,
+                         },
+      "interviewDetails":  {
+                "ogImage": interview->openGraphImage.asset->url,
+                "badge": 
+                {
+                "name": interview->badge->name,
+                "singularName": interview->badge->singularName,
+                "ogImage": interview->badge->openGraphImage.asset->url,
+                },
+              },
+      "answersAmount": count(*[_type=="answer" && references(^._id)]),
+       "usersDetails": *[_type == "answer" && $badgeParam == interview->badge->slug.current && references(^._id)][]{
+                  "name": user->name,
+                  "slug": user->slug.current,
+                }
+            }`,
+    { badgeParam, questionParam }
+  );
 }
