@@ -4,6 +4,8 @@ import Link from "next/link";
 import { PortableTextBlock } from "sanity";
 import { service } from "../../types/service-type";
 import { badge } from "../../types/badge-type";
+import EventOutLink from "./EventOutLink";
+import EventInLink from "./EventInLink";
 
 interface AnswerProps {
   interviewSlug: string;
@@ -46,9 +48,16 @@ const Answer: React.FC<AnswerProps> = ({
         </Link>
         <div className="flex flex-col">
           <h2 className="text-base sm:text-xl font-semibold">
-            <Link className="text-tl-dark-blue" href={`/user/${user.slug}`}>
+            <EventInLink
+              href={`/user/${user.slug}`}
+              text={user.name}
+              className="text-tl-dark-blue"
+              location="answer"
+              eventName="userNameClick"
+            />
+            {/* <Link className="text-tl-dark-blue" href={`/user/${user.slug}`}>
               {user.name}
-            </Link>
+            </Link> */}
           </h2>
           <h3 className="flex flex-row text-sm sm:text-base font-normal">
             <a
@@ -60,7 +69,13 @@ const Answer: React.FC<AnswerProps> = ({
               {user.badges[0].singularName}
             </a>
             &nbsp;at&nbsp;
-            <Link href={user.services[0].url}>{user.services[0].name}</Link>
+            <EventOutLink
+              href={user.services[0].url}
+              text={user.services[0].name}
+              eventName={"serviceClick"}
+              location={"Answerpage"}
+            />
+            {/* <Link href={user.services[0].url}>{user.services[0].name}</Link> */}
           </h3>
         </div>
       </div>
