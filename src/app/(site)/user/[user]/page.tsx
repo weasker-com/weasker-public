@@ -1,6 +1,5 @@
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
-import Link from "next/link";
 import HeroUser from "@/components/Hero-user";
 import { User } from "../../../../../types/user-type";
 import {
@@ -11,6 +10,7 @@ import UserServices from "@/components/UserServices";
 import capitalize from "@/helpers/capitalize";
 import { Metadata } from "next";
 import { ProfilePage, WithContext } from "schema-dts";
+import { InternalLink } from "@/components/links/InternalLink";
 
 type Props = {
   params: { user: string };
@@ -67,48 +67,58 @@ export default async function User({ params }: Props) {
   const metaDescription = data.seoDescription;
 
   const userBadges = data.badges.map((item, index) => (
-    <Link
+    <InternalLink
+      element={
+        <>
+          <Image
+            alt={item.name}
+            className="w-[25px] sm:w-[35px]"
+            width={35}
+            height={35}
+            src={item.image}
+            style={{
+              width: "35px",
+              height: "35px",
+              borderRadius: "100px",
+            }}
+          ></Image>
+          {item.singularName}
+        </>
+      }
       href={`/badge/${item.slug}`}
       className="flex flex-row items-center gap-1 text-tl-dark-blue"
-      key={index}
-    >
-      <Image
-        alt={item.name}
-        className="w-[25px] sm:w-[35px]"
-        width={35}
-        height={35}
-        src={item.image}
-        style={{
-          width: "35px",
-          height: "35px",
-          borderRadius: "100px",
-        }}
-      ></Image>
-      {item.singularName}
-    </Link>
+      eventName="ClickBadgeName"
+      target={item.singularName}
+      locationOnPage="hero"
+    />
   ));
 
   const userInterviews = data.interviews.map((item, index) => (
-    <Link
-      className="flex flex-row w-full gap-2 sm:gap-5 my-5 items-center capitalize"
+    <InternalLink
+      element={
+        <>
+          <Image
+            className="w-[50px] h-[50px] sm:w-[65px] sm:h-[65px]"
+            src={item.interview.image}
+            alt={item.interview.name}
+            width={65}
+            height={65}
+            style={{
+              borderRadius: "100px",
+            }}
+          ></Image>
+          <div className="flex flex-col">
+            <span className="text-tl-dark-blue">{data.name}</span>
+            <p>{item.interview.name}</p>
+          </div>
+        </>
+      }
       href={`/interview/${data.badges[0].slug}/${userParam}/${item.interview.slug}`}
-    >
-      <Image
-        className="w-[50px] h-[50px] sm:w-[65px] sm:h-[65px]"
-        src={item.interview.image}
-        alt={item.interview.name}
-        width={65}
-        height={65}
-        style={{
-          borderRadius: "100px",
-        }}
-      ></Image>
-
-      <div className="flex flex-col">
-        <span className="text-tl-dark-blue">{data.name}</span>
-        <p>{item.interview.name}</p>
-      </div>
-    </Link>
+      className="flex flex-row w-full gap-2 sm:gap-5 my-5 items-center capitalize"
+      eventName="ClickInterviewPage"
+      target={item.interview.name}
+      locationOnPage="Interviews list"
+    />
   ));
 
   const userName = data.name;

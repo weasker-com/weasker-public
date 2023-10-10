@@ -1,7 +1,7 @@
 "use client";
 import { BiMessageSquareError } from "react-icons/bi";
-import Link from "next/link";
 import { useEffect } from "react";
+import { InternalLink } from "@/components/links/InternalLink";
 
 export default function Error({
   error,
@@ -22,9 +22,14 @@ export default function Error({
         <button className="border shadow px-5 rounded" onClick={() => reset()}>
           Refresh
         </button>
-        <Link className="border shadow p-2 rounded" href={"/"}>
-          Home
-        </Link>
+        <InternalLink
+          element="Home"
+          target="Home"
+          href={"/"}
+          className="border shadow p-2 rounded"
+          eventName="ClickInnerPage"
+          locationOnPage="main"
+        />
       </div>
     </div>
   );

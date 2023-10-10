@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
 import SocialShareButtons from "./SocialShareButtons";
+import { InternalLink } from "./links/InternalLink";
 
 type HeroProps = {
   h1a?: string | React.JSX.Element[] | JSX.Element;
@@ -38,20 +38,26 @@ const Hero = ({
         </div>
       </div>
       <div className="hidden md:flex my-auto mx-auto flex-col items-center gap-2 align-center border rounded-xl p-5 shadow">
-        <Link href={featuredImageUrl || "/"}>
-          <Image
-            width={130}
-            height={130}
-            src={featuredImageSrc}
-            alt={featuredImageAlt}
-            style={{
-              borderRadius: "100px",
-              objectFit: "cover",
-              width: "130px",
-              height: "130px",
-            }}
-          />
-        </Link>
+        <InternalLink
+          element={
+            <Image
+              width={130}
+              height={130}
+              src={featuredImageSrc}
+              alt={featuredImageAlt}
+              style={{
+                borderRadius: "100px",
+                objectFit: "cover",
+                width: "130px",
+                height: "130px",
+              }}
+            />
+          }
+          href={featuredImageUrl || "/"}
+          eventName="ClickFeaturedImage"
+          target={featuredImageAlt}
+          locationOnPage="hero"
+        />
         <span>{services}</span>
       </div>
     </div>

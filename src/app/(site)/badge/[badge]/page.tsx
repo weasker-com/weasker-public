@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
+import { InternalLink } from "@/components/links/InternalLink";
+import ExternalLink from "@/components/links/ExternalLink";
 
 type Props = {
   params: { badge: string };
@@ -74,39 +76,53 @@ export default async function Badge({ params }: Props) {
                 key={index}
                 className="flex flex-row gap-3 sm:gap-5 items-center"
               >
-                <Link href={`/user/${item.slug}`}>
-                  <div className="w-[65px]">
-                    <Image
-                      width={65}
-                      height={65}
-                      src={item.image}
-                      alt={item.name}
-                      className="rounded-full"
-                      style={{
-                        objectFit: "cover",
-                        width: "65px",
-                        height: "65px",
-                      }}
-                    />
-                  </div>
-                </Link>
+                <InternalLink
+                  element={
+                    <div className="w-[65px]">
+                      <Image
+                        width={65}
+                        height={65}
+                        src={item.image}
+                        alt={item.name}
+                        className="rounded-full"
+                        style={{
+                          objectFit: "cover",
+                          width: "65px",
+                          height: "65px",
+                        }}
+                      />
+                    </div>
+                  }
+                  target={item.name}
+                  href={`/user/${item.slug}`}
+                  eventName="ClickUserImage"
+                  locationOnPage="experts list"
+                />
                 <div className="flex flex-col">
-                  <Link
+                  <InternalLink
+                    element={item.name}
+                    target={item.name}
                     href={`/user/${item.slug}`}
                     className="text-base sm:text-xl font-semibold text-tl-dark-blue"
-                  >
-                    {item.name}
-                  </Link>
-                  <Link
-                    className="flex flex-row text-tl-dark-blue"
+                    eventName="ClickUserName"
+                    locationOnPage="main"
+                  />
+                  <ExternalLink
+                    element={
+                      <>
+                        <div>{data.badgeDetails.singularName}</div>
+                        &nbsp;at&nbsp;
+                        <span className="text-tl-light-blue">
+                          {item.services[0].name}
+                        </span>
+                      </>
+                    }
+                    target={item.services[0].name}
                     href={item.services[0].url}
-                  >
-                    <div>{data.badgeDetails.singularName}</div>
-                    &nbsp;at&nbsp;
-                    <span className="text-tl-light-blue">
-                      {item.services[0].name}
-                    </span>
-                  </Link>
+                    className="flex flex-row text-tl-dark-blue"
+                    eventName="ClickUserService"
+                    locationOnPage="main"
+                  />
                 </div>
               </div>
             ))}
@@ -116,26 +132,35 @@ export default async function Badge({ params }: Props) {
           <h2 className="capitalize">we asked</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {data.questions.map((item, index) => (
-              <Link
-                key={index}
-                className="flex flex-row gap-3 sm:gap-5 items-center"
+              <InternalLink
+                element={
+                  <>
+                    <Image
+                      width={65}
+                      height={65}
+                      src={item.image}
+                      alt={item.shortQuestion}
+                      className="rounded-full"
+                      style={{
+                        objectFit: "cover",
+                        width: "65px",
+                        height: "65px",
+                      }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-tl-dark-blue text-xs font-light">
+                        {data.badgeDetails.name}
+                      </span>
+                      <p>{item.shortQuestion}</p>
+                    </div>
+                  </>
+                }
                 href={`/question/${data.badgeDetails.slug}/${item.slug}`}
-              >
-                <Image
-                  width={65}
-                  height={65}
-                  src={item.image}
-                  alt={item.shortQuestion}
-                  className="rounded-full"
-                  style={{ objectFit: "cover", width: "65px", height: "65px" }}
-                />
-                <div className="flex flex-col">
-                  <span className="text-tl-dark-blue text-xs font-light">
-                    {data.badgeDetails.name}
-                  </span>
-                  <p>{item.shortQuestion}</p>
-                </div>
-              </Link>
+                className="flex flex-row gap-3 sm:gap-5 items-center"
+                eventName="ClickQuestionPage"
+                target={item.shortQuestion}
+                locationOnPage="main"
+              />
             ))}
           </div>
         </div>

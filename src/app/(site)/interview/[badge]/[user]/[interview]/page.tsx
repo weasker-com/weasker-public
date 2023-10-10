@@ -12,6 +12,7 @@ import SidebarInterviewPage from "@/components/Sidebar-interviewPage";
 import capitalize from "@/helpers/capitalize";
 import { Metadata } from "next";
 import { FAQPage, WithContext } from "schema-dts";
+import { InternalLink } from "@/components/links/InternalLink";
 
 type Props = {
   params: { badge: string; user: string; interview: string };
@@ -87,16 +88,16 @@ export default async function Interview({ params }: Props) {
   const jsonLd: WithContext<FAQPage> = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: data.questions.map((item, index) => {
-      return {
+    mainEntity: data.questions
+      .filter((item) => item.answer?.answers?.interviewAnswer)
+      .map((item) => ({
         "@type": "Question",
         name: item.mediumQuestion,
         acceptedAnswer: {
           "@type": "Answer",
           text: toPlainText(item.answer.answers.interviewAnswer),
         },
-      };
-    }),
+      })),
   };
 
   return (
@@ -110,39 +111,48 @@ export default async function Interview({ params }: Props) {
           <>
             <div className="md:flex flex-rox items-center flex-wrap hidden ">
               we asked&nbsp;
-              <Link
-                className="flex flex-rox items-center text-tl-dark-blue"
+              <InternalLink
+                element={userBadge}
                 href={`/badge/${badgeSlug}`}
-              >
-                {userBadge}
-              </Link>
+                target={userBadge}
+                eventName="ClickBadgeName"
+                locationOnPage="hero"
+              />
               &nbsp;
-              <Link
+              <InternalLink
+                element={userName}
                 className="flex flex-rox items-center"
                 href={`/user/${userSlug}`}
-              >
-                {userName}
-              </Link>
+                target={userName}
+                eventName="ClickUserName"
+                locationOnPage="hero"
+              />
             </div>
             <div className="flex flex-col md:hidden">
               <div>we asked</div>
               <div className="flex flex-row items-center gap-1 border rounded-xl shadow p-2 mt-2 ">
                 {" "}
                 <div className="min-w-[50px]">
-                  <Link href={`/user/${userSlug}`}>
-                    <Image
-                      className="rounded-full"
-                      src={featuredImage}
-                      width={50}
-                      height={50}
-                      alt={userName}
-                      style={{
-                        objectFit: "cover",
-                        width: "50px",
-                        height: "50px",
-                      }}
-                    ></Image>
-                  </Link>
+                  <InternalLink
+                    element={
+                      <Image
+                        className="rounded-full"
+                        src={featuredImage}
+                        width={50}
+                        height={50}
+                        alt={userName}
+                        style={{
+                          objectFit: "cover",
+                          width: "50px",
+                          height: "50px",
+                        }}
+                      ></Image>
+                    }
+                    href={`/user/${userSlug}`}
+                    target={userName}
+                    eventName="ClickUserImage"
+                    locationOnPage="hero"
+                  />
                 </div>
                 <UserServices
                   services={data.user.services}

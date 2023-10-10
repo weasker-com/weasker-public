@@ -10,6 +10,7 @@ import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { QAPage, WithContext } from "schema-dts";
 import { toPlainText } from "@portabletext/react";
+import { InternalLink } from "@/components/links/InternalLink";
 
 type Props = {
   params: { badge: string; question: string };
@@ -110,12 +111,14 @@ export default async function Question({ params }: Props) {
         h1a={
           <div className="flex flex-row items-center flex-wrap">
             we asked&nbsp;{answers.length}&nbsp;
-            <Link
+            <InternalLink
+              element={answers.length == 1 ? badgeSingularNameName : badgeName}
               className="flex flex-rox items-center"
               href={`/badge/${badgeSlug}`}
-            >
-              {answers.length == 1 ? badgeSingularNameName : badgeName}
-            </Link>
+              eventName="ClickBadgeName"
+              target={badgeName}
+              locationOnPage="hero"
+            />
           </div>
         }
         h1b={questionText}
