@@ -28,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const users = data.users.map((item, index) => ({
-    url: `${WEBSITE_HOST_URL}/user/${item.userSlug}/`,
+    url: `${WEBSITE_HOST_URL}/user/${item.userSlug}`,
     lastModified: item.updated,
     changeFrequency: "weekly" as changeFrequency,
   }));
@@ -40,7 +40,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const pages = data.pages.map((item, index) => ({
-    url: `${WEBSITE_HOST_URL}/${item.pageSlug}`,
+    url:
+      item.pageSlug == "/"
+        ? `${WEBSITE_HOST_URL}`
+        : `${WEBSITE_HOST_URL}/${item.pageSlug}`,
     lastModified: item.updated,
     changeFrequency: "weekly" as changeFrequency,
   }));
