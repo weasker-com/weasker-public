@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   getQuestionPage,
   getQuestionPageMeta,
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const metaTitle = capitalize(
     meta.questionDetails.seoTitle
       ? meta.questionDetails.seoTitle
-      : `We asked ${meta.answersAmount} ${meta.interviewDetails.badge.name}: ${meta.questionDetails.shortQuestion}`
+      : `${meta.answersAmount} ${meta.interviewDetails.badge.name}: ${meta.questionDetails.shortQuestion}`
   );
 
   const metaDescription = meta.questionDetails.seoDescription

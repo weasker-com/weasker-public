@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const metaTitle = capitalize(
     meta.interview.seoTitle
       ? meta.interview.seoTitle
-      : `Interview with ${meta.interview.badgeSingularName} ${meta.user.name} - ${meta.interview.name}`
+      : `${meta.user.name} ${meta.interview.name}`
   );
 
   const metaDescription = meta.interview.seoDescription
