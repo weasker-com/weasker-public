@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_category_1_questions",
+  "info": {
+    "displayName": "question",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "shortQuestion": {
+      "type": "string"
+    },
+    "mediumQuestion": {
+      "type": "string"
+    },
+    "longQuestion": {
+      "type": "text"
+    },
+    "number": {
+      "type": "integer"
+    },
+    "question": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::question.question"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_category_1_rich_texts",
+  "info": {
+    "displayName": "Rich text",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "Answer": {
+      "type": "blocks"
+    },
+    "question": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::question.question"
+    }
+  }
+}
