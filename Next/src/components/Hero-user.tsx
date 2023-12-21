@@ -3,7 +3,7 @@ import Image, { StaticImageData } from "next/image";
 type HeroProps = {
   h1: string;
   badges: string | React.JSX.Element[];
-  excerpt: string | JSX.Element;
+  excerpt: string | null;
   services?: React.ReactNode;
   featuredImageSrc: string | StaticImageData;
   featuredImageAlt: string;
@@ -34,7 +34,7 @@ const HeroUser = ({
           </div>
           <div className="flex flex-col gap-1 capitalize">
             <h1 className="text-xl sm:text-5xl">{h1}</h1>
-            <span className="flex flex-row items-center gap-2.5 text-1xl font-medium">
+            <span className="flex flex-col items-left gap-2.5 text-1xl font-medium">
               {badges}
             </span>
           </div>
@@ -43,9 +43,7 @@ const HeroUser = ({
           <span>{services}</span>
         </div>
       </div>
-      <div className="sm:max-w-[90%]">
-        <span>{excerpt}</span>
-      </div>
+      <div className="sm:max-w-[90%]">{excerpt && <span>{excerpt}</span>}</div>
     </div>
   );
 };

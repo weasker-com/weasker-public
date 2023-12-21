@@ -3,7 +3,7 @@ import { LuExternalLink } from "react-icons/lu";
 import ExternalLink from "./links/ExternalLink";
 
 interface UserServicesProps {
-  services: service[];
+  services: service[] | [];
   name?: string;
   badgeName?: string;
 }

@@ -29,6 +29,9 @@ const config: Config = {
       "4xl": ["38px", "50px"],
       "5xl": ["45px", "67px"],
     },
+    scale: {
+      "-100": "-1",
+    },
   },
   plugins: [],
 };

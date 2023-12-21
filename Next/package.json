@@ -18,6 +18,8 @@
     "@vercel/og": "^0.5.17",
     "autoprefixer": "10.4.15",
     "dotenv": "^16.3.1",
+    "html-react-parser": "^5.0.7",
+    "html-to-text": "^9.0.5",
     "next": "13.4.19",
     "next-sanity": "^5.4.6",
     "next-share": "^0.25.0",

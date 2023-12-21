@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { listItem } from "../../types/listItem-type";
 import { InternalLink } from "./links/InternalLink";
 
@@ -22,7 +21,7 @@ const ListItem = (props: listItem) => {
             ></Image>
           </div>
         }
-        href={`/question/${props.badge.slug}/${props.slug}`}
+        href={`/question/${props.badge.slug}/props.interviewSlug/${props.slug}`}
         eventName="ClickQuestionPage"
         target={props.title}
         locationOnPage="list"
@@ -53,7 +52,7 @@ const ListItem = (props: listItem) => {
         />
         <InternalLink
           element={<p>{props.title}</p>}
-          href={`/question/${props.badge.slug}/${props.slug}`}
+          href={`/question//${props.badge.slug}/interviewSlug${props.slug}`}
           eventName="ClickQuestionPage"
           target={props.title}
           locationOnPage="list"

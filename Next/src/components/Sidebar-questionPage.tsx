@@ -1,35 +1,32 @@
-import { PortableTextBlock } from "sanity";
-import { badge } from "../../types/badge-type";
 import { service } from "../../types/service-type";
 import Image from "next/image";
 import SocialShareButtons from "./SocialShareButtons";
 import { InternalLink } from "./links/InternalLink";
+import { defaultImages } from "@/utils/defaultImages";
 
 interface Sidebarprops {
   users: singleUser[];
   otherQuestions: singleQuestion[];
-  badge: badge;
 }
 
 interface singleUser {
   name: string;
   slug: string;
-  userBio: PortableTextBlock[];
   pfp: string;
-  badges: badge[];
   services: service[];
 }
 
 interface singleQuestion {
   shortQuestion: string;
   slug: string;
-  image: string;
+  image: string | null;
+  badgeSlug: string;
+  interviewSlug: string;
 }
 
 const SidebarQuestionPage: React.FC<Sidebarprops> = ({
   users,
   otherQuestions,
-  badge,
 }) => {
   return (
     <div className="flex flex-col gap-10">
@@ -81,7 +78,7 @@ const SidebarQuestionPage: React.FC<Sidebarprops> = ({
                   <Image
                     width={24}
                     height={24}
-                    src={item.image}
+                    src={item.image || defaultImages.defaultQuestionImage}
                     alt={item.shortQuestion}
                     className="rounded-full"
                     style={{
@@ -93,7 +90,7 @@ const SidebarQuestionPage: React.FC<Sidebarprops> = ({
                   {item.shortQuestion}
                 </li>
               }
-              href={`/question/${badge.slug}/${item.slug}`}
+              href={`/question/${item.badgeSlug}/${item.interviewSlug}/${item.slug}`}
               className="text-tl-dark-blue text-sm"
               eventName="ClickQuestionPage"
               target={item.shortQuestion}

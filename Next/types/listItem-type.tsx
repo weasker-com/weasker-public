@@ -5,4 +5,5 @@ export type listItem = {
   image: string;
   slug: string;
   badge: badge;
+  interviewSlug: string;
 };

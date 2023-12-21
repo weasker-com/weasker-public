@@ -1,5 +1,6 @@
 import Image from "next/image";
 import logo from "../../public/logo/tl-logo-sep-23.png";
+import weaskerLogo from "../../public/logo/weasker-logo-cat-4.png";
 import { InternalLink } from "./links/InternalLink";
 
 const Navbar = () => {
@@ -10,14 +11,22 @@ const Navbar = () => {
           element={
             <>
               <Image
-                width={55}
-                height={55}
-                className="rounded-full"
-                src={logo}
+                width={80}
+                height={80}
+                className=""
+                src={weaskerLogo}
                 alt="weasker logo"
-                style={{ objectFit: "cover", width: "55px", height: "55px" }}
-              />{" "}
+                style={{ objectFit: "cover", width: "50px", height: "50px" }}
+              />
               weasker
+              <Image
+                width={80}
+                height={80}
+                className="transform -scale-x-100"
+                src={weaskerLogo}
+                alt="weasker logo"
+                style={{ objectFit: "cover", width: "50px", height: "50px" }}
+              />
             </>
           }
           className="flex flex-row items-center gap-2 font-bold"

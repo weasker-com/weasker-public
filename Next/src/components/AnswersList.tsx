@@ -13,22 +13,24 @@ interface singleAnswer {
   user: {
     name: string;
     slug: string;
-    userBio: PortableTextBlock[];
     services: {
       name: string;
       url: string;
     }[];
     pfp: string;
-    badges: badge[];
+    singularName: string;
+    badgeSlug: string;
   };
-  answers: {
-    interviewAnswer: PortableTextBlock[];
-    imagesSchema: {
-      url: string;
-    }[];
+  answer: {
+    text: string;
+    images:
+      | {
+          image: { url: string };
+        }[]
+      | [];
     number: number;
-    video?: File;
-  }[];
+    video: string | null | undefined;
+  };
 }
 
 const AnswersList: React.FC<AnswersProps> = ({
@@ -38,18 +40,25 @@ const AnswersList: React.FC<AnswersProps> = ({
 }) => {
   return (
     <div>
-      {answers.map((item, index) => (
-        <Answer
-          key={index}
-          text={item.answers[0].interviewAnswer}
-          images={item.answers[0].imagesSchema}
-          questionSlug={questionSlug}
-          user={item.user}
-          question={true}
-          interviewSlug={interviewSlug}
-          otherUsersAmount={0}
-        />
-      ))}
+      {answers.map((item, index) => {
+        const answer = item.answer;
+        const answerText = answer.text;
+        const answerImages = answer.images;
+        const user = item.user;
+
+        return (
+          <Answer
+            key={index}
+            text={answerText}
+            images={answerImages}
+            questionSlug={questionSlug}
+            user={user}
+            question={true}
+            interviewSlug={interviewSlug}
+            otherUsersAmount={0}
+          />
+        );
+      })}
     </div>
   );
 };

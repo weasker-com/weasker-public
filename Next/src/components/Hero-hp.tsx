@@ -4,7 +4,7 @@ import Link from "next/link";
 type HeroProps = {
   h1a: string;
   h1b: string | React.JSX.Element[] | JSX.Element;
-  excerpt: string | JSX.Element;
+  excerpt: string | JSX.Element | null;
 };
 
 const HeroHP = ({ h1a, h1b, excerpt }: HeroProps) => {
@@ -14,9 +14,12 @@ const HeroHP = ({ h1a, h1b, excerpt }: HeroProps) => {
         <span className="text-xl sm:text-2xl font-semibold">{h1a}</span>
         <span className="text-2xl sm:text-5xl">{h1b}</span>
       </h1>
-      <div className="font-normal">
-        <span>{excerpt}</span>
-      </div>
+      {excerpt && (
+        <div className="font-normal">
+          {" "}
+          <span>{excerpt}</span>
+        </div>
+      )}
     </div>
   );
 };

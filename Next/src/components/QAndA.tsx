@@ -8,7 +8,6 @@ interface qAndA {
   questions: singleQuestion[];
   userDetails: userDetailsProps;
   interviewSlug: string;
-  otherUsersAmount: number;
 }
 
 interface singleQuestion {
@@ -16,13 +15,16 @@ interface singleQuestion {
   question: string;
   slug: string;
   answer: {
-    answers?: {
+    answers: {
       number: number;
-      interviewAnswer: PortableTextBlock[];
-      images: {
-        url: string;
-      }[];
+      interviewAnswer: string;
+      images:
+        | {
+            image: { url: string };
+          }[]
+        | [];
       video: any;
+      otherUsersAmount: number;
     };
     seoTitle: string;
     seoDescription: string;
@@ -31,19 +33,15 @@ interface singleQuestion {
 
 interface userDetailsProps {
   name: string;
-  userBio: PortableTextBlock[];
+  userBio: string;
   slug: string;
   services: service[];
-  pfp: string;
-  badges: badge[];
+  pfp: string | null;
+  singularName: string;
+  badgeSlug: string;
 }
 
-const QAndA: React.FC<qAndA> = ({
-  questions,
-  userDetails,
-  interviewSlug,
-  otherUsersAmount,
-}) => {
+const QAndA: React.FC<qAndA> = ({ questions, userDetails, interviewSlug }) => {
   return questions
     .filter((item) => item.answer.answers)
     .sort((a, b) => a.number - b.number)
@@ -52,12 +50,12 @@ const QAndA: React.FC<qAndA> = ({
         <Question slug={item.slug} text={item.question} id={index + 1} />
         <Answer
           text={item.answer.answers!.interviewAnswer}
-          images={item.answer.answers!.images}
+          images={item.answer.answers.images}
           user={userDetails}
           questionSlug={item.slug}
           question={false}
           interviewSlug={interviewSlug}
-          otherUsersAmount={otherUsersAmount}
+          otherUsersAmount={item.answer.answers.otherUsersAmount}
         />
       </div>
     ));

@@ -16,10 +16,9 @@ const Search = () => {
   async function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let newSearchResults = await performSearch(searchTerm);
-    console.log(newSearchResults);
+
     setSearchResults(newSearchResults);
-    console.log(searchResults.length);
-    console.log("TERM", searchTerm);
+
     setSearchClick(true);
   }
 
@@ -92,6 +91,7 @@ const Search = () => {
                 title={item.title}
                 slug={item.slug}
                 badge={item.badge}
+                interviewSlug={item.interviewSlug}
               />
             ))}
           </div>

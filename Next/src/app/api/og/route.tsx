@@ -1,10 +1,11 @@
 import { ImageResponse } from "next/server";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 export const runtime = "edge";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+  const { searchParams, protocol, host } = new URL(request.url);
   const imgA = searchParams.get("imgA");
   const text = searchParams.get("text");
   if (!imgA) {
@@ -13,11 +14,15 @@ export async function GET(request: Request) {
       height: 630,
     });
   }
+
+  const img =
+    imgA && `${protocol}/${host}/_next/image?url=${encodeURIComponent(imgA)}`;
+
   return new ImageResponse(
     (
       <div
         style={{
-          background: "linear-gradient(to right, #007bff, #2524c4)",
+          background: "linear-gradient(to right, #04032D 5.11%, #0D0D0D 100%)",
           display: "flex",
           fontSize: 50,
           color: "white",
@@ -32,7 +37,7 @@ export async function GET(request: Request) {
         <img
           width="256"
           height="256"
-          src={`${imgA}`}
+          src={img}
           style={{
             borderRadius: 128,
           }}

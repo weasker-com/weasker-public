@@ -13,12 +13,14 @@ interface singleQuestion {
   question: string;
   slug: string;
   answer: {
-    answers?: {
+    answers: {
       number: number;
-      interviewAnswer: PortableTextBlock[];
-      images: {
-        url: string;
-      }[];
+      interviewAnswer: string;
+      images:
+        | {
+            image: { url: string };
+          }[]
+        | [];
       video: any;
     };
     seoTitle: string;
@@ -30,7 +32,7 @@ interface user {
   name: string;
   slug: string;
   pfp: string;
-  badgeSlug: string;
+  userBadgeSlug: string;
 }
 
 const SidebarInterviewPage: React.FC<Sidebarprops> = ({
@@ -70,40 +72,42 @@ const SidebarInterviewPage: React.FC<Sidebarprops> = ({
             ))}
         </ul>
       </div>
-      <div className="flex flex-col gap-5">
-        <div className="text-lg font-semibold">Also answered</div>
-        <ul className="flex flex-col gap-1">
-          {otherUsers.map((item, index) => (
-            <InternalLink
-              element={
-                <li
-                  key={index}
-                  className="flex flex-row gap-3 items-center leading-5 pb-3"
-                >
-                  <Image
-                    width={24}
-                    height={24}
-                    src={item.pfp}
-                    alt={item.name}
-                    className="rounded-full"
-                    style={{
-                      objectFit: "cover",
-                      width: "24px",
-                      height: "24px",
-                    }}
-                  />
-                  {item.name}
-                </li>
-              }
-              href={`/interview/${item.badgeSlug}/${item.slug}/${interviewSlug}`}
-              className="text-tl-dark-blue text-sm"
-              eventName="ClickUserName"
-              target={item.name}
-              locationOnPage="sidebar"
-            />
-          ))}
-        </ul>
-      </div>
+      {otherUsers.length > 0 && (
+        <div className="flex flex-col gap-5">
+          <div className="text-lg font-semibold">Also answered</div>
+          <ul className="flex flex-col gap-1">
+            {otherUsers.map((item, index) => (
+              <InternalLink
+                element={
+                  <li
+                    key={index}
+                    className="flex flex-row gap-3 items-center leading-5 pb-3"
+                  >
+                    <Image
+                      width={24}
+                      height={24}
+                      src={item.pfp}
+                      alt={item.name}
+                      className="rounded-full"
+                      style={{
+                        objectFit: "cover",
+                        width: "24px",
+                        height: "24px",
+                      }}
+                    />
+                    {item.name}
+                  </li>
+                }
+                href={`/interview/${item.userBadgeSlug}/${item.slug}/${interviewSlug}`}
+                className="text-tl-dark-blue text-sm"
+                eventName="ClickUserName"
+                target={item.name}
+                locationOnPage="sidebar"
+              />
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
