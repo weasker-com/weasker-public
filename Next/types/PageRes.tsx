@@ -482,8 +482,11 @@ export type homePageRes = {
           slug: string;
         };
         badge: {
+          singularName: string;
+          pluralName: string;
           seo: {
             slug: string;
+            image: { url: string } | null;
           };
         };
         questions: {
@@ -494,6 +497,7 @@ export type homePageRes = {
             shortQuestion: string;
             answers: {
               user: {
+                userName: string;
                 seo: {
                   slug: string;
                   image: { url: string };
@@ -502,11 +506,24 @@ export type homePageRes = {
               answer: {
                 richText_html: string;
                 video: { url: string };
-                images: { image: { url: string } };
+                images: { image: { url: string } }[];
               };
             }[];
           };
         }[];
+      }[];
+    };
+    Badges: {
+      docs: {
+        pluralName: string;
+        singularName: string;
+        seo: { slug: string; image: { url: string } };
+      }[];
+    };
+    Users: {
+      docs: {
+        userName: string;
+        seo: { slug: string; image: { url: string } };
       }[];
     };
   };

@@ -1,8 +1,5 @@
-import { PortableText } from "@portabletext/react";
 import Image from "next/image";
-import { PortableTextBlock } from "sanity";
 import { service } from "../../types/service-type";
-import { badge } from "../../types/badge-type";
 import { InternalLink } from "./links/InternalLink";
 import ExternalLink from "./links/ExternalLink";
 import parse from "html-react-parser";
@@ -10,7 +7,12 @@ import { defaultImages } from "@/utils/defaultImages";
 
 interface AnswerProps {
   interviewSlug: string;
-  question: boolean;
+  badgeSingularName: string;
+  badgePluralName: string;
+  badgeSlug: string;
+  badgeImage: string | null;
+  questionText: string;
+  location: "interview" | "hp" | "question";
   text: string;
   images:
     | {
@@ -22,10 +24,8 @@ interface AnswerProps {
   user: {
     name: string;
     slug: string;
-    services: service[];
+    services: service[] | null;
     pfp: string | null;
-    singularName: string;
-    badgeSlug: string;
   };
 }
 
@@ -33,110 +33,203 @@ const Answer: React.FC<AnswerProps> = ({
   text,
   images,
   questionSlug,
+  questionText,
+  badgeSlug,
+  badgeSingularName,
+  badgePluralName,
+  badgeImage,
   user,
-  question,
+  location,
   interviewSlug,
   otherUsersAmount,
 }) => {
   return (
     <div
-      className="flex flex-col gap-3 pb-10 border rounded-[7px] mb-5 p-5 shadow-md"
+      className="flex flex-col gap-3 border rounded-[7px] mb-5 shadow-md pb-5"
       id={user.slug}
     >
-      <div className="flex flex-row gap-3 sm:gap-5 items-center">
+      {location == "hp" && (
+        <>
+          <InternalLink
+            element={
+              <div className="flex flex-col w-full gap-3 rounded-t-lg p-4 bg-gradient-to-r from-[#00453E] to-[#195851]/75">
+                {
+                  <div className="flex flex-row items-center gap-5">
+                    <Image
+                      width={50}
+                      height={50}
+                      src={badgeImage || defaultImages.defaultBadgeImage}
+                      alt={user.name}
+                      className="rounded-full"
+                      style={{
+                        objectFit: "cover",
+                        width: "50px",
+                        height: "50px",
+                      }}
+                    />
+                    <h2 className="flex flex-col text-white">
+                      <span className="sm:text-lg font-light">
+                        {badgePluralName}
+                      </span>
+                      <span className="font-semibold">{questionText}</span>
+                    </h2>
+                  </div>
+                }
+              </div>
+            }
+            href={`/question/${badgeSlug}/${interviewSlug}/${questionSlug}`}
+            eventName={"ClickQuestionPage"}
+            target={questionSlug}
+            locationOnPage={questionSlug}
+          />
+        </>
+      )}
+      <div className="px-2 md:p-5">
         <InternalLink
           element={
-            <Image
-              width={50}
-              height={50}
-              src={user.pfp || defaultImages.defaultUserImage}
-              alt={user.name}
-              className="rounded-full"
-              style={{ objectFit: "cover", width: "50px", height: "50px" }}
-            />
+            <div className="relative h-20">
+              <div className="absolute left-0 top-0 flex flex-row gap-2 font-bold items-center text-tl-dark-blue">
+                <Image
+                  width={50}
+                  height={50}
+                  src={user.pfp || defaultImages.defaultUserImage}
+                  alt={user.name}
+                  className="rounded-full"
+                  style={{
+                    objectFit: "cover",
+                    width: "50px",
+                    height: "50px",
+                  }}
+                />
+                {user.name}
+              </div>
+
+              <div className="absolute left-9 top-9 flex flex-row items-center">
+                <div className="flex flex-row items-center gap-2">
+                  <Image
+                    width={30}
+                    height={30}
+                    src={badgeImage || defaultImages.defaultBadgeImage}
+                    alt={user.name}
+                    className="rounded-full"
+                    style={{
+                      objectFit: "cover",
+                      width: "30px",
+                      height: "30px",
+                    }}
+                  />
+                  {badgeSingularName}
+                </div>
+                {user.services && (
+                  <>
+                    &nbsp;at&nbsp;
+                    <ExternalLink
+                      href={user.services[0].url}
+                      element={user.services[0].name}
+                      eventName="ClickUserService"
+                      target={user.services[0].name}
+                      locationOnPage={
+                        location == "question" ? user.name : questionSlug
+                      }
+                    />
+                  </>
+                )}
+              </div>
+            </div>
           }
           href={`/user/${user.slug}`}
           eventName="ClickUserImage"
           target={user.name}
-          locationOnPage={question ? user.name : questionSlug}
+          locationOnPage={location == "question" ? user.name : questionSlug}
         />
-        <div className="flex flex-col">
-          <span className="text-base sm:text-xl font-semibold">
-            <InternalLink
-              href={`/user/${user.slug}`}
-              element={user.name}
-              eventName="ClickUserName"
-              target={user.name}
-              className="text-tl-dark-blue"
-              locationOnPage={question ? user.name : questionSlug}
-            />
-          </span>
-          <span className="flex flex-row text-sm sm:text-base font-normal">
-            <InternalLink
-              href={`/badge/${user.badgeSlug}`}
-              element={user.singularName}
-              eventName="ClickBadgeName"
-              className="text-tl-dark-blue"
-              target={user.singularName}
-              locationOnPage={question ? user.name : questionSlug}
-            />
-            &nbsp;at&nbsp;
-            <ExternalLink
-              href={user.services[0].url}
-              element={user.services[0].name}
-              eventName="ClickUserService"
-              target={user.services[0].name}
-              locationOnPage={question ? user.name : questionSlug}
-            />
-          </span>
+        <div className="absolute left-9 top-9 flex flex-row items-center">
+          {user.services && (
+            <>
+              &nbsp;at&nbsp;
+              <ExternalLink
+                href={user.services[0].url}
+                element={user.services[0].name}
+                eventName="ClickUserService"
+                target={user.services[0].name}
+                locationOnPage={
+                  location == "question" ? user.name : questionSlug
+                }
+              />
+            </>
+          )}
         </div>
-      </div>
-      <div className="m-auto sm:ml-[70px] font-light flex-col flex gap-5 sm:w-[80%]">
-        {parse(text)}
-        <div className="flex flex-row gap-2 flex-wrap ">
-          {images?.map((image, index) => (
-            <ExternalLink
-              element={
-                <Image
-                  key={index}
-                  alt={`image by ${user.name} - ${user.singularName}`}
-                  width={100}
-                  height={100}
-                  style={{
-                    objectFit: "cover",
-                    width: "100px",
-                    height: "100px",
-                  }}
-                  src={image.image.url}
+
+        <div className="font-light flex-col flex gap-5 px-1 md:px-5">
+          <div className={`${location == "hp" && "italic"}`}>{parse(text)}</div>
+          {images.length > 0 && (
+            <div className="flex flex-row gap-2 flex-wrap">
+              {images.map((image, index) => (
+                <ExternalLink
+                  element={
+                    <Image
+                      key={index}
+                      alt={`image by ${user.name} - ${badgeSingularName}`}
+                      width={100}
+                      height={100}
+                      style={{
+                        objectFit: "cover",
+                        width: "100px",
+                        height: "100px",
+                      }}
+                      src={image.image.url}
+                    />
+                  }
+                  href={image.image.url}
+                  eventName="ClickImage"
+                  target={
+                    location == "question"
+                      ? user.name + index
+                      : questionSlug + index
+                  }
+                  locationOnPage={
+                    location == "question" ? user.name : questionSlug
+                  }
                 />
-              }
-              href={image.image.url}
-              eventName="ClickImage"
-              target={question ? user.name + index : questionSlug + index}
-              locationOnPage={question ? user.name : questionSlug}
-            />
-          ))}
+              ))}
+            </div>
+          )}
+          <div className="text-tl-dark-blue flex flex-row items-center gap-4">
+            {location !== "interview" && (
+              <>
+                <InternalLink
+                  element={
+                    <span className="text-weasker-grey text-sm">
+                      Full interview
+                    </span>
+                  }
+                  href={`/interview/${badgeSlug}/${user.slug}/${interviewSlug}`}
+                  eventName="ClickInterviewPage"
+                  target="Read full interview"
+                  locationOnPage={
+                    location == "question" ? user.name : questionSlug
+                  }
+                />
+              </>
+            )}
+            {location !== "question" && (
+              <>
+                <div className="mx-2 text-weasker-grey">•</div>
+                <InternalLink
+                  href={`/question/${badgeSlug}/${interviewSlug}/${questionSlug}`}
+                  element={
+                    <span className="text-weasker-grey text-sm">
+                      {otherUsersAmount}
+                      {otherUsersAmount == 1 ? " More answer" : " More answers"}
+                    </span>
+                  }
+                  eventName="ClickReadMoreAnswers"
+                  target="Read more answers"
+                  locationOnPage={questionSlug}
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="sm:ml-[70px]">
-        {question ? (
-          <InternalLink
-            element="Read full interview"
-            href={`/interview/${user.badgeSlug}/${user.slug}/${interviewSlug}`}
-            eventName="ClickInterviewPage"
-            target="Read full interview"
-            locationOnPage={question ? user.name : questionSlug}
-          />
-        ) : (
-          <InternalLink
-            href={`/question/${user.badgeSlug}/${interviewSlug}/${questionSlug}`}
-            element={`Read ${otherUsersAmount}
-            ${otherUsersAmount == 1 ? "other answer" : "other answers"}`}
-            eventName="ClickReadMoreAnswers"
-            target="Read more answers"
-            locationOnPage={question ? user.name : questionSlug}
-          />
-        )}
       </div>
     </div>
   );

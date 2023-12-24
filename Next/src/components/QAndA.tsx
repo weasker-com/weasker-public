@@ -39,6 +39,7 @@ interface userDetailsProps {
   pfp: string | null;
   singularName: string;
   badgeSlug: string;
+  badgeImage: string;
 }
 
 const QAndA: React.FC<qAndA> = ({ questions, userDetails, interviewSlug }) => {

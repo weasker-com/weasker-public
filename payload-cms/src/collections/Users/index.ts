@@ -1,5 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo";
+// import { isAdmin, isAdminFieldLevel } from '../access/isAdmin';
+// import { isAdminOrSelf } from '../access/isAdminOrSelf';
 
 const Users: CollectionConfig = {
   slug: "users",
@@ -28,6 +30,32 @@ const Users: CollectionConfig = {
       label: "User name",
       type: "text",
       required: true,
+    },
+    {
+      name: "roles",
+      // Save this field to JWT so we can use from `req.user`
+      saveToJWT: true,
+      type: "select",
+      hasMany: true,
+      defaultValue: ["endUser"],
+      access: {
+        // create: isAdminFieldLevel,
+        // update: isAdminFieldLevel,
+      },
+      options: [
+        {
+          label: "Admin",
+          value: "admin",
+        },
+        {
+          label: "Editor",
+          value: "editor",
+        },
+        {
+          label: "End user",
+          value: "endUser",
+        },
+      ],
     },
     {
       name: "userBadges",
