@@ -9,19 +9,19 @@ import { defaultImages } from "@/utils/defaultImages";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  applicationName: "weasker",
-  authors: { name: "weasker team", url: "https://www.weasker.com" },
+  applicationName: process.env.SITE_NAME,
+  authors: { name: "weasker team", url: process.env.SITE_URL },
   title: "Weasker - Interviewing Experts",
   description:
     "We interview groups of experts and compare their answers, generating diverse and reliable information sources.",
   openGraph: {
     images: [defaultImages.defaultOgImage],
     type: "website",
-    url: `https://www.weasker.com`,
+    url: process.env.SITE_URL,
     title: `Weasker - Interviewing Experts`,
     description:
       "We interview groups of experts and compare their answers, generating diverse and reliable information sources",
-    siteName: "weasker",
+    siteName: process.env.SITE_NAME,
   },
 };
 

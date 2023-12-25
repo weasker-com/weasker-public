@@ -53,7 +53,6 @@ const AnswersList: React.FC<AnswersProps> = ({
             images={answerImages}
             questionSlug={questionSlug}
             user={user}
-            question={true}
             interviewSlug={interviewSlug}
             otherUsersAmount={0}
           />

@@ -1,5 +1,3 @@
-import { StringFieldProps } from "sanity";
-
 export type pageRes = {
   data: {
     Pages: {
@@ -102,23 +100,26 @@ export type badgePageRes = {
       }[];
     };
     BadgeQuestions: {
-      docs: {
-        seo: { slug: string };
-        name: string;
-        questions: {
-          question: {
-            shortQuestion: string;
-            index: number;
-            seo: {
-              slug: string;
-              image: {
-                url: string | null;
-                alt: string | null;
-              } | null;
-            };
-          };
-        }[];
-      }[];
+      docs:
+        | {
+            seo: { slug: string };
+            name: string;
+            questions:
+              | {
+                  question: {
+                    shortQuestion: string;
+                    index: number;
+                    seo: {
+                      slug: string;
+                      image: {
+                        url: string | null;
+                        alt: string | null;
+                      };
+                    };
+                  };
+                }[];
+          }[]
+        | [];
     };
   };
 };

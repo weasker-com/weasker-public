@@ -211,7 +211,7 @@ export default async function Home() {
     <div className="flex flex-col md:flex-row md:w-[90%] mx-auto gap-5">
       <div className="flex flex-col md:w-[70%] h-min md:border-r">
         <div className="text-[#195851]/90 text-xl font-light px-auto py-2 mt-10 mb-5 sm:mx-5 text-center border rounded border-[#195851]/90 border-1">
-          Latest Answers
+          <h1>Latest Answers</h1>
         </div>
         <div className="md:px-5">
           <div>

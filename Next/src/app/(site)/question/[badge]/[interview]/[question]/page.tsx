@@ -11,6 +11,7 @@ import {
 } from "../../../../../../../types/PageRes";
 import { fetchData } from "@/utils/payloadFetch";
 import { defaultImages } from "@/utils/defaultImages";
+import Answer from "@/components/Answer";
 const { convert } = require("html-to-text");
 
 type Props = {
@@ -211,7 +212,7 @@ export default async function Question({ params }: Props) {
   const badgeSlug = params.badge;
   const badgePLuralName = interview.badge.pluralName;
   const badgeSingularName = interview.badge.singularName;
-  const badgeImage = interview.badge.seo.image?.url;
+  const badgeImage = interview.badge.seo.image?.url || null;
   const interviewImage = interview.seo.image?.url;
   const questionIndex = relevantQuestion.index;
   const shortQuestion = relevantQuestion.shortQuestion;
@@ -327,11 +328,35 @@ export default async function Question({ params }: Props) {
       />
       <div className="flex flex-col sm:flex-row gap-5 sm:gap-20">
         <div className="md:max-w-[70%] flex flex-col gap-10">
-          <AnswersList
+          {answersList.map((item) => {
+            return (
+              <Answer
+                interviewSlug={params.interview}
+                badgeSingularName={badgeSingularName}
+                badgePluralName={badgePLuralName}
+                badgeSlug={badgeSlug}
+                badgeImage={badgeImage}
+                location={"question"}
+                questionText={shortQuestion}
+                text={item.answer.text}
+                images={item.answer.images}
+                questionSlug={params.question}
+                otherUsersAmount={answersAmount}
+                user={{
+                  name: item.user.name,
+                  slug: item.user.slug,
+                  services: item.user.services,
+                  pfp: item.user.pfp,
+                }}
+              />
+            );
+          })}
+
+          {/* <AnswersList
             answers={answersList}
             questionSlug={questionSlug}
             interviewSlug={interviewSlug}
-          />
+          /> */}
         </div>
         <div>
           <SidebarQuestionPage

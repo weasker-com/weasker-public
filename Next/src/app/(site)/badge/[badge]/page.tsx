@@ -143,8 +143,8 @@ export default async function Badge({ params }: Props) {
 
   const badge = data.data.Badges.docs[0];
   const users = data.data.BadgeUsers.docs;
-  const questions = data.data.BadgeQuestions.docs[0].questions;
-  const interviewSlug = data.data.BadgeQuestions.docs[0].seo.slug;
+  const questions = data.data.BadgeQuestions.docs[0]?.questions;
+  const interviewSlug = data.data.BadgeQuestions.docs[0]?.seo.slug;
   const singularName = badge.singularName;
   const pluralName = badge.pluralName;
   const excerpt = badge.seo.excerpt;
@@ -160,7 +160,7 @@ export default async function Badge({ params }: Props) {
           featuredImageSrc={badgeImage || defaultImages.defaultUserImage}
           featuredImageAlt={badgeImageAlt || `weasker badge: ${singularName}`}
         />
-        {users && (
+        {users.length > 0 && (
           <>
             <div className="flex flex-col gap-5 sm:w-[70%] sm:mx-auto">
               <h2 className="capitalize">{pluralName}</h2>
@@ -239,7 +239,7 @@ export default async function Badge({ params }: Props) {
           </>
         )}
         <div className="flex flex-col gap-5 sm:w-[70%] sm:mx-auto">
-          {questions && (
+          {(questions && questions.length) > 0 && (
             <>
               <h2 className="capitalize">we asked</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

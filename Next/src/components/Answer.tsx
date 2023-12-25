@@ -211,7 +211,7 @@ const Answer: React.FC<AnswerProps> = ({
                 />
               </>
             )}
-            {location !== "question" && (
+            {location !== "question" && otherUsersAmount > 0 && (
               <>
                 <div className="mx-2 text-weasker-grey">•</div>
                 <InternalLink
