@@ -1,40 +1,50 @@
 import { fetchData } from "@/utils/payloadFetch";
 import Answer from "@/components/Answer";
-import Image from "next/image";
+import { homePageRes } from "../../../types/Responses";
+import SidebarBox from "../../components/SidebarBox";
 import { defaultImages } from "@/utils/defaultImages";
-import { InternalLink } from "@/components/links/InternalLink";
-import { homePageRes } from "../../../types/PageRes";
+import Hero from "@/components/Hero";
+import SubMenu from "@/components/SubMenu";
+import { IoIosTrendingUp } from "react-icons/io";
+import { TbUsers } from "react-icons/tb";
+import { MdOutlineFormatListBulleted } from "react-icons/md";
+import { PiShareFatThin } from "react-icons/pi";
+import SocialShareButtons from "@/components/SocialShareButtons";
 
 async function getData() {
   const query = `{
         Interviews {
           docs {
+            name
             seo {
               slug
+              excerpt
+              image{url filename}
             }
             badge {
               singularName
               pluralName
               seo {
                 slug
-                image{url}
+                image{url filename}
               }
             }
             questions {
               question {
                 shortQuestion
+                mediumQuestion
                 seo {
                   slug
                 }
                 answers {
                   user {
-                    seo{image{url}}
+                    seo{image{url filename}}
                     userName
                     seo {
                       slug
                     }
                   }
-                  answer{richText_html video{url} images{image {url}}}
+                  answer{richText_html video{url filename} images{image {url filename}}}
                 }
               }
             }
@@ -44,13 +54,13 @@ async function getData() {
           docs {
             pluralName
             singularName
-            seo{slug image{url}}
+            seo{slug image{url filename}}
           }
         }
         Users(where: { roles: { equals: endUser } }){
           docs{
             userName
-            seo{slug image{url}}
+            seo{slug image{url filename}}
           }
         }
       }
@@ -82,17 +92,20 @@ export default async function Home() {
         slug: string;
         image: {
           url: string;
-        };
+          filename: string;
+        } | null;
       };
     };
     answer: {
       richText_html: string;
       video: {
         url: string;
-      };
+        filename: string;
+      } | null;
       images: {
         image: {
           url: string;
+          filename: string;
         };
       }[];
     };
@@ -106,7 +119,7 @@ export default async function Home() {
         singularName: string;
         seo: {
           slug: string;
-          image: { url: string } | null;
+          image: { url: string; filename: string } | null;
         };
       };
       questions: {
@@ -120,13 +133,13 @@ export default async function Home() {
               userName: string;
               seo: {
                 slug: string;
-                image: { url: string };
+                image: { url: string; filename: string } | null;
               };
             };
             answer: {
               richText_html: string;
-              video: { url: string };
-              images: { image: { url: string } }[];
+              video: { url: string; filename: string } | null;
+              images: { image: { url: string; filename: string } }[];
             };
           }[];
         };
@@ -137,23 +150,27 @@ export default async function Home() {
         slug: string;
       };
       shortQuestion: string;
+      mediumQuestion: string;
       answers: {
         user: {
           userName: string;
           seo: {
             slug: string;
             image: {
+              filename: string;
               url: string;
-            };
+            } | null;
           };
         };
         answer: {
           richText_html: string;
           video: {
+            filename: string;
             url: string;
-          };
+          } | null;
           images: {
             image: {
+              filename: string;
               url: string;
             };
           }[];
@@ -193,124 +210,154 @@ export default async function Home() {
       badgePluralName: item.interview.badge.pluralName,
       badgeSlug: item.interview.badge.seo.slug,
       badgeImage: item.interview.badge.seo.image?.url || null,
-      questionText: item.question.shortQuestion,
+      questionText: item.question.mediumQuestion,
       questionSlug: item.question.seo.slug,
       text: item.answer.richText_html,
       images: item.answer.images,
+      video: item.answer.video,
       otherUsersAmount: item.question.answers.length - 1,
-      user: {
-        name: item.user.userName,
-        slug: item.user.seo.slug,
-        services: null,
-        pfp: item.user.seo.image.url,
-      },
+      userName: item.user.userName,
+      userSlug: item.user.seo.slug,
+      services: null,
+      pfp: item.user.seo.image,
     };
   });
 
+  const subMenuArray = [
+    {
+      name: (
+        <>
+          <MdOutlineFormatListBulleted /> &nbsp;Questions
+        </>
+      ),
+      slug: "questions",
+      tab: (
+        <div className="flex flex-col lg:flex-row lg:w-[1000px] mx-auto gap-3 space-between mt-2">
+          <div className="flex flex-col lg:w-[70%] h-min">
+            <div>
+              {structuredAnswers.map((item, index) => {
+                return (
+                  <Answer
+                    index={index}
+                    interviewSlug={item.interviewSlug}
+                    badgeSingularName={item.badgeSingularName}
+                    badgePluralName={item.badgePluralName}
+                    badgeSlug={item.badgeSlug}
+                    badgeImage={item.badgeImage}
+                    location={"hp"}
+                    questionText={item.questionText}
+                    answerText={item.text}
+                    images={item.images}
+                    video={item.video}
+                    questionSlug={item.questionSlug}
+                    otherUsersAmount={item.otherUsersAmount}
+                    userName={item.userName}
+                    userSlug={item.userSlug}
+                    services={item.services}
+                    pfp={item.pfp?.filename || null}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className="lg:block hidden flex flex-col gap-5 w-[30%] text-sm">
+            <SidebarBox
+              title={"Trending Badges"}
+              array={data.data.Badges.docs.map((item) => {
+                return {
+                  name: item.pluralName,
+                  url: `/badge/${item.seo.slug}`,
+                  image: item.seo.image?.url || defaultImages.defaultBadgeImage,
+                  eventName: "ClickBadgeName",
+                };
+              })}
+              itemsAmount={8}
+            />
+            <SidebarBox
+              title={"New users"}
+              array={data.data.Users.docs.map((item) => {
+                return {
+                  name: item.userName,
+                  url: `/user/${item.seo.slug}`,
+                  image: item.seo.image?.url || defaultImages.defaultUserImage,
+                  alt: item.userName,
+                  eventName: "ClickUserName",
+                  eventTarget: item.userName,
+                };
+              })}
+              itemsAmount={8}
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      name: (
+        <>
+          <IoIosTrendingUp /> &nbsp;Badges
+        </>
+      ),
+      slug: "badges",
+      modal: (
+        <SidebarBox
+          title={"Trending Badges"}
+          array={data.data.Badges.docs.map((item) => {
+            return {
+              name: item.pluralName,
+              url: `/badge/${item.seo.slug}`,
+              image: item.seo.image?.url || defaultImages.defaultBadgeImage,
+              eventName: "ClickBadgeName",
+            };
+          })}
+          itemsAmount={8}
+        />
+      ),
+    },
+    {
+      name: (
+        <>
+          <TbUsers /> &nbsp;Users
+        </>
+      ),
+      slug: "users",
+      modal: (
+        <SidebarBox
+          title={"New users"}
+          array={data.data.Users.docs.map((item) => {
+            return {
+              name: item.userName,
+              url: `/user/${item.seo.slug}`,
+              image: item.seo.image?.url || defaultImages.defaultUserImage,
+              alt: item.userName,
+              eventName: "ClickUserName",
+              eventTarget: item.userName,
+            };
+          })}
+          itemsAmount={8}
+        />
+      ),
+    },
+    {
+      name: (
+        <>
+          <PiShareFatThin /> Share
+        </>
+      ),
+      slug: "share",
+      modal: <SidebarBox title={"Share"} element={<SocialShareButtons />} />,
+    },
+  ];
+
   return (
-    <div className="flex flex-col md:flex-row md:w-[90%] mx-auto gap-5">
-      <div className="flex flex-col md:w-[70%] h-min md:border-r">
-        <div className="text-[#195851]/90 text-xl font-light px-auto py-2 mt-10 mb-5 sm:mx-5 text-center border rounded border-[#195851]/90 border-1">
-          <h1>Latest Answers</h1>
-        </div>
-        <div className="md:px-5">
-          <div>
-            {structuredAnswers.map((item) => {
-              return (
-                <Answer
-                  interviewSlug={item.interviewSlug}
-                  badgeSingularName={item.badgeSingularName}
-                  badgePluralName={item.badgePluralName}
-                  badgeSlug={item.badgeSlug}
-                  badgeImage={item.badgeImage}
-                  location={"hp"}
-                  questionText={item.questionText}
-                  text={item.text}
-                  images={item.images}
-                  questionSlug={item.questionSlug}
-                  otherUsersAmount={item.otherUsersAmount}
-                  user={{
-                    name: item.user.name,
-                    slug: item.user.slug,
-                    services: item.user.services,
-                    pfp: item.user.pfp,
-                  }}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col w-[30%] text-sm hidden sm:block">
-        <div className="bg-[#D9D9D9]/25 rounded-t mt-10 shadow-md">
-          <div className="border-b w-full p-3">Trending Badges</div>
-          <div className="flex flex-col gap-5 p-3">
-            {data.data.Badges.docs.slice(0, 8).map((badge) => {
-              return (
-                <InternalLink
-                  element={
-                    <div className="flex flex-row gap-2 items-center text-sm text-tl-dark-blue">
-                      <Image
-                        width={34}
-                        height={34}
-                        src={
-                          badge.seo.image.url || defaultImages.defaultBadgeImage
-                        }
-                        alt={badge.pluralName}
-                        className="rounded-full"
-                        style={{
-                          objectFit: "cover",
-                          width: "34px",
-                          height: "34px",
-                        }}
-                      />
-                      {badge.pluralName}
-                    </div>
-                  }
-                  href={`/badge/${badge.seo.slug}`}
-                  eventName={"ClickBadgeName"}
-                  target={badge.pluralName}
-                  locationOnPage={"side-bar"}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div className="bg-[#D9D9D9]/25 rounded-t mt-10 shadow-md">
-          <div className="border-b w-full p-3">New users</div>
-          <div className="flex flex-col gap-5 p-3">
-            {data.data.Users.docs.slice(0, 8).map((user) => {
-              return (
-                <InternalLink
-                  element={
-                    <div className="flex flex-row gap-2 items-center text-tl-dark-blue">
-                      <Image
-                        width={34}
-                        height={34}
-                        src={
-                          user.seo.image.url || defaultImages.defaultUserImage
-                        }
-                        alt={user.userName}
-                        className="rounded-full"
-                        style={{
-                          objectFit: "cover",
-                          width: "34px",
-                          height: "34px",
-                        }}
-                      />
-                      {user.userName}
-                    </div>
-                  }
-                  href={`/user/${user.seo.slug}`}
-                  eventName={"ClickBadgeName"}
-                  target={user.userName}
-                  locationOnPage={"side-bar"}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <Hero
+        location={"hp"}
+        title={"Interviewing experts"}
+        preTitle={"weasker.com"}
+        image={defaultImages.weaskerLogo}
+        alt={"weasker.com home page"}
+      />
+      <SubMenu location={"hp"} menu={subMenuArray} />
+    </>
   );
 }

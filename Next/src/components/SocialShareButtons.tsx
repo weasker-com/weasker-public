@@ -43,9 +43,8 @@ const SocialShareButtons = () => {
   };
 
   return (
-    <div className="flex flex-row sm:flex-col gap-5">
-      <div className="text-lg font-semibold">Share</div>
-      <div className="flex flex-row gap-1">
+    <div className="flex flex-row sm:flex-col gap-2">
+      <div className="flex flex-row gap-3">
         <TwitterShareButton
           url={`https://www.weasker.com${pathname}`}
           title={ogTitle}

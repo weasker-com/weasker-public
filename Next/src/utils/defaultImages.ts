@@ -1,11 +1,8 @@
 export const defaultImages = {
-  defaultOgImage: "http://localhost:4000/media/weasker-default-og.png",
-  defaultUserImage:
-    "http://localhost:4000/media/weasker-default-logo-image.png",
-  defaultQuestionImage:
-    "http://localhost:4000/media/weasker-default-logo-image.png",
-  defaultBadgeImage:
-    "http://localhost:4000/media/weasker-default-logo-image.png",
-  defaultInterviewImage:
-    "http://localhost:4000/media/weasker-default-logo-image.png",
+  defaultOgImage: "weasker-logo-badger_hwf4ke.png",
+  defaultUserImage: "weasker-logo-badger_hwf4ke.png",
+  defaultQuestionImage: "weasker-logo-badger_hwf4ke.png",
+  defaultBadgeImage: "weasker-logo-badger_hwf4ke.png",
+  defaultInterviewImage: "weasker-logo-badger_hwf4ke.png",
+  weaskerLogo: "weasker-logo-badger_hwf4ke.png",
 };

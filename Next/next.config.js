@@ -7,9 +7,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.sanity.io",
+        hostname: "res.cloudinary.com",
         port: "",
       },
+
       {
         protocol: "http",
         hostname: "localhost",

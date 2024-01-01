@@ -1,10 +1,10 @@
-import HeroHP from "@/components/Hero-hp";
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
-import { pageRes, pageSeoRes } from "../../../../types/PageRes";
+import { pageRes, pageSeoRes } from "../../../../types/Responses";
 import parse from "html-react-parser";
 import { defaultImages } from "../../../utils/defaultImages";
+import Hero from "@/components/Hero";
 
 type Props = {
   params: { page: string };
@@ -105,8 +105,14 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
-      <HeroHP h1a="" h1b={title} excerpt={excerpt} />
-      <text className="md:max-w-[60%] mx-auto">
+      <Hero
+        title={title}
+        preTitle={"weasker.com"}
+        image={defaultImages.weaskerLogo}
+        location={"page"}
+      />
+      <text className="max-w-[90%] sm:max-w-[60%] mx-auto flex flex-col gap-5 mt-5">
+        {excerpt && parse(excerpt)}
         {content && parse(content)}
       </text>
     </>

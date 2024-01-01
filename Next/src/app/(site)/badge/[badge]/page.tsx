@@ -1,12 +1,21 @@
-import HeroBadge from "@/components/Hero-badge";
-import Image from "next/image";
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
-import { InternalLink } from "@/components/links/InternalLink";
-import ExternalLink from "@/components/links/ExternalLink";
 import { fetchData } from "@/utils/payloadFetch";
-import { badgePageRes, badgeSeoRes } from "../../../../../types/PageRes";
+import { badgePageRes, badgeSeoRes } from "../../../../../types/Responses";
 import { defaultImages } from "@/utils/defaultImages";
+import Hero from "@/components/Hero";
+import { MdOutlineFormatListBulleted } from "react-icons/md";
+import SidebarBox from "@/components/SidebarBox";
+import { PiUsersThreeLight } from "react-icons/pi";
+import SubMenu from "@/components/SubMenu";
+import ListItem from "@/components/ListItem";
+import { InternalLink } from "@/components/links/InternalLink";
+import { LiaUserCheckSolid } from "react-icons/lia";
+import ExternalLink from "@/components/links/ExternalLink";
+import { HiOutlineExternalLink } from "react-icons/hi";
+import SocialShareButtons from "@/components/SocialShareButtons";
+import { PiShareFatThin } from "react-icons/pi";
+import { TbMessages } from "react-icons/tb";
 
 type Props = {
   params: { badge: string };
@@ -88,7 +97,7 @@ async function getData(badgeParam: string) {
           excerpt
           image {
             url
-            alt
+            filename
           }
         }
       }
@@ -97,6 +106,7 @@ async function getData(badgeParam: string) {
       docs {
         userName
         userBadges{
+          bio
           services{name url}
           badge{seo{slug}}
         }
@@ -104,7 +114,7 @@ async function getData(badgeParam: string) {
           slug
           image {
             url
-            alt
+            filename
           }
         }
       }
@@ -115,9 +125,12 @@ async function getData(badgeParam: string) {
         seo{slug}
         questions{
           question{
+            answers{user{userName}}
             shortQuestion
+            mediumQuestion
+            longQuestion
             index
-            seo{slug image{url}}
+            seo{slug image{url filename}}
           }
         }
       }
@@ -148,143 +161,177 @@ export default async function Badge({ params }: Props) {
   const singularName = badge.singularName;
   const pluralName = badge.pluralName;
   const excerpt = badge.seo.excerpt;
-  const badgeImage = badge.seo.image?.url;
-  const badgeImageAlt = badge.seo.image?.alt;
+  const badgeImage = badge.seo.image?.url || null;
+
+  const subMenuArray = [
+    {
+      name: (
+        <>
+          <MdOutlineFormatListBulleted /> Questions
+        </>
+      ),
+      slug: "questions",
+      tab: (
+        <>
+          <div className="lg:w-[70%] flex flex-col">
+            {questions.map((question) => {
+              return (
+                <ListItem
+                  location={"badge"}
+                  name={question.question.shortQuestion}
+                  preTitle={"Question"}
+                  slugs={`/question/${params.badge}/${interviewSlug}/${question.question.seo.slug}`}
+                  image={
+                    question.question.seo.image?.filename ||
+                    defaultImages.defaultQuestionImage
+                  }
+                  excerpt={question.question.longQuestion}
+                  links={[
+                    <InternalLink
+                      element={
+                        <div className="flex flex-row gap-1 items-center">
+                          <TbMessages />
+                          <>{`${question.question.answers.length} answers`}</>
+                        </div>
+                      }
+                      style={"blue"}
+                      href={`/question/${params.badge}/${interviewSlug}/${question.question.seo.slug}`}
+                      eventName={"ClickUserName"}
+                      target={question.question.shortQuestion}
+                      locationOnPage={"list item"}
+                    />,
+                  ]}
+                />
+              );
+            })}
+          </div>
+          <div className="lg:block hidden w-[30%] text-sm">
+            <SidebarBox
+              title={"Badge terms"}
+              element={<>{badge.seo.excerpt}</>}
+            />
+            <SidebarBox
+              title={`Top ${pluralName}`}
+              array={users.map((item) => {
+                return {
+                  name: item.userName,
+                  url: `/user/${item.seo.slug}`,
+                  image:
+                    item.seo.image?.filename || defaultImages.defaultUserImage,
+                  eventName: "ClickUserName",
+                };
+              })}
+              itemsAmount={8}
+            />
+          </div>
+        </>
+      ),
+    },
+    {
+      name: (
+        <>
+          <PiUsersThreeLight /> Users
+        </>
+      ),
+
+      slug: "users",
+      tab: (
+        <>
+          <div className="lg:w-[70%] flex flex-col">
+            {users.map((item) => {
+              const relevantBadge = item.userBadges.filter(
+                (item) => item.badge.seo.slug == params.badge
+              )[0];
+              return (
+                <ListItem
+                  location={"badge"}
+                  name={item.userName}
+                  preTitle={"User"}
+                  slugs={`/user/${item.seo.slug}`}
+                  image={
+                    item.seo.image?.filename || defaultImages.defaultUserImage
+                  }
+                  excerpt={relevantBadge.bio}
+                  links={[
+                    <InternalLink
+                      element={
+                        <div className="flex flex-row gap-1 items-center">
+                          <LiaUserCheckSolid /> <>Badger page</>
+                        </div>
+                      }
+                      style={"blue"}
+                      href={`/user/${item.seo.slug}`}
+                      eventName={"ClickUserName"}
+                      target={item.userName}
+                      locationOnPage={"list item"}
+                    />,
+                  ].concat(
+                    relevantBadge.services.map((item) => {
+                      return (
+                        <ExternalLink
+                          element={
+                            <div className="flex flex-row gap-1 items-center">
+                              <HiOutlineExternalLink /> <>{item.name}</>
+                            </div>
+                          }
+                          style={"blue"}
+                          href={item.url}
+                          eventName={"ClickUserService"}
+                          target={item.name}
+                          locationOnPage={"list item"}
+                        />
+                      );
+                    })
+                  )}
+                />
+              );
+            })}
+          </div>
+          <div className="lg:block hidden w-[30%] text-sm">
+            <SidebarBox
+              title={"Badge terms"}
+              element={<>{badge.seo.excerpt}</>}
+            />
+            <SidebarBox
+              title={`Questions for ${badge.pluralName}`}
+              array={questions.map((item) => {
+                return {
+                  name: item.question.shortQuestion,
+                  url: `/question/${params.badge}/${interviewSlug}/${item.question.seo.slug}`,
+                  image:
+                    item.question.seo.image?.filename ||
+                    defaultImages.defaultUserImage,
+                  eventName: "ClickUserName",
+                };
+              })}
+              itemsAmount={8}
+            />
+          </div>
+        </>
+      ),
+    },
+    {
+      name: (
+        <>
+          <PiShareFatThin /> Share
+        </>
+      ),
+      slug: "share",
+
+      modal: <SidebarBox title={"Share"} element={<SocialShareButtons />} />,
+    },
+  ];
 
   return (
     <>
-      <div className="flex flex-col gap-5 sm:gap-10 w-full">
-        <HeroBadge
-          h1={singularName}
-          excerpt={excerpt || `This badge is awarded to ${pluralName}`}
-          featuredImageSrc={badgeImage || defaultImages.defaultUserImage}
-          featuredImageAlt={badgeImageAlt || `weasker badge: ${singularName}`}
+      <div className="flex flex-col w-full">
+        <Hero
+          title={singularName}
+          preTitle={"Badge"}
+          image={badgeImage}
+          location={"badge"}
         />
-        {users.length > 0 && (
-          <>
-            <div className="flex flex-col gap-5 sm:w-[70%] sm:mx-auto">
-              <h2 className="capitalize">{pluralName}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {users.map((item, index) => {
-                  const userImage = item.seo.image?.url;
-                  const userName = item.userName;
-                  const slug = item.seo.slug;
-
-                  const userBadgeServices = item.userBadges.filter(
-                    (item) => item.badge.seo.slug == params.badge
-                  );
-
-                  const relevantService = userBadgeServices[0].services[0];
-                  const serviceName = relevantService.name;
-                  const serviceUrl = relevantService.url;
-
-                  return (
-                    <div
-                      key={index}
-                      className="flex flex-row gap-3 sm:gap-5 items-center"
-                    >
-                      <InternalLink
-                        element={
-                          <div className="w-[65px]">
-                            <Image
-                              width={65}
-                              height={65}
-                              src={userImage || defaultImages.defaultUserImage}
-                              alt={`${userName}, ${singularName}`}
-                              className="rounded-full"
-                              style={{
-                                objectFit: "cover",
-                                width: "65px",
-                                height: "65px",
-                              }}
-                            />
-                          </div>
-                        }
-                        target={userName}
-                        href={`/user/${slug}`}
-                        eventName="ClickUserImage"
-                        locationOnPage="experts list"
-                      />
-                      <div className="flex flex-col">
-                        <InternalLink
-                          element={userName}
-                          target={slug}
-                          href={`/user/${slug}`}
-                          className="text-base sm:text-xl font-semibold text-tl-dark-blue"
-                          eventName="ClickUserName"
-                          locationOnPage="main"
-                        />
-                        <ExternalLink
-                          element={
-                            <>
-                              <div>{singularName}</div>
-                              &nbsp;at&nbsp;
-                              <span className="text-tl-light-blue">
-                                {serviceName}
-                              </span>
-                            </>
-                          }
-                          target={serviceName}
-                          href={serviceUrl}
-                          className="flex flex-row text-tl-dark-blue"
-                          eventName="ClickUserService"
-                          locationOnPage="main"
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </>
-        )}
-        <div className="flex flex-col gap-5 sm:w-[70%] sm:mx-auto">
-          {(questions && questions.length) > 0 && (
-            <>
-              <h2 className="capitalize">we asked</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {questions.map((item, index) => {
-                  const question = item.question;
-                  const image = question.seo.image?.url;
-                  const slug = question.seo.slug;
-                  const questionText = question.shortQuestion;
-
-                  return (
-                    <InternalLink
-                      element={
-                        <>
-                          <Image
-                            width={65}
-                            height={65}
-                            src={image || defaultImages.defaultQuestionImage}
-                            alt={questionText}
-                            className="rounded-full"
-                            style={{
-                              objectFit: "cover",
-                              width: "65px",
-                              height: "65px",
-                            }}
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-tl-dark-blue text-xs font-light">
-                              {pluralName}
-                            </span>
-                            <p>{questionText}</p>
-                          </div>
-                        </>
-                      }
-                      href={`/question/${params.badge}/${interviewSlug}/${slug}`}
-                      className="flex flex-row gap-3 sm:gap-5 items-center"
-                      eventName="ClickQuestionPage"
-                      target={questionText}
-                      locationOnPage="main"
-                    />
-                  );
-                })}
-              </div>{" "}
-            </>
-          )}
-        </div>
+        <SubMenu menu={subMenuArray} location={"badge"} />
       </div>
     </>
   );

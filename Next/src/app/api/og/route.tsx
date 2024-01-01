@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/server";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 
 export const runtime = "edge";
 

@@ -8,10 +8,12 @@ interface ExternalLinkProps {
   className?: string;
   eventName: "ClickUserService" | "ClickImage";
   target: string;
+  style?: "blue" | "inherit";
   locationOnPage: string;
 }
 
 const ExternalLink: React.FC<ExternalLinkProps> = ({
+  style,
   element,
   target,
   href,
@@ -24,7 +26,12 @@ const ExternalLink: React.FC<ExternalLinkProps> = ({
     <a
       target="_blank"
       rel="noopener noreferrer"
-      className={className}
+      className={`${className} ${
+        style == "blue" && "text-tl-light-blue hover:text-[#0d55a1]"
+      }  ${
+        style == "inherit" &&
+        "hover:underline underline-offset-4 decoration-inherit decoration-2"
+      }`}
       href={href}
       onClick={() => {
         track(eventName, { target, location: pathname, locationOnPage });

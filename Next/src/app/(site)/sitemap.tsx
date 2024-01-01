@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { getSiteMapData } from "../../../sanity/sanity-utils";
 import { fetchData } from "@/utils/payloadFetch";
-import { siteMapRes } from "../../../types/PageRes";
+import { siteMapRes } from "../../../types/Responses";
 
 const WEBSITE_HOST_URL = process.env.SITE_URL || "https://www.weasker.com";
 

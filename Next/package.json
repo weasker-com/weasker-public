@@ -21,6 +21,7 @@
     "html-react-parser": "^5.0.7",
     "html-to-text": "^9.0.5",
     "next": "13.4.19",
+    "next-cloudinary": "^5.16.0",
     "next-sanity": "^5.4.6",
     "next-share": "^0.25.0",
     "postcss": "8.4.28",

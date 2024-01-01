@@ -9,7 +9,7 @@ export type pageRes = {
             title: string | null;
             description: string | null;
             excerpt: string | null;
-            image: string | null;
+            image: { url: string; filename: string } | null;
             keywords: string[] | [];
           };
         }
@@ -27,7 +27,7 @@ export type pageSeoRes = {
           seo: {
             title: string | null;
             description: string | null;
-            image: string | null;
+            image: { url: string; filename: string } | null;
             keywords: string[] | [];
           };
         }
@@ -46,7 +46,7 @@ export type badgeSeoRes = {
           seo: {
             title: string | null;
             description: string | null;
-            image: string | null;
+            image: { url: string; filename: string } | null;
             keywords: string[] | [];
           };
         }
@@ -70,7 +70,7 @@ export type badgePageRes = {
           excerpt: string | null;
           image: {
             url: string | null;
-            alt: string | null;
+            filename: string;
           } | null;
           keywords: string[] | [];
         };
@@ -80,6 +80,7 @@ export type badgePageRes = {
       docs: {
         userName: string;
         userBadges: {
+          bio: string;
           services: {
             name: string;
             url: string;
@@ -94,7 +95,7 @@ export type badgePageRes = {
           slug: string;
           image: {
             url: string | null;
-            alt: string | null;
+            filename: string;
           } | null;
         };
       }[];
@@ -107,14 +108,17 @@ export type badgePageRes = {
             questions:
               | {
                   question: {
+                    answers: { user: { userName: string } }[];
                     shortQuestion: string;
+                    mediumQuestion: string;
+                    longQuestion: string;
                     index: number;
                     seo: {
                       slug: string;
                       image: {
                         url: string | null;
-                        alt: string | null;
-                      };
+                        filename: string;
+                      } | null;
                     };
                   };
                 }[];
@@ -135,14 +139,15 @@ export type interviewSeoRes = {
             pluralName: string;
             seo: {
               image: {
-                url: string | null;
+                filename: string;
+                url: string;
               } | null;
             };
           };
           seo: {
             title: string | null;
             description: string | null;
-            image: string | null;
+            image: { url: string; filename: string } | null;
           };
         }
       ];
@@ -168,12 +173,13 @@ export type interviewPageRes = {
             pluralName: string;
             seo: {
               image: {
-                url: string | null;
+                url: string;
+                filename: string;
               } | null;
             };
           };
           seo: {
-            image: string | null;
+            image: { url: string; filename: string } | null;
           };
           questions: {
             question: {
@@ -181,23 +187,26 @@ export type interviewPageRes = {
               shortQuestion: string;
               mediumQuestion: string;
               longQuestion: string;
-              seo: { slug: string };
+              seo: {
+                slug: string;
+                image: { url: string; filename: string } | null;
+              };
               answers: {
                 user: {
                   userName: string;
                   seo: {
                     slug: string;
-                    image: { url: string };
+                    image: { url: string; filename: string };
                   };
                 };
                 answer: {
                   richText_html: string;
                   images:
                     | {
-                        image: { url: string };
+                        image: { url: string; filename: string };
                       }[]
                     | [];
-                  video: { url: string } | null;
+                  video: { url: string; filename: string } | null;
                 };
               }[];
             };
@@ -211,6 +220,7 @@ export type interviewPageRes = {
         seo: {
           slug: string;
           image: {
+            filename: string;
             url: string;
           } | null;
         };
@@ -245,12 +255,13 @@ export type questionSeoRes = {
             pluralName: string;
             seo: {
               image: {
+                filename: string;
                 url: string;
               } | null;
             };
           };
           seo: {
-            image: { url: string } | null;
+            image: { url: string; filename: string } | null;
           };
           questions: {
             question: {
@@ -260,7 +271,7 @@ export type questionSeoRes = {
               seo: {
                 title: string | null;
                 description: string | null;
-                image: { url: string } | null;
+                image: { url: string; filename: string } | null;
                 slug: string;
               };
             };
@@ -283,12 +294,14 @@ export type questionPageRes = {
             seo: {
               image: {
                 url: string;
+                filename: string;
               } | null;
             };
           };
           seo: {
             image: {
               url: string;
+              filename: string;
             } | null;
           };
           questions: {
@@ -300,6 +313,7 @@ export type questionPageRes = {
               seo: {
                 slug: string;
                 image: {
+                  filename: string;
                   url: string;
                 } | null;
               };
@@ -308,7 +322,7 @@ export type questionPageRes = {
                   userName: string;
                   seo: {
                     slug: string;
-                    image: { url: string };
+                    image: { url: string; filename: string };
                   };
                   userBadges: {
                     badge: { seo: { slug: string } };
@@ -319,10 +333,10 @@ export type questionPageRes = {
                   richText_html: string;
                   images:
                     | {
-                        image: { url: string };
+                        image: { url: string; filename: string };
                       }[]
                     | [];
-                  video: { url: string } | null;
+                  video: { url: string; filename: string } | null;
                 };
               }[];
             };
@@ -344,6 +358,7 @@ export type userSeoRes = {
           excerpt: string | null;
           image: {
             url: string;
+            filename: string;
           } | null;
         };
         userBadges: {
@@ -358,6 +373,7 @@ export type userSeoRes = {
             seo: {
               slug: string;
               image: {
+                filename: string;
                 url: string;
               } | null;
             };
@@ -378,6 +394,7 @@ export type userPageRes = {
           description: string | null;
           excerpt: string | null;
           image: {
+            filename: string;
             url: string;
           } | null;
         };
@@ -392,7 +409,9 @@ export type userPageRes = {
             singularName: string;
             seo: {
               slug: string;
+              excerpt: string;
               image: {
+                filename: string;
                 url: string;
               } | null;
             };
@@ -405,15 +424,20 @@ export type userPageRes = {
         name: string;
         seo: {
           slug: string;
+          excerpt: string | null;
           image: {
+            filename: string;
             url: string;
           } | null;
         };
         badge: {
+          pluralName: string;
+          singularName: string;
           seo: {
             slug: string;
           };
         };
+        questions: { question: { shortQuestion: string } }[];
       }[];
     };
   };
@@ -479,15 +503,18 @@ export type homePageRes = {
   data: {
     Interviews: {
       docs: {
+        name: string;
         seo: {
           slug: string;
+          excerpt: string;
+          image: { url: string; filename: string }[];
         };
         badge: {
           singularName: string;
           pluralName: string;
           seo: {
             slug: string;
-            image: { url: string } | null;
+            image: { url: string; filename: string } | null;
           };
         };
         questions: {
@@ -496,18 +523,19 @@ export type homePageRes = {
               slug: string;
             };
             shortQuestion: string;
+            mediumQuestion: string;
             answers: {
               user: {
                 userName: string;
                 seo: {
                   slug: string;
-                  image: { url: string };
+                  image: { url: string; filename: string } | null;
                 };
               };
               answer: {
                 richText_html: string;
-                video: { url: string };
-                images: { image: { url: string } }[];
+                video: { url: string; filename: string } | null;
+                images: { image: { url: string; filename: string } }[];
               };
             }[];
           };
@@ -518,13 +546,13 @@ export type homePageRes = {
       docs: {
         pluralName: string;
         singularName: string;
-        seo: { slug: string; image: { url: string } };
+        seo: { slug: string; image: { url: string; filename: string } | null };
       }[];
     };
     Users: {
       docs: {
         userName: string;
-        seo: { slug: string; image: { url: string } };
+        seo: { slug: string; image: { url: string; filename: string } | null };
       }[];
     };
   };

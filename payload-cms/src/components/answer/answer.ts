@@ -5,6 +5,8 @@ import {
   lexicalHTML,
 } from "@payloadcms/richtext-lexical";
 
+let changeHappened = false;
+
 export const answer: Field = {
   name: "answer",
   label: "Answer",
@@ -15,6 +17,7 @@ export const answer: Field = {
       label: "Text answer",
       type: "richText",
       required: false,
+
       editor: lexicalEditor({
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
@@ -46,6 +49,27 @@ export const answer: Field = {
       type: "upload",
       relationTo: "media",
       required: false,
+    },
+    {
+      name: "updatedAt",
+      label: "Updated at",
+      type: "date",
+      admin: {
+        readOnly: true,
+        date: {
+          displayFormat: "PPpp",
+        },
+      },
+      hooks: {
+        afterChange: [
+          ({ value, collection }) => {
+            if (changeHappened == true) {
+              value = new Date();
+            }
+            return value;
+          },
+        ],
+      },
     },
   ],
 };

@@ -7,6 +7,7 @@ interface InternalLinkProps {
   element: string | React.ReactElement;
   href: string;
   className?: string;
+  style?: "blue" | "inherit";
   eventName:
     | "ClickUserName"
     | "ClickUserImage"
@@ -16,7 +17,8 @@ interface InternalLinkProps {
     | "ClickReadMoreAnswers"
     | "ClickTOC"
     | "ClickQuestionPage"
-    | "ClickInnerPage";
+    | "ClickInnerPage"
+    | "ClickSubMenu";
   target: string;
   locationOnPage: string;
 }
@@ -26,13 +28,19 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
   className,
   href,
   eventName,
+  style,
   target,
   locationOnPage,
 }) => {
   const pathname = usePathname();
   return (
     <Link
-      className={className}
+      className={`${className} ${
+        style == "blue" && "text-tl-light-blue hover:text-[#0d55a1]"
+      }  ${
+        style == "inherit" &&
+        "hover:underline underline-offset-4 decoration-inherit decoration-2"
+      }`}
       href={href}
       onClick={() => {
         track(eventName, {

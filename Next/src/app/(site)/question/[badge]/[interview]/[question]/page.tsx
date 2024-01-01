@@ -1,6 +1,3 @@
-import Hero from "@/components/Hero";
-import AnswersList from "@/components/AnswersList";
-import SidebarQuestionPage from "@/components/Sidebar-questionPage";
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { QAPage, WithContext } from "schema-dts";
@@ -8,10 +5,18 @@ import { InternalLink } from "@/components/links/InternalLink";
 import {
   questionPageRes,
   questionSeoRes,
-} from "../../../../../../../types/PageRes";
+} from "../../../../../../../types/Responses";
 import { fetchData } from "@/utils/payloadFetch";
 import { defaultImages } from "@/utils/defaultImages";
 import Answer from "@/components/Answer";
+import SidebarBox from "@/components/SidebarBox";
+import Hero from "@/components/Hero";
+import SocialShareButtons from "@/components/SocialShareButtons";
+import { MdOutlineFormatListBulleted } from "react-icons/md";
+import { PiShareFatThin } from "react-icons/pi";
+import { BsFileText } from "react-icons/bs";
+import { MdOutlineAdd } from "react-icons/md";
+import SubMenu from "@/components/SubMenu";
 const { convert } = require("html-to-text");
 
 type Props = {
@@ -130,6 +135,7 @@ async function getData(badgeParam: string, interviewParam: string) {
             pluralName
             seo {
               image {
+                filename
                 url
               }
             }
@@ -137,6 +143,7 @@ async function getData(badgeParam: string, interviewParam: string) {
           seo {
             slug
             image {
+              filename
               url
             }
           }
@@ -148,14 +155,14 @@ async function getData(badgeParam: string, interviewParam: string) {
               longQuestion
               seo {
                 slug
-                image{url}
+                image{url filename}
               }
               answers {
                 user {
                   userName
                   seo {
                     slug
-                    image{url}
+                    image{url filename}
                   }
                   userBadges{badge{seo{slug}}  services{name url}}
                 }
@@ -163,10 +170,12 @@ async function getData(badgeParam: string, interviewParam: string) {
                   richText_html
                   images {
                     image {
+                      filename
                       url
                     }
                   }
                   video {
+                    filename
                     url
                   }
                 }
@@ -207,18 +216,22 @@ export default async function Question({ params }: Props) {
     (item) => item.question.seo.slug == params.question
   )[0].question;
 
+  const otherQuestions = interview.questions.filter(
+    (item) => item.question.seo.slug !== params.question
+  );
+
   const answersAmount = relevantQuestion.answers.length;
   const interviewSlug = params.interview;
   const badgeSlug = params.badge;
-  const badgePLuralName = interview.badge.pluralName;
+  const badgePluralName = interview.badge.pluralName;
   const badgeSingularName = interview.badge.singularName;
   const badgeImage = interview.badge.seo.image?.url || null;
-  const interviewImage = interview.seo.image?.url;
+  const interviewImage = interview.seo.image?.filename || null;
   const questionIndex = relevantQuestion.index;
+  const questionImage = relevantQuestion.seo.image?.filename || null;
   const shortQuestion = relevantQuestion.shortQuestion;
   const mediumQuestion = relevantQuestion.mediumQuestion;
   const longQuestion = relevantQuestion.longQuestion;
-  const questionSlug = params.question;
 
   const answersList = relevantQuestion.answers.map((item) => {
     const userName = item.user.userName;
@@ -227,10 +240,10 @@ export default async function Question({ params }: Props) {
       (item) => item.badge.seo.slug == params.badge
     )[0];
     const userServices = userBadge.services;
-    const userPfp = item.user.seo.image.url;
+    const userPfp = item.user.seo.image.filename;
     const answerText = item.answer.richText_html;
     const answerImages = item.answer.images;
-    const answerVideo = item.answer.video?.url;
+    const answerVideo = item.answer.video;
     return {
       user: {
         name: userName,
@@ -249,37 +262,73 @@ export default async function Question({ params }: Props) {
     };
   });
 
-  const otherUsers = relevantQuestion.answers.map((item) => {
-    const name = item.user.userName;
-    const slug = item.user.seo.slug;
-    const pfp = item.user.seo.image.url;
-    const userBadge = item.user.userBadges.filter(
-      (item) => item.badge.seo.slug == params.badge
-    )[0];
-    const services = userBadge.services;
-
-    return {
-      name,
-      slug,
-      pfp,
-      services,
-    };
-  });
-
-  const siblingQuestions = interview.questions.map((item) => {
-    const shortQuestion = item.question.shortQuestion;
-    const slug = item.question.seo.slug;
-    const image =
-      item.question.seo.image?.url || interviewImage || badgeImage || null;
-
-    return {
-      shortQuestion,
-      slug,
-      image,
-      badgeSlug,
-      interviewSlug,
-    };
-  });
+  const subMenuArray = [
+    {
+      name: (
+        <>
+          <MdOutlineFormatListBulleted /> Answers
+        </>
+      ),
+      slug: "answers",
+      modal: (
+        <SidebarBox
+          title={`Answers`}
+          array={answersList.map((item) => {
+            return {
+              name: item.user.name,
+              url: `#${item.user.slug}`,
+              image: item.user.pfp || defaultImages.defaultUserImage,
+              eventName: "ClickUserName",
+            };
+          })}
+          itemsAmount={8}
+        />
+      ),
+    },
+    {
+      name: (
+        <>
+          <PiShareFatThin /> Share
+        </>
+      ),
+      slug: "share",
+      modal: <SidebarBox title={"Share"} element={<SocialShareButtons />} />,
+    },
+    {
+      name: (
+        <>
+          <BsFileText /> Excerpt
+        </>
+      ),
+      slug: "excerpt",
+      modal: <SidebarBox title={"Excerpt"} element={<>{longQuestion}</>} />,
+    },
+    {
+      name: (
+        <>
+          <MdOutlineAdd /> More
+        </>
+      ),
+      slug: "more",
+      modal: (
+        <SidebarBox
+          title={`More questions`}
+          array={otherQuestions.map((item) => {
+            return {
+              name: item.question.shortQuestion,
+              url: `/question/${params.badge}/${params.interview}//${item.question.seo.slug}/`,
+              image:
+                item.question.seo.image?.url ||
+                interview.seo.image?.url ||
+                defaultImages.defaultQuestionImage,
+              eventName: "ClickQuestionPage",
+            };
+          })}
+          itemsAmount={8}
+        />
+      ),
+    },
+  ];
 
   const jsonLd: WithContext<QAPage> = {
     "@context": "https://schema.org",
@@ -306,62 +355,79 @@ export default async function Question({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero
-        services={badgePLuralName}
-        h1a={
-          <div className="flex flex-row items-center flex-wrap">
-            we asked&nbsp;{answersAmount}&nbsp;
+        title={mediumQuestion}
+        preTitle={
+          <>
+            Question for&nbsp;
             <InternalLink
-              element={answersAmount == 1 ? badgeSingularName : badgePLuralName}
-              className="flex flex-rox items-center"
+              element={badgePluralName}
+              style={"inherit"}
               href={`/badge/${badgeSlug}`}
-              eventName="ClickBadgeName"
-              target={badgePLuralName}
-              locationOnPage="hero"
+              eventName={"ClickBadgeName"}
+              target={badgePluralName}
+              locationOnPage={"subTitle"}
             />
-          </div>
+            &nbsp;
+          </>
         }
-        h1b={mediumQuestion}
-        excerpt={longQuestion}
-        featuredImageSrc={badgeImage || defaultImages.defaultQuestionImage}
-        featuredImageAlt={`${badgePLuralName} answer: ${shortQuestion}`}
-        featuredImageUrl={`/badge/${badgeSlug}`}
+        image={questionImage || interviewImage}
+        location={"interview"}
       />
-      <div className="flex flex-col sm:flex-row gap-5 sm:gap-20">
-        <div className="md:max-w-[70%] flex flex-col gap-10">
-          {answersList.map((item) => {
+      <SubMenu menu={subMenuArray} location={"question"} />
+      <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2">
+        <div className="lg:w-[70%] flex flex-col">
+          {answersList.map((item, index) => {
             return (
               <Answer
+                index={index}
                 interviewSlug={params.interview}
                 badgeSingularName={badgeSingularName}
-                badgePluralName={badgePLuralName}
+                badgePluralName={badgePluralName}
                 badgeSlug={badgeSlug}
                 badgeImage={badgeImage}
                 location={"question"}
                 questionText={shortQuestion}
-                text={item.answer.text}
+                answerText={item.answer.text}
                 images={item.answer.images}
+                video={item.answer.video}
                 questionSlug={params.question}
                 otherUsersAmount={answersAmount}
-                user={{
-                  name: item.user.name,
-                  slug: item.user.slug,
-                  services: item.user.services,
-                  pfp: item.user.pfp,
-                }}
+                userName={item.user.name}
+                userSlug={item.user.slug}
+                services={item.user.services}
+                pfp={item.user.pfp}
               />
             );
           })}
-
-          {/* <AnswersList
-            answers={answersList}
-            questionSlug={questionSlug}
-            interviewSlug={interviewSlug}
-          /> */}
         </div>
-        <div>
-          <SidebarQuestionPage
-            users={otherUsers}
-            otherQuestions={siblingQuestions}
+        <div className="lg:block hidden lg:w-[30%] text-sm">
+          <SidebarBox title={"Excerpt"} element={<>{longQuestion}</>} />
+          <SidebarBox
+            title={`Answers`}
+            array={answersList.map((item) => {
+              return {
+                name: item.user.name,
+                url: `#${item.user.slug}`,
+                image: item.user.pfp || defaultImages.defaultUserImage,
+                eventName: "ClickUserName",
+              };
+            })}
+            itemsAmount={8}
+          />
+          <SidebarBox
+            title={`Similar questions`}
+            array={otherQuestions.map((item) => {
+              return {
+                name: item.question.shortQuestion,
+                url: `/question/${params.badge}/${params.interview}//${item.question.seo.slug}/`,
+                image:
+                  item.question.seo.image?.url ||
+                  interview.seo.image?.url ||
+                  defaultImages.defaultQuestionImage,
+                eventName: "ClickQuestionPage",
+              };
+            })}
+            itemsAmount={8}
           />
         </div>
       </div>
