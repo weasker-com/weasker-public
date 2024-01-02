@@ -17,7 +17,9 @@ import { PiShareFatThin } from "react-icons/pi";
 import { BsFileText } from "react-icons/bs";
 import { MdOutlineAdd } from "react-icons/md";
 import SubMenu from "@/components/SubMenu";
+import ListItem from "@/components/ListItem";
 const { convert } = require("html-to-text");
+import { notFound } from "next/navigation";
 
 type Props = {
   params: { badge: string; interview: string; question: string };
@@ -77,6 +79,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const relevantQuestion = data.data.BadgeInterview.docs[0].questions.filter(
     (item) => item.question.seo.slug == params.question
   )[0];
+
+  if (!relevantQuestion) {
+    return {};
+  }
+
   const seoTitle = relevantQuestion.question.seo.title;
   const seoDescription = relevantQuestion.question.seo.description;
   const answersAmount = relevantQuestion.question.answers.length;
@@ -208,13 +215,17 @@ export default async function Question({ params }: Props) {
   const data = await getData(params.badge, params.interview);
 
   if (!data) {
-    return "no question";
+    notFound();
   }
 
   const interview = data.data.BadgeInterview.docs[0];
   const relevantQuestion = interview.questions.filter(
     (item) => item.question.seo.slug == params.question
-  )[0].question;
+  )[0]?.question;
+
+  if (!relevantQuestion) {
+    notFound();
+  }
 
   const otherQuestions = interview.questions.filter(
     (item) => item.question.seo.slug !== params.question
@@ -376,29 +387,36 @@ export default async function Question({ params }: Props) {
       <SubMenu menu={subMenuArray} location={"question"} />
       <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2">
         <div className="lg:w-[70%] flex flex-col">
-          {answersList.map((item, index) => {
-            return (
-              <Answer
-                index={index}
-                interviewSlug={params.interview}
-                badgeSingularName={badgeSingularName}
-                badgePluralName={badgePluralName}
-                badgeSlug={badgeSlug}
-                badgeImage={badgeImage}
-                location={"question"}
-                questionText={shortQuestion}
-                answerText={item.answer.text}
-                images={item.answer.images}
-                video={item.answer.video}
-                questionSlug={params.question}
-                otherUsersAmount={answersAmount}
-                userName={item.user.name}
-                userSlug={item.user.slug}
-                services={item.user.services}
-                pfp={item.user.pfp}
-              />
-            );
-          })}
+          {answersList.length > 0 ? (
+            answersList.map((item, index) => {
+              return (
+                <Answer
+                  index={index}
+                  interviewSlug={params.interview}
+                  badgeSingularName={badgeSingularName}
+                  badgePluralName={badgePluralName}
+                  badgeSlug={badgeSlug}
+                  badgeImage={badgeImage}
+                  location={"question"}
+                  questionText={shortQuestion}
+                  answerText={item.answer.text}
+                  images={item.answer.images}
+                  video={item.answer.video}
+                  questionSlug={params.question}
+                  otherUsersAmount={answersAmount}
+                  userName={item.user.name}
+                  userSlug={item.user.slug}
+                  services={item.user.services}
+                  pfp={item.user.pfp}
+                />
+              );
+            })
+          ) : (
+            <ListItem
+              location={"question"}
+              name={"Looks like this question doesn't have any answers yet..."}
+            />
+          )}
         </div>
         <div className="lg:block hidden lg:w-[30%] text-sm">
           <SidebarBox title={"Excerpt"} element={<>{longQuestion}</>} />

@@ -13,7 +13,7 @@ export async function fetchData<T>(
   query: string,
   method: "POST" | "GET" | "READ",
   collection: "Pages" | "Badges" | "Interviews" | "Questions" | "Users",
-  queryName?: "BadgeInterview" | "InterviewUser" | "UserInterviews"
+  mustHave?: string
 ): Promise<T | null> {
   const headers = {
     "Content-Type": "application/json",
@@ -29,9 +29,9 @@ export async function fetchData<T>(
       .then(parseJSON);
 
     if (
-      queryName
-        ? response && response.data?.[queryName]?.docs?.length > 0
-        : response && response.data?.[collection].docs.length > 0
+      mustHave
+        ? response && response.data?.[mustHave]?.docs?.length > 0
+        : response
     ) {
       return response;
     } else {

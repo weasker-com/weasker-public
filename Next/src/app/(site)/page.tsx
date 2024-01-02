@@ -10,6 +10,7 @@ import { TbUsers } from "react-icons/tb";
 import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { PiShareFatThin } from "react-icons/pi";
 import SocialShareButtons from "@/components/SocialShareButtons";
+import { notFound } from "next/navigation";
 
 async function getData() {
   const query = `{
@@ -78,7 +79,9 @@ async function getData() {
 export default async function Home() {
   const data = await getData();
 
-  if (!data) return "Internal server error";
+  if (!data) {
+    notFound();
+  }
 
   const interviews = data.data.Interviews.docs;
   const maxQuestions = Math.max(

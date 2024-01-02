@@ -102,8 +102,8 @@ const Answer: React.FC<AnswerProps> = ({
                 <div className="">
                   <div className="flex flex-row gap-2 items-center">
                     <CldImage
-                      width={50}
-                      height={50}
+                      width={80}
+                      height={80}
                       src={pfp || defaultImages.defaultUserImage}
                       alt={userName}
                       className="rounded-full cover w-[40px] h-[40px] border-2 border-weasker-grey"

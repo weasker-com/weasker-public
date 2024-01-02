@@ -14,6 +14,7 @@ import SidebarBox from "@/components/SidebarBox";
 import { IoLinkOutline } from "react-icons/io5";
 import { PiShareFatThin } from "react-icons/pi";
 import SocialShareButtons from "@/components/SocialShareButtons";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: { user: string };
@@ -51,7 +52,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   `;
 
-  const data: userSeoRes | null = await fetchData(query, "POST", "Users");
+  const data: userSeoRes | null = await fetchData(
+    query,
+    "POST",
+    "Users",
+    "Users"
+  );
 
   if (!data) {
     return {};
@@ -145,7 +151,7 @@ async function getData(userParam: string) {
     query,
     "POST",
     "Users",
-    "UserInterviews"
+    "Users"
   );
 
   if (!data) {
@@ -160,7 +166,7 @@ export default async function User({ params }: Props) {
   const data = await getData(userParam);
 
   if (!data) {
-    return "no question";
+    notFound();
   }
 
   const user = data.data.Users.docs[0];
@@ -263,43 +269,52 @@ export default async function User({ params }: Props) {
       tab: (
         <>
           <div className="lg:w-[70%] flex flex-col">
-            {interviews.map((item) => {
-              const threeShortQuestions = item.questions
-                .slice(0, 3)
-                .map((question) => {
-                  return ` ${question.question.shortQuestion}`;
-                });
-              return (
-                <ListItem
-                  location={"user"}
-                  name={item.name}
-                  preTitle={userName}
-                  slugs={`/interview/${item.badge.seo.slug}/${params.user}/${item.seo.slug}`}
-                  image={
-                    item.seo.image?.filename ||
-                    defaultImages.defaultInterviewImage
-                  }
-                  excerpt={
-                    item.seo.excerpt ||
-                    `In this interview we asked ${item.badge.pluralName} ${item.questions.length} questions ${item.name}. For example: ${threeShortQuestions}`
-                  }
-                  links={[
-                    <InternalLink
-                      element={
-                        <div className="flex flex-row gap-1 items-center">
-                          <TbMessageShare /> <>Full interview</>
-                        </div>
-                      }
-                      style={"blue"}
-                      href={`/interview/${item.badge.seo.slug}/${params.user}/${item.seo.slug}`}
-                      eventName={"ClickInterviewPage"}
-                      target={item.name}
-                      locationOnPage={"list item"}
-                    />,
-                  ]}
-                />
-              );
-            })}
+            {interviews.length > 0 ? (
+              interviews.map((item) => {
+                const threeShortQuestions = item.questions
+                  .slice(0, 3)
+                  .map((question) => {
+                    return ` ${question.question.shortQuestion}`;
+                  });
+                return (
+                  <ListItem
+                    location={"user"}
+                    name={item.name}
+                    preTitle={userName}
+                    slugs={`/interview/${item.badge.seo.slug}/${params.user}/${item.seo.slug}`}
+                    image={
+                      item.seo.image?.filename ||
+                      defaultImages.defaultInterviewImage
+                    }
+                    excerpt={
+                      item.seo.excerpt ||
+                      `In this interview we asked ${item.badge.pluralName} ${item.questions.length} questions ${item.name}. For example: ${threeShortQuestions}`
+                    }
+                    links={[
+                      <InternalLink
+                        element={
+                          <div className="flex flex-row gap-1 items-center">
+                            <TbMessageShare /> <>Full interview</>
+                          </div>
+                        }
+                        style={"blue"}
+                        href={`/interview/${item.badge.seo.slug}/${params.user}/${item.seo.slug}`}
+                        eventName={"ClickInterviewPage"}
+                        target={item.name}
+                        locationOnPage={"list item"}
+                      />,
+                    ]}
+                  />
+                );
+              })
+            ) : (
+              <ListItem
+                location={"user"}
+                name={
+                  "looks like this badger didn't answer any interviews yet..."
+                }
+              />
+            )}
           </div>
           <div className="lg:block hidden w-[30%] text-sm">
             <SidebarBox

@@ -5,6 +5,7 @@ import { pageRes, pageSeoRes } from "../../../../types/Responses";
 import parse from "html-react-parser";
 import { defaultImages } from "../../../utils/defaultImages";
 import Hero from "@/components/Hero";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: { page: string };
@@ -29,7 +30,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       }
     }
     `;
-  const data: pageSeoRes | null = await fetchData(query, "POST", "Pages");
+  const data: pageSeoRes | null = await fetchData(
+    query,
+    "POST",
+    "Pages",
+    "Pages"
+  );
 
   if (!data) {
     return {};
@@ -86,7 +92,7 @@ async function getData(pageSlug: string): Promise<pageRes | null> {
     }
   }
   `;
-  const res: pageRes | null = await fetchData(query, "POST", "Pages");
+  const res: pageRes | null = await fetchData(query, "POST", "Pages", "Pages");
   return res;
 }
 
@@ -95,7 +101,7 @@ export default async function Page({ params }: Props) {
   const data = await getData(pageParam);
 
   if (!data) {
-    return "no page";
+    notFound();
   }
 
   const page = data?.data.Pages.docs[0];

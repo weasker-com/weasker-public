@@ -16,6 +16,7 @@ import { HiOutlineExternalLink } from "react-icons/hi";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { PiShareFatThin } from "react-icons/pi";
 import { TbMessages } from "react-icons/tb";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: { badge: string };
@@ -48,7 +49,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   `;
 
-  const data: badgeSeoRes | null = await fetchData(query, "POST", "Badges");
+  const data: badgeSeoRes | null = await fetchData(
+    query,
+    "POST",
+    "Badges",
+    "Badges"
+  );
 
   if (!data) {
     return {};
@@ -138,7 +144,12 @@ async function getData(badgeParam: string) {
   }
   `;
 
-  const data: badgePageRes | null = await fetchData(query, "POST", "Badges");
+  const data: badgePageRes | null = await fetchData(
+    query,
+    "POST",
+    "Badges",
+    "Badges"
+  );
 
   if (!data) {
     return null;
@@ -151,7 +162,7 @@ export default async function Badge({ params }: Props) {
   const data = await getData(params.badge);
 
   if (!data) {
-    return "no data";
+    notFound();
   }
 
   const badge = data.data.Badges.docs[0];
@@ -210,19 +221,22 @@ export default async function Badge({ params }: Props) {
               title={"Badge terms"}
               element={<>{badge.seo.excerpt}</>}
             />
-            <SidebarBox
-              title={`Top ${pluralName}`}
-              array={users.map((item) => {
-                return {
-                  name: item.userName,
-                  url: `/user/${item.seo.slug}`,
-                  image:
-                    item.seo.image?.filename || defaultImages.defaultUserImage,
-                  eventName: "ClickUserName",
-                };
-              })}
-              itemsAmount={8}
-            />
+            {users.length > 0 && (
+              <SidebarBox
+                title={`Top ${pluralName}`}
+                array={users.map((item) => {
+                  return {
+                    name: item.userName,
+                    url: `/user/${item.seo.slug}`,
+                    image:
+                      item.seo.image?.filename ||
+                      defaultImages.defaultUserImage,
+                    eventName: "ClickUserName",
+                  };
+                })}
+                itemsAmount={8}
+              />
+            )}
           </div>
         </>
       ),
@@ -238,54 +252,61 @@ export default async function Badge({ params }: Props) {
       tab: (
         <>
           <div className="lg:w-[70%] flex flex-col">
-            {users.map((item) => {
-              const relevantBadge = item.userBadges.filter(
-                (item) => item.badge.seo.slug == params.badge
-              )[0];
-              return (
-                <ListItem
-                  location={"badge"}
-                  name={item.userName}
-                  preTitle={"User"}
-                  slugs={`/user/${item.seo.slug}`}
-                  image={
-                    item.seo.image?.filename || defaultImages.defaultUserImage
-                  }
-                  excerpt={relevantBadge.bio}
-                  links={[
-                    <InternalLink
-                      element={
-                        <div className="flex flex-row gap-1 items-center">
-                          <LiaUserCheckSolid /> <>Badger page</>
-                        </div>
-                      }
-                      style={"blue"}
-                      href={`/user/${item.seo.slug}`}
-                      eventName={"ClickUserName"}
-                      target={item.userName}
-                      locationOnPage={"list item"}
-                    />,
-                  ].concat(
-                    relevantBadge.services.map((item) => {
-                      return (
-                        <ExternalLink
-                          element={
-                            <div className="flex flex-row gap-1 items-center">
-                              <HiOutlineExternalLink /> <>{item.name}</>
-                            </div>
-                          }
-                          style={"blue"}
-                          href={item.url}
-                          eventName={"ClickUserService"}
-                          target={item.name}
-                          locationOnPage={"list item"}
-                        />
-                      );
-                    })
-                  )}
-                />
-              );
-            })}
+            {users.length > 0 ? (
+              users.map((item) => {
+                const relevantBadge = item.userBadges.filter(
+                  (item) => item.badge.seo.slug == params.badge
+                )[0];
+                return (
+                  <ListItem
+                    location={"badge"}
+                    name={item.userName}
+                    preTitle={"User"}
+                    slugs={`/user/${item.seo.slug}`}
+                    image={
+                      item.seo.image?.filename || defaultImages.defaultUserImage
+                    }
+                    excerpt={relevantBadge.bio}
+                    links={[
+                      <InternalLink
+                        element={
+                          <div className="flex flex-row gap-1 items-center">
+                            <LiaUserCheckSolid /> <>Badger page</>
+                          </div>
+                        }
+                        style={"blue"}
+                        href={`/user/${item.seo.slug}`}
+                        eventName={"ClickUserName"}
+                        target={item.userName}
+                        locationOnPage={"list item"}
+                      />,
+                    ].concat(
+                      relevantBadge.services.map((item) => {
+                        return (
+                          <ExternalLink
+                            element={
+                              <div className="flex flex-row gap-1 items-center">
+                                <HiOutlineExternalLink /> <>{item.name}</>
+                              </div>
+                            }
+                            style={"blue"}
+                            href={item.url}
+                            eventName={"ClickUserService"}
+                            target={item.name}
+                            locationOnPage={"list item"}
+                          />
+                        );
+                      })
+                    )}
+                  />
+                );
+              })
+            ) : (
+              <ListItem
+                name={"Looks like this badge has no users yet..."}
+                location={"badge"}
+              />
+            )}
           </div>
           <div className="lg:block hidden w-[30%] text-sm">
             <SidebarBox

@@ -19,6 +19,7 @@ import { LiaUserCheckSolid } from "react-icons/lia";
 import { BsFileText } from "react-icons/bs";
 import { MdOutlineAdd } from "react-icons/md";
 import SubMenu from "@/components/SubMenu";
+import { notFound } from "next/navigation";
 
 const { convert } = require("html-to-text");
 
@@ -196,7 +197,7 @@ export default async function Interview({ params }: Props) {
   const data = await getData(params.user, params.interview, params.badge);
 
   if (!data) {
-    return "no answers";
+    notFound();
   }
 
   const interview = data.data.BadgeInterview.docs[0];
