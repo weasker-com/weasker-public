@@ -1,5 +1,4 @@
 import { MetadataRoute } from "next";
-import { getSiteMapData } from "../../../sanity/sanity-utils";
 import { fetchData } from "@/utils/payloadFetch";
 import { siteMapRes } from "../../../types/Responses";
 
@@ -65,10 +64,9 @@ async function getData() {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  let data = await getSiteMapData();
-  const newData = await getData();
+  const data = await getData();
 
-  if (!newData) {
+  if (!data) {
     return [
       {
         url: WEBSITE_HOST_URL,
@@ -78,7 +76,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   }
 
-  const questions = newData.data.Interviews.docs.flatMap((interview) => {
+  const questions = data.data.Interviews.docs.flatMap((interview) => {
     return interview.questions.map((question) => {
       const badgeSlug = interview.badge.seo.slug;
       const interviewUpdatedAt = interview.updatedAt;
@@ -93,7 +91,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const uniqueUrls = new Set();
-  const interviews = newData.data.Interviews.docs.flatMap((interview) => {
+  const interviews = data.data.Interviews.docs.flatMap((interview) => {
     const badgeSlug = interview.badge.seo.slug;
     const interviewUpdatedAt = interview.updatedAt;
     const interviewSlug = interview.seo.slug;
@@ -122,7 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  const users = newData.data.Users.docs.map((user) => {
+  const users = data.data.Users.docs.map((user) => {
     const slug = user.seo.slug;
     const lastModified = user.updatedAt;
     return {
@@ -132,7 +130,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  const badges = newData.data.Badges.docs.map((badge) => {
+  const badges = data.data.Badges.docs.map((badge) => {
     const slug = badge.seo.slug;
     const lastModified = badge.updatedAt;
     return {
@@ -142,7 +140,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  const pages = newData.data.Pages.docs.map((page) => {
+  const pages = data.data.Pages.docs.map((page) => {
     const slug = page.seo.slug;
     const lastModified = page.updatedAt;
     return {
