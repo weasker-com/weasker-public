@@ -55,7 +55,11 @@ async function getData() {
     }    
     `;
 
-  const data: siteMapRes | null = await fetchData(query, "POST", "Interviews");
+  const data: siteMapRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Interviews",
+  });
 
   if (!data) {
     return null;

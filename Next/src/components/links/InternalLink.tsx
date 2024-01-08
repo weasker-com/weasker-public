@@ -21,6 +21,7 @@ interface InternalLinkProps {
     | "ClickSubMenu";
   target: string;
   locationOnPage: string;
+  onclick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export const InternalLink: React.FC<InternalLinkProps> = ({
@@ -31,6 +32,7 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
   style,
   target,
   locationOnPage,
+  onclick,
 }) => {
   const pathname = usePathname();
   return (
@@ -42,7 +44,11 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
         "hover:underline underline-offset-4 decoration-inherit decoration-2"
       }`}
       href={href}
-      onClick={() => {
+      onClick={(e) => {
+        if (onclick) {
+          onclick(e);
+        }
+        console.log(onclick);
         track(eventName, {
           target,
           location: pathname,

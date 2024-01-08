@@ -25,6 +25,7 @@ interface SidebarBoxProps {
       | "ClickInnerPage";
   }[];
   itemsAmount?: number;
+  onclick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 const SidebarBox: React.FC<SidebarBoxProps> = ({
@@ -33,6 +34,7 @@ const SidebarBox: React.FC<SidebarBoxProps> = ({
   element,
   linkStyle,
   itemsAmount,
+  onclick,
 }) => {
   return (
     <div className="bg-white border border-weasker-light-grey/50 rounded-t mb-3 w-[100%]">
@@ -43,9 +45,11 @@ const SidebarBox: React.FC<SidebarBoxProps> = ({
         {!array && element && element}
         {array &&
           !element &&
-          array.slice(0, itemsAmount).map((item) => {
+          array.slice(0, itemsAmount).map((item, index) => {
             return (
               <InternalLink
+                key={index}
+                onclick={onclick}
                 style={linkStyle || "inherit"}
                 element={
                   <div className="flex flex-row gap-2 items-center text-sm">

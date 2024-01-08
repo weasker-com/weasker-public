@@ -2,10 +2,9 @@ import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
 import { pageRes, pageSeoRes } from "../../../../types/Responses";
-import parse from "html-react-parser";
 import { defaultImages } from "../../../utils/defaultImages";
-import Hero from "@/components/Hero";
 import { notFound } from "next/navigation";
+import GenericPage from "@/components/pages/GenericPage";
 
 type Props = {
   params: { page: string };
@@ -21,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description
             image {
               url
+              filename
             }
             keywords {
               keyword
@@ -30,12 +30,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       }
     }
     `;
-  const data: pageSeoRes | null = await fetchData(
+  const data: pageSeoRes | null = await fetchData({
     query,
-    "POST",
-    "Pages",
-    "Pages"
-  );
+    method: "POST",
+    collection: "Pages",
+    mustHave: "Pages",
+  });
 
   if (!data) {
     return {};
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const seoMeta = data.data.Pages.docs[0];
   const pageName = seoMeta.name;
-  const image = seoMeta.seo.image;
+  const image = seoMeta.seo.image?.url || defaultImages.weaskerLogoUrl;
   const seoTitle = seoMeta.seo.title;
   const seoDescription = seoMeta.seo.description;
 
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         pageName
       )} - We interview experts from all fields and compare their answers, compiling diverse and reliable information`;
 
-  const ogImage = defaultImages.defaultOgImage;
+  const ogImage = `/api/og?img=${image}&preTitle=${process.env.SITE_NAME}.com&title=${pageName}`;
   const slug = params.page;
 
   return {
@@ -67,6 +67,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: metaTitle,
       description: metaDescription,
       siteName: process.env.SITE_NAME,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      siteId: "1743914690978164736",
+      creator: process.env.SITE_NAME,
+      creatorId: "1743914690978164736",
+      images: [ogImage],
     },
   };
 }
@@ -92,7 +101,12 @@ async function getData(pageSlug: string): Promise<pageRes | null> {
     }
   }
   `;
-  const res: pageRes | null = await fetchData(query, "POST", "Pages", "Pages");
+  const res: pageRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Pages",
+    mustHave: "Pages",
+  });
   return res;
 }
 
@@ -104,23 +118,5 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
-  const page = data?.data.Pages.docs[0];
-  const title = page.name;
-  const excerpt = page.seo.excerpt;
-  const content = page.richText_html;
-
-  return (
-    <>
-      <Hero
-        title={title}
-        preTitle={"weasker.com"}
-        image={defaultImages.weaskerLogo}
-        location={"page"}
-      />
-      <text className="max-w-[90%] sm:max-w-[60%] mx-auto flex flex-col gap-5 mt-5">
-        {excerpt && parse(excerpt)}
-        {content && parse(content)}
-      </text>
-    </>
-  );
+  return <GenericPage data={data} params={params} />;
 }

@@ -1,3 +1,13 @@
+class PayloadResponseError extends Error {
+  parsedResponse: any;
+
+  constructor(parsedResponse: any) {
+    super("Payload responded with an error");
+    this.name = "PayloadResponseError";
+    this.parsedResponse = parsedResponse;
+  }
+}
+
 const parseJSON = (response: Response) => response.json();
 
 const checkStatus = (response: Response) => {
@@ -5,16 +15,23 @@ const checkStatus = (response: Response) => {
     return response;
   }
   return parseJSON(response).then((parsedResponse) => {
-    throw parsedResponse;
+    throw new PayloadResponseError(parsedResponse);
   });
 };
 
-export async function fetchData<T>(
-  query: string,
-  method: "POST" | "GET" | "READ",
-  collection: "Pages" | "Badges" | "Interviews" | "Questions" | "Users",
-  mustHave?: string
-): Promise<T | null> {
+interface PayLoadFetchInterface {
+  query: string;
+  method: "POST" | "GET" | "READ";
+  collection: "Pages" | "Badges" | "Interviews" | "Questions" | "Users";
+  mustHave?: string;
+}
+
+export async function fetchData<T>({
+  query,
+  method,
+  collection,
+  mustHave,
+}: PayLoadFetchInterface): Promise<T | null> {
   const headers = {
     "Content-Type": "application/json",
   };
@@ -38,6 +55,9 @@ export async function fetchData<T>(
       return null;
     }
   } catch (errors) {
+    if (errors instanceof PayloadResponseError) {
+      console.error("PayloadResponseError occurred:", errors.parsedResponse);
+    }
     console.error(`Error fetching ${collection}:`, errors);
     throw errors;
   }

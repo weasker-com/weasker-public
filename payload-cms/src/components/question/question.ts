@@ -45,8 +45,17 @@ export const question: Field = {
           type: "relationship",
           relationTo: "users",
           required: true,
+          filterOptions: ({ data }) => {
+            if (data.badge) {
+              return {
+                "userBadges.badge": {
+                  equals: data.badge,
+                },
+              };
+            }
+            return {};
+          },
         },
-
         answer,
       ],
     },

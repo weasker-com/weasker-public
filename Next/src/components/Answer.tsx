@@ -2,10 +2,13 @@
 import parse from "html-react-parser";
 import { CldImage, CldVideoPlayer } from "next-cloudinary";
 import { InternalLink } from "./links/InternalLink";
-import ExternalLink from "./links/ExternalLink";
 import { defaultImages } from "@/utils/defaultImages";
 import "next-cloudinary/dist/cld-video-player.css";
 import { TbMessageShare, TbMessages } from "react-icons/tb";
+import { useState } from "react";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { FaRegArrowAltCircleRight } from "react-icons/fa";
+import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 
 interface AnswerProps {
   interviewSlug: string;
@@ -49,6 +52,16 @@ const Answer: React.FC<AnswerProps> = ({
   interviewSlug,
   otherUsersAmount,
 }) => {
+  const [imagesModalOpen, setImagesModalOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [imagesArray, setImagesArray] = useState<
+    { image: { url: string; filename: string } }[] | null
+  >(null);
+
+  const currentImageIndex = imagesArray?.findIndex((item) => {
+    return item.image.filename === currentImage;
+  });
+
   return (
     <>
       <div
@@ -95,7 +108,7 @@ const Answer: React.FC<AnswerProps> = ({
             </div>
           )}
         </>
-        <div className="p-3 pb-5 bg-white">
+        <div className="p-3 pb-5 bg-white rounded-t">
           <div className="w-max">
             <InternalLink
               element={
@@ -131,28 +144,99 @@ const Answer: React.FC<AnswerProps> = ({
             {images.length > 0 && (
               <div className="flex flex-row gap-2 flex-wrap">
                 {images.map((image, index) => (
-                  <ExternalLink
-                    element={
-                      <CldImage
-                        key={index}
-                        alt={`image by ${userName} - ${badgeSingularName}`}
-                        width={200}
-                        height={200}
-                        style={{
-                          objectFit: "cover",
-                          width: "100px",
-                          height: "100px",
-                        }}
-                        src={image.image.filename}
-                      />
-                    }
-                    href={image.image.url}
-                    eventName="ClickImage"
-                    target={questionSlug + index}
-                    locationOnPage={questionSlug}
+                  <CldImage
+                    onClick={() => {
+                      setCurrentImage(image.image.filename);
+                      setImagesArray(images);
+                      setImagesModalOpen(true);
+                    }}
+                    key={index}
+                    alt={`image by ${userName} - ${badgeSingularName}`}
+                    width={200}
+                    height={200}
+                    className="h-[100px] w-[100px] cover hover:cursor-pointer"
+                    src={image.image.filename}
                   />
                 ))}
+                {imagesModalOpen && currentImage && imagesArray && (
+                  <>
+                    <div
+                      className="fixed top-0 left-0 w-screen z-10 h-screen bg-black opacity-75"
+                      onClick={() => setImagesModalOpen(false)}
+                    ></div>
+                    <div className="fixed flex flex-col items-center z-20 min-w-fit max-h-[100vh] lg:max-h-[90vh] inset-y-[20%] inset-x-[5%] md:inset-x-[10%] md:inset-y-[5%] lg:inset-x-[20%] bg-black p-5 lg:p-10 rounded-t">
+                      <CldImage
+                        width={1000}
+                        height={1000}
+                        src={currentImage}
+                        alt={"name"}
+                        className="h-[100%] w-auto rounded-t"
+                      />
+                      <IoIosCloseCircleOutline
+                        size={20}
+                        className="absolute right-1 top-1 sm:right-2 sm:top-2 text-white hover:cursor-pointer"
+                        onClick={() => setImagesModalOpen(false)}
+                      />
+                      {imagesArray.length > 1 && (
+                        <FaRegArrowAltCircleRight
+                          size={20}
+                          className="absolute right-1 sm:right-2 top-1/2 text-white hover:cursor-pointer"
+                          onClick={() => {
+                            if (currentImageIndex !== undefined) {
+                              const nextIndex =
+                                (currentImageIndex + 1) % imagesArray.length;
+                              setCurrentImage(
+                                imagesArray[nextIndex].image.filename
+                              );
+                            }
+                          }}
+                        />
+                      )}
+                      {imagesArray.length > 1 && (
+                        <FaRegArrowAltCircleLeft
+                          size={20}
+                          className="absolute left-1 sm:left-2 top-1/2 text-white hover:cursor-pointer"
+                          onClick={() => {
+                            if (currentImageIndex !== undefined) {
+                              const prevIndex =
+                                (currentImageIndex - 1 + imagesArray.length) %
+                                imagesArray.length;
+                              setCurrentImage(
+                                imagesArray[prevIndex].image.filename
+                              );
+                            }
+                          }}
+                        />
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
+
+              // <div className="flex flex-row gap-2 flex-wrap">
+              //   {images.map((image, index) => (
+              //     <ExternalLink
+              //       element={
+              //         <CldImage
+              //           key={index}
+              //           alt={`image by ${userName} - ${badgeSingularName}`}
+              //           width={200}
+              //           height={200}
+              //           style={{
+              //             objectFit: "cover",
+              //             width: "100px",
+              //             height: "100px",
+              //           }}
+              //           src={image.image.filename}
+              //         />
+              //       }
+              //       href={image.image.url}
+              //       eventName="ClickImage"
+              //       target={questionSlug + index}
+              //       locationOnPage={questionSlug}
+              //     />
+              //   ))}
+              // </div>
             )}
             <div className="flex flex-row items-center text-weasker-grey gap-5">
               {location !== "interview" && (

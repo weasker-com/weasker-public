@@ -3,20 +3,8 @@ import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
 import { badgePageRes, badgeSeoRes } from "../../../../../types/Responses";
 import { defaultImages } from "@/utils/defaultImages";
-import Hero from "@/components/Hero";
-import { MdOutlineFormatListBulleted } from "react-icons/md";
-import SidebarBox from "@/components/SidebarBox";
-import { PiUsersThreeLight } from "react-icons/pi";
-import SubMenu from "@/components/SubMenu";
-import ListItem from "@/components/ListItem";
-import { InternalLink } from "@/components/links/InternalLink";
-import { LiaUserCheckSolid } from "react-icons/lia";
-import ExternalLink from "@/components/links/ExternalLink";
-import { HiOutlineExternalLink } from "react-icons/hi";
-import SocialShareButtons from "@/components/SocialShareButtons";
-import { PiShareFatThin } from "react-icons/pi";
-import { TbMessages } from "react-icons/tb";
 import { notFound } from "next/navigation";
+import BadgePage from "@/components/pages/BadgePage";
 
 type Props = {
   params: { badge: string };
@@ -33,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           description
           image {
             url
+            filename
           }
           keywords {
             keyword
@@ -49,12 +38,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   `;
 
-  const data: badgeSeoRes | null = await fetchData(
+  const data: badgeSeoRes | null = await fetchData({
     query,
-    "POST",
-    "Badges",
-    "Badges"
-  );
+    method: "POST",
+    collection: "Badges",
+    mustHave: "Badges",
+  });
 
   if (!data) {
     return {};
@@ -64,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const singularName = seoMeta.singularName;
   const pluralName = seoMeta.pluralName;
   const usersAmount = data.data.BadgeUsers.docs.length;
-  const image = seoMeta.seo.image;
+  const image = seoMeta.seo.image?.url || defaultImages.weaskerLogoUrl;
   const seoTitle = seoMeta.seo.title;
   const seoDescription = seoMeta.seo.description;
 
@@ -76,7 +65,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? seoDescription
     : `We interviewed ${usersAmount} of the best ${pluralName}, read what each ${singularName} had to say.`;
 
-  const ogImage = defaultImages.defaultOgImage;
+  const ogImage = `/api/og?img=${image}&preTitle=weasker.com&title=${singularName} badge`;
+
   const slug = params.badge;
 
   return {
@@ -89,6 +79,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: metaTitle,
       description: metaDescription,
       siteName: process.env.SITE_NAME,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      siteId: "1743914690978164736",
+      creator: process.env.SITE_NAME,
+      creatorId: "1743914690978164736",
+      images: [ogImage],
     },
   };
 }
@@ -128,7 +127,7 @@ async function getData(badgeParam: string) {
     BadgeQuestions(slug: "${badgeParam}"){
       docs{
         name
-        seo{slug}
+        seo{slug image{url filename}}
         questions{
           question{
             answers{user{userName}}
@@ -144,12 +143,12 @@ async function getData(badgeParam: string) {
   }
   `;
 
-  const data: badgePageRes | null = await fetchData(
+  const data: badgePageRes | null = await fetchData({
     query,
-    "POST",
-    "Badges",
-    "Badges"
-  );
+    method: "POST",
+    collection: "Badges",
+    mustHave: "Badges",
+  });
 
   if (!data) {
     return null;
@@ -165,195 +164,5 @@ export default async function Badge({ params }: Props) {
     notFound();
   }
 
-  const badge = data.data.Badges.docs[0];
-  const users = data.data.BadgeUsers.docs;
-  const questions = data.data.BadgeQuestions.docs[0]?.questions;
-  const interviewSlug = data.data.BadgeQuestions.docs[0]?.seo.slug;
-  const singularName = badge.singularName;
-  const pluralName = badge.pluralName;
-  const excerpt = badge.seo.excerpt;
-  const badgeImage = badge.seo.image?.url || null;
-
-  const subMenuArray = [
-    {
-      name: (
-        <>
-          <MdOutlineFormatListBulleted /> Questions
-        </>
-      ),
-      slug: "questions",
-      tab: (
-        <>
-          <div className="lg:w-[70%] flex flex-col">
-            {questions.map((question) => {
-              return (
-                <ListItem
-                  location={"badge"}
-                  name={question.question.shortQuestion}
-                  preTitle={"Question"}
-                  slugs={`/question/${params.badge}/${interviewSlug}/${question.question.seo.slug}`}
-                  image={
-                    question.question.seo.image?.filename ||
-                    defaultImages.defaultQuestionImage
-                  }
-                  excerpt={question.question.longQuestion}
-                  links={[
-                    <InternalLink
-                      element={
-                        <div className="flex flex-row gap-1 items-center">
-                          <TbMessages />
-                          <>{`${question.question.answers.length} answers`}</>
-                        </div>
-                      }
-                      style={"blue"}
-                      href={`/question/${params.badge}/${interviewSlug}/${question.question.seo.slug}`}
-                      eventName={"ClickUserName"}
-                      target={question.question.shortQuestion}
-                      locationOnPage={"list item"}
-                    />,
-                  ]}
-                />
-              );
-            })}
-          </div>
-          <div className="lg:block hidden w-[30%] text-sm">
-            <SidebarBox
-              title={"Badge terms"}
-              element={<>{badge.seo.excerpt}</>}
-            />
-            {users.length > 0 && (
-              <SidebarBox
-                title={`Top ${pluralName}`}
-                array={users.map((item) => {
-                  return {
-                    name: item.userName,
-                    url: `/user/${item.seo.slug}`,
-                    image:
-                      item.seo.image?.filename ||
-                      defaultImages.defaultUserImage,
-                    eventName: "ClickUserName",
-                  };
-                })}
-                itemsAmount={8}
-              />
-            )}
-          </div>
-        </>
-      ),
-    },
-    {
-      name: (
-        <>
-          <PiUsersThreeLight /> Users
-        </>
-      ),
-
-      slug: "users",
-      tab: (
-        <>
-          <div className="lg:w-[70%] flex flex-col">
-            {users.length > 0 ? (
-              users.map((item) => {
-                const relevantBadge = item.userBadges.filter(
-                  (item) => item.badge.seo.slug == params.badge
-                )[0];
-                return (
-                  <ListItem
-                    location={"badge"}
-                    name={item.userName}
-                    preTitle={"User"}
-                    slugs={`/user/${item.seo.slug}`}
-                    image={
-                      item.seo.image?.filename || defaultImages.defaultUserImage
-                    }
-                    excerpt={relevantBadge.bio}
-                    links={[
-                      <InternalLink
-                        element={
-                          <div className="flex flex-row gap-1 items-center">
-                            <LiaUserCheckSolid /> <>Badger page</>
-                          </div>
-                        }
-                        style={"blue"}
-                        href={`/user/${item.seo.slug}`}
-                        eventName={"ClickUserName"}
-                        target={item.userName}
-                        locationOnPage={"list item"}
-                      />,
-                    ].concat(
-                      relevantBadge.services.map((item) => {
-                        return (
-                          <ExternalLink
-                            element={
-                              <div className="flex flex-row gap-1 items-center">
-                                <HiOutlineExternalLink /> <>{item.name}</>
-                              </div>
-                            }
-                            style={"blue"}
-                            href={item.url}
-                            eventName={"ClickUserService"}
-                            target={item.name}
-                            locationOnPage={"list item"}
-                          />
-                        );
-                      })
-                    )}
-                  />
-                );
-              })
-            ) : (
-              <ListItem
-                name={"Looks like this badge has no users yet..."}
-                location={"badge"}
-              />
-            )}
-          </div>
-          <div className="lg:block hidden w-[30%] text-sm">
-            <SidebarBox
-              title={"Badge terms"}
-              element={<>{badge.seo.excerpt}</>}
-            />
-            <SidebarBox
-              title={`Questions for ${badge.pluralName}`}
-              array={questions.map((item) => {
-                return {
-                  name: item.question.shortQuestion,
-                  url: `/question/${params.badge}/${interviewSlug}/${item.question.seo.slug}`,
-                  image:
-                    item.question.seo.image?.filename ||
-                    defaultImages.defaultUserImage,
-                  eventName: "ClickUserName",
-                };
-              })}
-              itemsAmount={8}
-            />
-          </div>
-        </>
-      ),
-    },
-    {
-      name: (
-        <>
-          <PiShareFatThin /> Share
-        </>
-      ),
-      slug: "share",
-
-      modal: <SidebarBox title={"Share"} element={<SocialShareButtons />} />,
-    },
-  ];
-
-  return (
-    <>
-      <div className="flex flex-col w-full">
-        <Hero
-          title={singularName}
-          preTitle={"Badge"}
-          image={badgeImage}
-          location={"badge"}
-        />
-        <SubMenu menu={subMenuArray} location={"badge"} />
-      </div>
-    </>
-  );
+  return <BadgePage data={data} params={params} />;
 }

@@ -1,7 +1,7 @@
 import express from "express";
 import payload from "payload";
 import { mediaManagement } from "payload-cloudinary-plugin";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, UploadApiOptions } from "cloudinary";
 import "dotenv/config";
 require("dotenv").config();
 
@@ -18,10 +18,14 @@ const cloudinaryConfig = cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.use(mediaManagement(cloudinaryConfig));
+const uploadApiOptions: UploadApiOptions = {
+  folder: "badges",
+  tags: ["example_tag"],
+};
+
+app.use(mediaManagement(cloudinaryConfig, uploadApiOptions));
 
 const start = async () => {
-  // Initialize Payload
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
     express: app,

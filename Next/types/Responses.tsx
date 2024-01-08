@@ -103,7 +103,10 @@ export type badgePageRes = {
     BadgeQuestions: {
       docs:
         | {
-            seo: { slug: string };
+            seo: {
+              slug: string;
+              image: { url: string; filename: string } | null;
+            };
             name: string;
             questions:
               | {
@@ -156,6 +159,12 @@ export type interviewSeoRes = {
       docs: [
         {
           userName: string;
+          seo: {
+            image: {
+              filename: string;
+              url: string;
+            } | null;
+          };
         }
       ];
     };
@@ -250,6 +259,7 @@ export type questionSeoRes = {
       docs: [
         {
           name: string;
+
           badge: {
             singularName: string;
             pluralName: string;
