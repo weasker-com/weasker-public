@@ -37,6 +37,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
       };
     };
     answer: {
+      updatedAt: string;
       richText_html: string;
       video: {
         url: string;
@@ -77,6 +78,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
               };
             };
             answer: {
+              updatedAt: string;
               richText_html: string;
               video: { url: string; filename: string } | null;
               images: { image: { url: string; filename: string } }[];
@@ -103,6 +105,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
           };
         };
         answer: {
+          updatedAt: string;
           richText_html: string;
           video: {
             filename: string;
@@ -160,6 +163,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
       userSlug: item.user.seo.slug,
       services: null,
       pfp: item.user.seo.image,
+      updatedAt: item.answer.updatedAt,
     };
   });
 
@@ -300,6 +304,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
                     userSlug={item.userSlug}
                     services={item.services}
                     pfp={item.pfp?.filename || null}
+                    updatedAt={item.updatedAt}
                   />
                 );
               })}

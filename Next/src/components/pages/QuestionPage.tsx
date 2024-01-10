@@ -63,6 +63,7 @@ const QuestionPage: React.FC<QuestionPageProps> = (data) => {
     const answerText = item.answer.richText_html;
     const answerImages = item.answer.images;
     const answerVideo = item.answer.video;
+    const updatedAt = item.answer.updatedAt;
     return {
       user: {
         name: userName,
@@ -77,6 +78,7 @@ const QuestionPage: React.FC<QuestionPageProps> = (data) => {
         images: answerImages,
         number: questionIndex,
         video: answerVideo,
+        updatedAt,
       },
     };
   });
@@ -241,6 +243,7 @@ const QuestionPage: React.FC<QuestionPageProps> = (data) => {
                   userSlug={item.user.slug}
                   services={item.user.services}
                   pfp={item.user.pfp}
+                  updatedAt={item.answer.updatedAt}
                 />
               );
             })

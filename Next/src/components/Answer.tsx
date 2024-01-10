@@ -9,6 +9,7 @@ import { useState } from "react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
+import { formatDistanceToNow } from "date-fns";
 
 interface AnswerProps {
   interviewSlug: string;
@@ -32,6 +33,7 @@ interface AnswerProps {
   userSlug: string;
   services: { name: string; url: string }[] | [] | null;
   pfp: string | null;
+  updatedAt?: string;
 }
 
 const Answer: React.FC<AnswerProps> = ({
@@ -51,6 +53,7 @@ const Answer: React.FC<AnswerProps> = ({
   location,
   interviewSlug,
   otherUsersAmount,
+  updatedAt,
 }) => {
   const [imagesModalOpen, setImagesModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
@@ -212,33 +215,13 @@ const Answer: React.FC<AnswerProps> = ({
                   </>
                 )}
               </div>
-
-              // <div className="flex flex-row gap-2 flex-wrap">
-              //   {images.map((image, index) => (
-              //     <ExternalLink
-              //       element={
-              //         <CldImage
-              //           key={index}
-              //           alt={`image by ${userName} - ${badgeSingularName}`}
-              //           width={200}
-              //           height={200}
-              //           style={{
-              //             objectFit: "cover",
-              //             width: "100px",
-              //             height: "100px",
-              //           }}
-              //           src={image.image.filename}
-              //         />
-              //       }
-              //       href={image.image.url}
-              //       eventName="ClickImage"
-              //       target={questionSlug + index}
-              //       locationOnPage={questionSlug}
-              //     />
-              //   ))}
-              // </div>
             )}
             <div className="flex flex-row items-center text-weasker-grey gap-5">
+              {updatedAt && (
+                <div className="first-letter:uppercase">
+                  {formatDistanceToNow(updatedAt, { addSuffix: true })}
+                </div>
+              )}
               {location !== "interview" && (
                 <>
                   <InternalLink

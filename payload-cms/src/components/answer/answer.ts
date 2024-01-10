@@ -60,16 +60,6 @@ export const answer: Field = {
           displayFormat: "PPpp",
         },
       },
-      hooks: {
-        afterChange: [
-          ({ value, collection }) => {
-            if (changeHappened == true) {
-              value = new Date();
-            }
-            return value;
-          },
-        ],
-      },
     },
   ],
 };

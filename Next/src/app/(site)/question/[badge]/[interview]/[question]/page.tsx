@@ -177,6 +177,7 @@ async function getData(badgeParam: string, interviewParam: string) {
                   userBadges{badge{seo{slug}}  services{name url}}
                 }
                 answer {
+                  updatedAt
                   richText_html
                   images {
                     image {

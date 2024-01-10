@@ -138,6 +138,7 @@ async function getData(
                 seo{slug  image {url filename}}
               }
               answer {
+                updatedAt
                 richText_html
                 images {image{url filename}}
                 video{url filename}

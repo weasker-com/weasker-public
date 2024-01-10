@@ -36,7 +36,7 @@ async function getData() {
                       slug
                     }
                   }
-                  answer{richText_html video{url filename} images{image {url filename}}}
+                  answer{updatedAt richText_html video{url filename} images{image {url filename}}}
                 }
               }
             }

@@ -209,6 +209,7 @@ export type interviewPageRes = {
                   };
                 };
                 answer: {
+                  updatedAt: string;
                   richText_html: string;
                   images:
                     | {
@@ -340,6 +341,7 @@ export type questionPageRes = {
                   }[];
                 };
                 answer: {
+                  updatedAt: string;
                   richText_html: string;
                   images:
                     | {
@@ -543,6 +545,7 @@ export type homePageRes = {
                 };
               };
               answer: {
+                updatedAt: string;
                 richText_html: string;
                 video: { url: string; filename: string } | null;
                 images: { image: { url: string; filename: string } }[];

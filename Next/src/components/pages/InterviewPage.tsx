@@ -263,6 +263,7 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
                 userSlug={params.user}
                 services={userBadge.services}
                 pfp={pfp}
+                updatedAt={relevantAnswer.updatedAt}
               />
             );
           })}
