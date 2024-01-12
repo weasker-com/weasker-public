@@ -72,6 +72,13 @@ export interface Seo {
 export interface Media {
   id: string;
   alt?: string | null;
+  cloudinary?: {
+    public_id?: string | null;
+    original_filename?: string | null;
+    format?: string | null;
+    secure_url?: string | null;
+    resource_type?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -142,6 +149,7 @@ export interface Interview {
                   }[]
                 | null;
               video?: string | Media | null;
+              updatedAt?: string | null;
             };
             id?: string | null;
           }[]
