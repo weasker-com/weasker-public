@@ -2,22 +2,29 @@ import dotenv from 'dotenv'
 import next from 'next'
 import nextBuild from 'next/dist/build'
 import path from 'path'
+import express from 'express'
+import { getPayloadClient } from './payload/payload-client'
 
 dotenv.config({
 	path: path.resolve(__dirname, '../.env.local'),
 })
 
-import express from 'express'
-
 const app = express()
 const PORT = process.env.PORT || 3000
 
-console.log('NODE_ENV', process.env.NODE_ENV)
-
 const start = async (): Promise<void> => {
+	const payload = await getPayloadClient({
+		initOptions: {
+			express: app,
+			onInit: async (newPayload) => {
+				newPayload.logger.info(`Payload Admin URL: ${newPayload.getAdminURL()}`)
+			},
+		},
+	})
+
 	if (process.env.NEXT_BUILD) {
 		app.listen(PORT, async () => {
-			console.log(`Next.js is now building...`)
+			payload.logger.info(`Next.js is now building...`)
 			// @ts-expect-error
 			await nextBuild(path.join(__dirname, '..'))
 			process.exit()
@@ -35,10 +42,10 @@ const start = async (): Promise<void> => {
 	app.use((req, res) => nextHandler(req, res))
 
 	nextApp.prepare().then(() => {
-		console.log('Next.js started')
+		payload.logger.info('Next.js started')
 
 		app.listen(PORT, async () => {
-			console.log(`Next.js app listening on port ${PORT}`)
+			payload.logger.info(`Next.js app listening on port ${PORT}`)
 		})
 	})
 }
