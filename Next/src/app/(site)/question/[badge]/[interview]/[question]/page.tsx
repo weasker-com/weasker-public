@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Questions",
-    mustHave: "BadgeInterview",
+    mustHave: ["BadgeInterview"],
   });
 
   if (!data) {
@@ -205,7 +205,7 @@ async function getData(badgeParam: string, interviewParam: string) {
     query,
     method: "POST",
     collection: "Interviews",
-    mustHave: "BadgeInterview",
+    mustHave: ["BadgeInterview"],
   });
 
   if (!data) {

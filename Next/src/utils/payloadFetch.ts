@@ -23,7 +23,7 @@ interface PayLoadFetchInterface {
   query: string;
   method: "POST" | "GET" | "READ";
   collection: "Pages" | "Badges" | "Interviews" | "Questions" | "Users";
-  mustHave?: string;
+  mustHave?: string[];
 }
 
 export async function fetchData<T>({
@@ -45,14 +45,18 @@ export async function fetchData<T>({
       .then(checkStatus)
       .then(parseJSON);
 
-    if (
-      mustHave
-        ? response && response.data?.[mustHave]?.docs?.length > 0
-        : response
-    ) {
-      return response;
+    if (mustHave && mustHave.length > 0) {
+      const hasAllRequiredFields = mustHave.every(
+        (field) => response && response.data?.[field]?.docs?.length > 0
+      );
+
+      if (hasAllRequiredFields) {
+        return response;
+      } else {
+        return null;
+      }
     } else {
-      return null;
+      return response ? response : null;
     }
   } catch (errors) {
     if (errors instanceof PayloadResponseError) {

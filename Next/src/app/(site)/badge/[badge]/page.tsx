@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Badges",
-    mustHave: "Badges",
+    mustHave: ["Badges"],
   });
 
   if (!data) {
@@ -147,7 +147,7 @@ async function getData(badgeParam: string) {
     query,
     method: "POST",
     collection: "Badges",
-    mustHave: "Badges",
+    mustHave: ["Badges"],
   });
 
   if (!data) {
