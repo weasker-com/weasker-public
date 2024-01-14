@@ -37,11 +37,14 @@ export async function fetchData<T>({
   };
 
   try {
-    const response = await fetch(`${process.env.SITE_URL}/api/graphql`, {
-      method,
-      headers,
-      body: JSON.stringify({ query }),
-    })
+    const response = await fetch(
+      `${process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL}/api/graphql`,
+      {
+        method,
+        headers,
+        body: JSON.stringify({ query }),
+      }
+    )
       .then(checkStatus)
       .then(parseJSON);
 
