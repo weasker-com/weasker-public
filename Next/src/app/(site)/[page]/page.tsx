@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Pages",
-    mustHave: "Pages",
+    mustHave: ["Pages"],
   });
 
   if (!data) {
@@ -105,7 +105,7 @@ async function getData(pageSlug: string): Promise<pageRes | null> {
     query,
     method: "POST",
     collection: "Pages",
-    mustHave: "Pages",
+    mustHave: ["Pages"],
   });
   return res;
 }

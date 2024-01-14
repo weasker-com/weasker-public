@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Users",
-    mustHave: "Users",
+    mustHave: ["Users"],
   });
 
   if (!data) {
@@ -150,7 +150,7 @@ async function getData(userParam: string) {
     query,
     method: "POST",
     collection: "Users",
-    mustHave: "Users",
+    mustHave: ["Users"],
   });
 
   if (!data) {

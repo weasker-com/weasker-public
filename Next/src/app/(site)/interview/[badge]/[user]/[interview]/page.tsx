@@ -8,6 +8,7 @@ import {
 import { defaultImages } from "@/utils/defaultImages";
 import { notFound } from "next/navigation";
 import InterviewPage from "@/components/pages/InterviewPage";
+import InterviewAllPage from "@/components/pages/InterviewAllPage";
 
 type Props = {
   params: { badge: string; user: string; interview: string };
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Interviews",
-    mustHave: "BadgeInterview",
+    mustHave: ["BadgeInterview", "InterviewUser"],
   });
 
   if (!data) {
@@ -135,7 +136,30 @@ async function getData(
             answers {
               user {
                 userName
-                seo{slug  image {url filename}}
+                seo {
+                  slug
+                  image {
+                    url
+                    filename
+                  }
+                }
+                userBadges {
+                  services {
+                    name
+                    url
+                  }
+                  bio
+                  badge {
+                    singularName
+                    seo {
+                      slug
+                      image {
+                        url
+                        filename
+                      }
+                    }
+                  }
+                }
               }
               answer {
                 updatedAt
@@ -151,7 +175,10 @@ async function getData(
         }
       }
     }
-    InterviewUser(slug: "${userParam}") {
+    ${
+      userParam &&
+      `
+      InterviewUser(slug: "${userParam}") {
       docs {
         userName
         seo {
@@ -176,13 +203,18 @@ async function getData(
         }
       }
     }
+    `
+    }
   }`;
 
   const data: interviewPageRes | null = await fetchData({
-    query,
+    query: query,
     method: "POST",
     collection: "Interviews",
-    mustHave: "BadgeInterview",
+    mustHave:
+      userParam == "all"
+        ? ["BadgeInterview"]
+        : ["InterviewUser", "BadgeInterview"],
   });
 
   if (!data) {
@@ -199,5 +231,7 @@ export default async function Interview({ params }: Props) {
     notFound();
   }
 
-  return <InterviewPage data={data} params={params} />;
+  if (params.user == "all")
+    return <InterviewAllPage data={data} params={params} />;
+  else return <InterviewPage data={data} params={params} />;
 }

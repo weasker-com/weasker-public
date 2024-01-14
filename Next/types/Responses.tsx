@@ -207,6 +207,21 @@ export type interviewPageRes = {
                     slug: string;
                     image: { url: string; filename: string };
                   };
+                  userBadges: {
+                    services:
+                      | {
+                          name: string;
+                          url: string;
+                        }[]
+                      | [];
+                    bio: string;
+                    badge: {
+                      singularName: string;
+                      seo: {
+                        slug: string;
+                      };
+                    };
+                  }[];
                 };
                 answer: {
                   updatedAt: string;
@@ -250,6 +265,77 @@ export type interviewPageRes = {
           };
         }[];
       }[];
+    };
+  };
+};
+
+export type allInterviewPageRes = {
+  data: {
+    BadgeInterview: {
+      docs: [
+        {
+          name: string;
+          badge: {
+            singularName: string;
+            pluralName: string;
+            seo: {
+              image: {
+                url: string;
+                filename: string;
+              } | null;
+            };
+          };
+          seo: {
+            image: { url: string; filename: string } | null;
+          };
+          questions: {
+            question: {
+              index: number;
+              shortQuestion: string;
+              mediumQuestion: string;
+              longQuestion: string;
+              seo: {
+                slug: string;
+                image: { url: string; filename: string } | null;
+              };
+              answers: {
+                user: {
+                  userName: string;
+                  seo: {
+                    slug: string;
+                    image: { url: string; filename: string };
+                  };
+                  userBadges: {
+                    services:
+                      | {
+                          name: string;
+                          url: string;
+                        }[]
+                      | [];
+                    bio: string;
+                    badge: {
+                      singularName: string;
+                      seo: {
+                        slug: string;
+                      };
+                    };
+                  }[];
+                };
+                answer: {
+                  updatedAt: string;
+                  richText_html: string;
+                  images:
+                    | {
+                        image: { url: string; filename: string };
+                      }[]
+                    | [];
+                  video: { url: string; filename: string } | null;
+                };
+              }[];
+            };
+          }[];
+        }
+      ];
     };
   };
 };

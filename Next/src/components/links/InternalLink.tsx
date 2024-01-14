@@ -48,7 +48,7 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
         if (onclick) {
           onclick(e);
         }
-        console.log(onclick);
+
         track(eventName, {
           target,
           location: pathname,

@@ -1,7 +1,7 @@
 "use client";
 
 import { MdOutlineAdd, MdOutlineFormatListBulleted } from "react-icons/md";
-import { interviewPageRes } from "../../../types/Responses";
+import { allInterviewPageRes } from "../../../types/Responses";
 import SidebarBox from "../SidebarBox";
 import { defaultImages } from "@/utils/defaultImages";
 import { PiShareFatThin } from "react-icons/pi";
@@ -18,29 +18,26 @@ import { useState } from "react";
 import Modal from "../Modal";
 const { convert } = require("html-to-text");
 
-interface InterviewPageProps {
-  data: interviewPageRes;
+interface InterviewAllPageProps {
+  data: allInterviewPageRes;
   params: { badge: string; user: string; interview: string };
 }
 
-const InterviewPage: React.FC<InterviewPageProps> = (data) => {
+const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
   const params = data.params;
 
   const interview = data.data.data.BadgeInterview.docs[0];
-  const user = data.data.data.InterviewUser?.docs[0];
-  const userBadge = data.data.data.InterviewUser?.docs[0].userBadges.filter(
-    (item) => item.badge.seo.slug == params.badge
-  )[0];
-  const pfp = user?.seo.image?.url || null;
+
   const interviewSlug = params.interview;
   const badgeSlug = params.badge;
-  const userName = user?.userName;
+
   const userSlug = params.user;
   const badgePluralName = interview.badge.pluralName;
-  const badgeSingularName = userBadge?.badge.singularName;
-  const badgeImage = interview.badge.seo.image?.url || null;
+  const badgeSingularName = interview.badge.singularName;
+
+  const badgeImage = interview.badge.seo.image?.filename || null;
   const interviewTitle = interview.name;
-  const bio = userBadge?.bio;
+
   const questions = interview.questions;
 
   const uniqueUsers = new Set();
@@ -75,47 +72,47 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
     setActiveModal(null);
   };
 
-  const jsonLd: WithContext<FAQPage> = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: questions
-      .filter((item) => item.question.answers.length > 0)
-      .map((item) => ({
-        "@type": "Question",
-        name: item.question.mediumQuestion,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: convert(
-            item.question.answers.filter(
-              (answer) => answer.user.seo.slug == params.user
-            )[0].answer.richText_html
-          ),
-        },
-      })),
-  };
+  // const jsonLd: WithContext<FAQPage> = {
+  //   "@context": "https://schema.org",
+  //   "@type": "FAQPage",
+  //   mainEntity: questions
+  //     .filter((item) => item.question.answers.length > 0)
+  //     .map((item) => ({
+  //       "@type": "Question",
+  //       name: item.question.mediumQuestion,
+  //       acceptedAnswer: {
+  //         "@type": "Answer",
+  //         text: convert(
+  //           item.question.answers.filter(
+  //             (answer) => answer.user.seo.slug == params.user
+  //           )[0].answer.richText_html
+  //         ),
+  //       },
+  //     })),
+  // };
 
   return (
     <>
-      <script
+      {/* <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      /> */}
       <Hero
         title={interviewTitle}
         preTitle={
           <>
-            {badgeSingularName},&nbsp;
+            we asked&nbsp;
             <InternalLink
-              element={userName}
+              element={badgePluralName}
               style={"inherit"}
-              href={`/user/${userSlug}`}
-              eventName={"ClickUserName"}
-              target={userName}
+              href={`/badge/${badgeSlug}`}
+              eventName={"ClickBadgeName"}
+              target={badgePluralName}
               locationOnPage={"subTitle"}
             />
           </>
         }
-        image={pfp}
+        image={badgeImage}
         location={"interview"}
       />
       <SubMenu>
@@ -126,22 +123,6 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
           className="flex flex-row items-center gap-1"
         >
           <MdOutlineFormatListBulleted /> Questions
-        </div>
-        <div
-          onClick={() => {
-            handleModalOpen("contact");
-          }}
-          className="flex flex-row items-center gap-1"
-        >
-          <LiaUserCheckSolid /> Contact
-        </div>
-        <div
-          onClick={() => {
-            handleModalOpen("bio");
-          }}
-          className="flex flex-row items-center gap-1"
-        >
-          <BsFileText /> Bio
         </div>
         <div
           onClick={() => {
@@ -181,42 +162,6 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
         </Modal>
       )}
 
-      {modalIsOpen && activeModal == "contact" && (
-        <Modal onclick={handleModalClose}>
-          <SidebarBox
-            title={`Contact ${userName}`}
-            linkStyle="blue"
-            array={userBadge.services.map((item) => {
-              return {
-                name: item.name,
-                url: item.url,
-                icon: <IoLinkOutline size={20} />,
-                eventName: "ClickQuestionPage",
-              };
-            })}
-          />
-        </Modal>
-      )}
-      {modalIsOpen && activeModal == "bio" && (
-        <Modal onclick={handleModalClose}>
-          <SidebarBox
-            title={"Bio"}
-            element={
-              <>
-                {bio}
-                <InternalLink
-                  style="blue"
-                  element={`${userName} user page`}
-                  href={`/user/${userSlug}`}
-                  eventName={"ClickUserName"}
-                  target={userName}
-                  locationOnPage={"bio box"}
-                />
-              </>
-            }
-          />
-        </Modal>
-      )}
       {modalIsOpen && activeModal == "more" && (
         <Modal onclick={handleModalClose}>
           <SidebarBox
@@ -242,11 +187,26 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
         <div className="lg:w-[70%] flex flex-col">
           {questions.map((item, index) => {
             const question = item.question;
+            const [chosenUserAnswer, setChosenUserAnswer] = useState<string>(
+              question.answers.map((item) => {
+                return item.user.seo.slug;
+              })[0]
+            );
+            const usersImages = question.answers.map((item) => {
+              return {
+                pfp: item.user.seo.image.filename,
+                slug: item.user.seo.slug,
+              };
+            });
             const relevantAnswer = question.answers.filter(
-              (answer) => answer.user.seo.slug == params.user
-            )[0].answer;
+              (answer) => answer.user.seo.slug == chosenUserAnswer
+            )[0];
             return (
               <Answer
+                location={"allInterview"}
+                usersImages={usersImages}
+                onClickUserImage={setChosenUserAnswer}
+                chosenUserSlug={chosenUserAnswer}
                 key={index}
                 index={index + 1}
                 interviewSlug={params.interview}
@@ -254,55 +214,21 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
                 badgePluralName={badgePluralName}
                 badgeSlug={badgeSlug}
                 badgeImage={badgeImage}
-                location={"interview"}
                 questionText={item.question.shortQuestion}
-                answerText={relevantAnswer.richText_html}
-                images={relevantAnswer.images}
-                video={relevantAnswer.video}
+                answerText={relevantAnswer.answer.richText_html}
+                images={relevantAnswer.answer.images}
+                video={relevantAnswer.answer.video}
                 questionSlug={question.seo.slug}
                 otherUsersAmount={question.answers.length - 1}
-                userName={userName}
+                userName={relevantAnswer.user.userName}
                 userSlug={params.user}
-                services={userBadge.services}
-                pfp={pfp}
-                updatedAt={relevantAnswer.updatedAt}
+                pfp={relevantAnswer.user.seo.image.filename}
+                updatedAt={relevantAnswer.answer.updatedAt}
               />
             );
           })}
         </div>
         <div className="lg:block hidden flex flex-col gap-2 w-[30%] text-sm">
-          {
-            <SidebarBox
-              title={"Bio"}
-              element={
-                <>
-                  {bio}
-                  <InternalLink
-                    style="blue"
-                    element={`${userName} user page`}
-                    href={`/user/${userSlug}`}
-                    eventName={"ClickUserName"}
-                    target={userName}
-                    locationOnPage={"bio box"}
-                  />
-                </>
-              }
-            />
-          }
-          {
-            <SidebarBox
-              title={"Contact"}
-              linkStyle="blue"
-              array={userBadge.services.map((item) => {
-                return {
-                  name: item.name,
-                  url: item.url,
-                  icon: <IoLinkOutline size={20} />,
-                  eventName: "ClickQuestionPage",
-                };
-              })}
-            />
-          }
           <SidebarBox
             title={"Questions"}
             array={questions.map((item) => {
@@ -336,4 +262,4 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
   );
 };
 
-export default InterviewPage;
+export default InterviewAllPage;
