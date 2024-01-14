@@ -3,7 +3,7 @@
 import { InternalLink } from "./links/InternalLink";
 import { CldImage } from "next-cloudinary";
 
-interface SidebarBoxProps {
+export interface SidebarBoxProps {
   title: string;
   element?: JSX.Element;
   linkStyle?: "blue" | "inherit";

@@ -2,7 +2,7 @@
 
 import { MdOutlineAdd, MdOutlineFormatListBulleted } from "react-icons/md";
 import { interviewPageRes } from "../../../types/Responses";
-import SidebarBox from "../SidebarBox";
+import SidebarBox, { SidebarBoxProps } from "../SidebarBox";
 import { defaultImages } from "@/utils/defaultImages";
 import { PiShareFatThin } from "react-icons/pi";
 import SocialShareButtons from "../SocialShareButtons";
@@ -187,12 +187,13 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
             title={`Contact ${userName}`}
             linkStyle="blue"
             array={userBadge.services.map((item) => {
-              return {
+              const arrayItem: SidebarBoxProps['array'][number] = {
                 name: item.name,
                 url: item.url,
                 icon: <IoLinkOutline size={20} />,
                 eventName: "ClickQuestionPage",
               };
+              return arrayItem;
             })}
           />
         </Modal>
@@ -271,6 +272,37 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
           })}
         </div>
         <div className="lg:block hidden flex flex-col gap-2 w-[30%] text-sm">
+
+          <SidebarBox
+            title={"Bio"}
+            element={
+              <>
+                {bio}
+                <InternalLink
+                  style="blue"
+                  element={`${userName} user page`}
+                  href={`/user/${userSlug}`}
+                  eventName={"ClickUserName"}
+                  target={userName}
+                  locationOnPage={"bio box"}
+                />
+              </>
+            }
+          />
+          <SidebarBox
+            title={"Contact"}
+            linkStyle="blue"
+            array={userBadge.services.map((item) => {
+              const arrayItem: SidebarBoxProps['array'][number] = {
+                name: item.name,
+                url: item.url,
+                icon: <IoLinkOutline size={20} />,
+                eventName: "ClickQuestionPage",
+              };
+              return arrayItem;
+            })}
+          />
+
           {
             <SidebarBox
               title={"Bio"}
@@ -303,6 +335,7 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
               })}
             />
           }
+
           <SidebarBox
             title={"Questions"}
             array={questions.map((item) => {

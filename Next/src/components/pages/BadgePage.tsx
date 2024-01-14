@@ -171,7 +171,7 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
             {users.length > 0 ? (
               users.map((item, index) => {
                 const relevantBadge = item.userBadges.filter(
-                  (item) => item.badge.seo.slug == params.badge
+                  (item) => item.badge?.seo.slug == params.badge
                 )[0];
                 return (
                   <ListItem
