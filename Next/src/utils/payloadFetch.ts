@@ -37,7 +37,7 @@ export async function fetchData<T>({
   };
 
   try {
-    const response = await fetch(`${process.env.PAYLOAD_SITE}/api/graphql`, {
+    const response = await fetch(`/api/graphql`, {
       method,
       headers,
       body: JSON.stringify({ query }),
