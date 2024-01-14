@@ -1,63 +1,62 @@
-import Image from "next/image";
-import Link from "next/link";
-import { listItem } from "../../types/listItem-type";
+"use client";
+
+import { CldImage } from "next-cloudinary";
 import { InternalLink } from "./links/InternalLink";
 
-const ListItem = (props: listItem) => {
+interface InterviewProps {
+  location: "hp" | "page" | "interview" | "question" | "badge" | "user";
+  name: string;
+  slugs?: string;
+  image?: string;
+  excerpt?: string;
+  preTitle?: string;
+  links?: JSX.Element[];
+}
+
+const ListItem: React.FC<InterviewProps> = ({
+  location,
+  name,
+  slugs,
+  image,
+  excerpt,
+  preTitle,
+  links,
+}) => {
   return (
-    <div className="flex flex-row w-full gap-2 sm:gap-5 my-5 sm:my-8 items-center capitalize">
-      <InternalLink
-        element={
-          <div className="w-[65px]">
-            <Image
-              style={{
-                width: "65px",
-                height: "65px",
-                borderRadius: "100px",
-              }}
-              src={props.image}
-              alt={props.title}
-              width={65}
-              height={65}
-            ></Image>
-          </div>
-        }
-        href={`/question/${props.badge.slug}/${props.slug}`}
-        eventName="ClickQuestionPage"
-        target={props.title}
-        locationOnPage="list"
-      />
-      <div className="flex flex-col">
+    <div className="flex flex-col gap-3 mb-2 mx-2 lg:mx-0 bg-white p-5 border rounded-t border-weasker-light-grey/50">
+      {slugs ? (
         <InternalLink
           element={
-            <>
-              <Image
-                src={props.badge.image}
-                alt={props.badge.name}
-                width={20}
-                height={20}
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "100px",
-                }}
-              ></Image>
-              <span className="text-sm">{props.badge.name}</span>
-            </>
+            <div className="flex flex-row items-center content-center gap-3">
+              {image && (
+                <CldImage
+                  width={200}
+                  height={200}
+                  src={image}
+                  alt={name}
+                  className="h-[50px] w-[50px] sm:w-[70px] sm:h-[70px] cover  rounded-full border-2 border-weasker-grey"
+                />
+              )}
+              <div>
+                <span className=" text-weasker-grey">{preTitle}</span>
+                <h2>{name}</h2>
+              </div>
+            </div>
           }
-          className="text-tl-dark-blue flex flex-row items-center gap-1"
-          href={`/badge/${props.badge.slug}`}
-          eventName="ClickBadgeName"
-          target={props.badge.name}
-          locationOnPage="list"
+          href={slugs}
+          eventName={"ClickQuestionPage"}
+          target={name}
+          locationOnPage={"main"}
         />
-        <InternalLink
-          element={<p>{props.title}</p>}
-          href={`/question/${props.badge.slug}/${props.slug}`}
-          eventName="ClickQuestionPage"
-          target={props.title}
-          locationOnPage="list"
-        />
+      ) : (
+        <h2>{name}</h2>
+      )}
+
+      <div className="flex flex-col gap-2">
+        <span>{excerpt}</span>
+        <div className="mt-3 flex flex-row gap-5 flex-wrap items-center">
+          {links}
+        </div>
       </div>
     </div>
   );

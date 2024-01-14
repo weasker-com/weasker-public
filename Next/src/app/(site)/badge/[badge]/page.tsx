@@ -1,34 +1,73 @@
-import HeroBadge from "@/components/Hero-badge";
-import {
-  getBadgePage,
-  getBadgePageMeta,
-} from "../../../../../sanity/sanity-utils";
-import Image from "next/image";
-import Link from "next/link";
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
-import { InternalLink } from "@/components/links/InternalLink";
-import ExternalLink from "@/components/links/ExternalLink";
+import { fetchData } from "@/utils/payloadFetch";
+import { badgePageRes, badgeSeoRes } from "../../../../../types/Responses";
+import { defaultImages } from "@/utils/defaultImages";
+import { notFound } from "next/navigation";
+import BadgePage from "@/components/pages/BadgePage";
 
 type Props = {
   params: { badge: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const meta = await getBadgePageMeta(params.badge);
+  const query = ` {
+    Badges(where: { seo__slug: { equals: "${params.badge}"} }) {
+      docs {
+        singularName
+        pluralName
+        seo {
+          title
+          description
+          image {
+            url
+            filename
+          }
+          keywords {
+            keyword
+          }
+        }
+      }
+    }
+    BadgeUsers(slug: "${params.badge}") {
+      docs {
+        id
+      }
+    }
+  }
+  
+  `;
+
+  const data: badgeSeoRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Badges",
+    mustHave: ["Badges"],
+  });
+
+  if (!data) {
+    return {};
+  }
+
+  const seoMeta = data.data.Badges.docs[0];
+  const singularName = seoMeta.singularName;
+  const pluralName = seoMeta.pluralName;
+  const usersAmount = data.data.BadgeUsers.docs.length;
+  const image = seoMeta.seo.image?.url || defaultImages.weaskerLogoUrl;
+  const seoTitle = seoMeta.seo.title;
+  const seoDescription = seoMeta.seo.description;
 
   const metaTitle = capitalize(
-    meta.seoTitle
-      ? meta.seoTitle
-      : `We interviewed the ${meta.usersAmount} best ${meta.name}`
+    seoTitle ? seoTitle : `We interviewed the ${usersAmount} best ${pluralName}`
   );
 
-  const metaDescription = meta.seoDescription
-    ? meta.seoDescription
-    : `We interviewed ${meta.usersAmount} of the best ${meta.name}, read what each ${meta.singularName} had to say.`;
+  const metaDescription = seoDescription
+    ? seoDescription
+    : `We interviewed ${usersAmount} of the best ${pluralName}, read what each ${singularName} had to say.`;
 
-  const ogImage = meta.ogImage;
-  const slug = meta.slug;
+  const ogImage = `/api/og?img=${image}&preTitle=weasker.com&title=${singularName} badge`;
+
+  const slug = params.badge;
 
   return {
     title: metaTitle,
@@ -39,132 +78,91 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://www.weasker.com/badge/${slug}`,
       title: metaTitle,
       description: metaDescription,
-      siteName: "weasker",
+      siteName: process.env.SITE_NAME,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      siteId: "1743914690978164736",
+      creator: process.env.SITE_NAME,
+      creatorId: "1743914690978164736",
+      images: [ogImage],
     },
   };
 }
 
 async function getData(badgeParam: string) {
-  const res = await getBadgePage(badgeParam);
-  if (!res) {
-    throw new Error("Failed to fetch data");
+  const query = ` {
+    Badges(where: { seo__slug: { equals: "${badgeParam}"} }) {
+      docs {
+        singularName
+        pluralName
+        seo {
+          excerpt
+          image {
+            url
+            filename
+          }
+        }
+      }
+    }
+    BadgeUsers(slug: "${badgeParam}") {
+      docs {
+        userName
+        userBadges{
+          bio
+          services{name url}
+          badge{seo{slug}}
+        }
+        seo {
+          slug
+          image {
+            url
+            filename
+          }
+        }
+      }
+    }
+    BadgeQuestions(slug: "${badgeParam}"){
+      docs{
+        name
+        seo{slug image{url filename}}
+        questions{
+          question{
+            answers{user{userName}}
+            shortQuestion
+            mediumQuestion
+            longQuestion
+            index
+            seo{slug image{url filename}}
+          }
+        }
+      }
+    }
   }
-  return res;
+  `;
+
+  const data: badgePageRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Badges",
+    mustHave: ["Badges"],
+  });
+
+  if (!data) {
+    return null;
+  }
+
+  return data;
 }
 
 export default async function Badge({ params }: Props) {
   const data = await getData(params.badge);
 
   if (!data) {
-    return "no data";
+    notFound();
   }
 
-  return (
-    <>
-      <div className="flex flex-col gap-5 sm:gap-10">
-        <HeroBadge
-          h1={data.badgeDetails.singularName}
-          excerpt={data.badgeDetails.excerpt}
-          featuredImageSrc={data.badgeDetails.image}
-          featuredImageAlt={data.badgeDetails.name}
-        />
-        <div className="flex flex-col gap-5 sm:w-[70%] sm:mx-auto">
-          <h2 className="capitalize">{data.badgeDetails.name}</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {data.usersDetails.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-row gap-3 sm:gap-5 items-center"
-              >
-                <InternalLink
-                  element={
-                    <div className="w-[65px]">
-                      <Image
-                        width={65}
-                        height={65}
-                        src={item.image}
-                        alt={item.name}
-                        className="rounded-full"
-                        style={{
-                          objectFit: "cover",
-                          width: "65px",
-                          height: "65px",
-                        }}
-                      />
-                    </div>
-                  }
-                  target={item.name}
-                  href={`/user/${item.slug}`}
-                  eventName="ClickUserImage"
-                  locationOnPage="experts list"
-                />
-                <div className="flex flex-col">
-                  <InternalLink
-                    element={item.name}
-                    target={item.name}
-                    href={`/user/${item.slug}`}
-                    className="text-base sm:text-xl font-semibold text-tl-dark-blue"
-                    eventName="ClickUserName"
-                    locationOnPage="main"
-                  />
-                  <ExternalLink
-                    element={
-                      <>
-                        <div>{data.badgeDetails.singularName}</div>
-                        &nbsp;at&nbsp;
-                        <span className="text-tl-light-blue">
-                          {item.services[0].name}
-                        </span>
-                      </>
-                    }
-                    target={item.services[0].name}
-                    href={item.services[0].url}
-                    className="flex flex-row text-tl-dark-blue"
-                    eventName="ClickUserService"
-                    locationOnPage="main"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col gap-5 sm:w-[70%] sm:mx-auto">
-          <h2 className="capitalize">we asked</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {data.questions.map((item, index) => (
-              <InternalLink
-                element={
-                  <>
-                    <Image
-                      width={65}
-                      height={65}
-                      src={item.image}
-                      alt={item.shortQuestion}
-                      className="rounded-full"
-                      style={{
-                        objectFit: "cover",
-                        width: "65px",
-                        height: "65px",
-                      }}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-tl-dark-blue text-xs font-light">
-                        {data.badgeDetails.name}
-                      </span>
-                      <p>{item.shortQuestion}</p>
-                    </div>
-                  </>
-                }
-                href={`/question/${data.badgeDetails.slug}/${item.slug}`}
-                className="flex flex-row gap-3 sm:gap-5 items-center"
-                eventName="ClickQuestionPage"
-                target={item.shortQuestion}
-                locationOnPage="main"
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </>
-  );
+  return <BadgePage data={data} params={params} />;
 }

@@ -1,26 +1,12 @@
-import Image from "next/image";
-import logo from "../../public/logo/tl-logo-sep-23.png";
 import { InternalLink } from "./links/InternalLink";
 
 const Navbar = () => {
   return (
-    <div className="border-bottom h-max py-4 border-b border-grey border-zinc-100">
-      <div className="text-4xl my-auto m-auto w-max">
+    <div className="h-max py-1 border-b border-zinc-100 bg-white">
+      <div className="text-4xl font-black font-extrabold smallCaps text-tl-dark-blue my-auto mx-3 max-w-[1000px] lg:mx-auto m-auto ">
         <InternalLink
-          element={
-            <>
-              <Image
-                width={55}
-                height={55}
-                className="rounded-full"
-                src={logo}
-                alt="weasker logo"
-                style={{ objectFit: "cover", width: "55px", height: "55px" }}
-              />{" "}
-              weasker
-            </>
-          }
-          className="flex flex-row items-center gap-2 font-bold"
+          element={<>Weasker</>}
+          className=""
           href="/"
           eventName="ClickInnerPage"
           target="HP"

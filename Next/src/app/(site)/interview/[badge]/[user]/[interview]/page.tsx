@@ -1,43 +1,76 @@
-import {
-  getInterviewPage,
-  getInterviewPageMeta,
-} from "../../../../../../../sanity/sanity-utils";
-import { PortableText, toPlainText } from "@portabletext/react";
-import Link from "next/link";
-import Hero from "@/components/Hero";
-import UserServices from "@/components/UserServices";
-import QAndA from "@/components/QAndA";
-import Image from "next/image";
-import SidebarInterviewPage from "@/components/Sidebar-interviewPage";
 import capitalize from "@/helpers/capitalize";
 import { Metadata } from "next";
-import { FAQPage, WithContext } from "schema-dts";
-import { InternalLink } from "@/components/links/InternalLink";
+import { fetchData } from "@/utils/payloadFetch";
+import {
+  interviewPageRes,
+  interviewSeoRes,
+} from "../../../../../../../types/Responses";
+import { defaultImages } from "@/utils/defaultImages";
+import { notFound } from "next/navigation";
+import InterviewPage from "@/components/pages/InterviewPage";
+import InterviewAllPage from "@/components/pages/InterviewAllPage";
 
 type Props = {
   params: { badge: string; user: string; interview: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const meta = await getInterviewPageMeta(params.user, params.interview);
-  console.log(meta.interview);
+  const query = `
+  {
+    BadgeInterview(badgeSlug:"${params.badge}" interviewSlug:"${params.interview}") {
+      docs {
+        name
+        badge {singularName pluralName seo{image{url filename}}}
+        seo {title description image{url filename}}
+      }
+    }
+    InterviewUser(slug:"${params.user}") {
+      docs {
+        userName
+        seo{image{url filename}}
+      }
+    }
+    }
+  `;
+
+  const data: interviewSeoRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Interviews",
+    mustHave: ["BadgeInterview", "InterviewUser"],
+  });
+
+  if (!data) {
+    return {};
+  }
+
+  const interview = data.data.BadgeInterview.docs[0];
+  const user = data.data.InterviewUser.docs[0];
+  const seoTitle = interview.seo.title;
+  const seoDescription = interview.seo.description;
+  const userName = user.userName;
+  const pfp = user.seo.image?.url || defaultImages.weaskerLogoUrl;
+  const interviewName = interview.name;
+  const badgeSingularName = interview.badge.singularName;
+  const badgePluralName = interview.badge.pluralName;
+  const interviewImage =
+    interview.seo.image?.url || defaultImages.weaskerLogoUrl;
+
   const metaTitle = capitalize(
-    meta.interview.seoTitle
-      ? meta.interview.seoTitle
-      : `${meta.user.name} ${meta.interview.name}`
+    seoTitle ? seoTitle : `${userName} ${interviewName}`
   );
 
-  const metaDescription = meta.interview.seoDescription
-    ? meta.interview.seoDescription
-    : `${meta.interview.badgeSingularName} ${meta.user.name} took the interview ${meta.interview.name} for ${meta.interview.badgeName}`;
+  const metaDescription = seoDescription
+    ? seoDescription
+    : `${badgeSingularName} ${userName} took the interview ${interviewName} for ${badgePluralName}`;
 
-  const ogImage = meta.user.ogImage || meta.interview.ogImage;
+  const ogImage = `/api/og?img=${interviewImage}&smallImg=${pfp}&preTitle=${userName} interview&title=${interviewName}`;
   const slugA = params.badge;
   const slugB = params.user;
   const slugC = params.interview;
 
   const author = {
-    name: meta.user.name,
+    name: userName,
     url: `https://www.weasker.com/user/${slugB}`,
   };
 
@@ -51,148 +84,154 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://www.weasker.com/interview/${slugA}/${slugB}/${slugC}/`,
       title: metaTitle,
       description: metaDescription,
-      siteName: "weasker",
+      siteName: process.env.SITE_NAME,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      siteId: "1743914690978164736",
+      creator: process.env.SITE_NAME,
+      creatorId: "1743914690978164736",
+      images: [ogImage],
     },
   };
 }
 
-async function getData(userParam: string, interviewParam: string) {
-  const res = await getInterviewPage(userParam, interviewParam);
-  if (!res) {
-    throw new Error("Failed to fetch data");
+async function getData(
+  userParam: string,
+  interviewParam: string,
+  badgeParam: string
+) {
+  const query = `{
+    BadgeInterview(
+      badgeSlug: "${badgeParam}"
+      interviewSlug: "${interviewParam}"
+    ) {
+      docs {
+        name
+        badge {
+          singularName
+          pluralName
+          seo {
+            image {
+              filename
+              url
+            }
+          }
+        }
+        seo {
+          slug
+          image {
+            filename
+            url
+          }
+        }
+        questions {
+          question {
+            shortQuestion
+            mediumQuestion
+            longQuestion
+            seo{slug image{url filename}}
+            answers {
+              user {
+                userName
+                seo {
+                  slug
+                  image {
+                    url
+                    filename
+                  }
+                }
+                userBadges {
+                  services {
+                    name
+                    url
+                  }
+                  bio
+                  badge {
+                    singularName
+                    seo {
+                      slug
+                      image {
+                        url
+                        filename
+                      }
+                    }
+                  }
+                }
+              }
+              answer {
+                updatedAt
+                richText_html
+                images {image{url filename}}
+                video{url filename}
+              }
+            }
+            seo {
+              slug
+            }
+          }
+        }
+      }
+    }
+    ${
+      userParam &&
+      `
+      InterviewUser(slug: "${userParam}") {
+      docs {
+        userName
+        seo {
+          slug
+          image {
+            filename
+            url
+          }
+        }
+        userBadges {
+          services {
+            name
+            url
+          }
+          bio
+          badge {
+            singularName
+            seo{
+              slug
+            }
+          }
+        }
+      }
+    }
+    `
+    }
+  }`;
+
+  const data: interviewPageRes | null = await fetchData({
+    query: query,
+    method: "POST",
+    collection: "Interviews",
+    mustHave:
+      userParam == "all"
+        ? ["BadgeInterview"]
+        : ["InterviewUser", "BadgeInterview"],
+  });
+
+  if (!data) {
+    return null;
   }
-  return res;
+
+  return data;
 }
 
 export default async function Interview({ params }: Props) {
-  const userParam = params.user;
-  const interviewParam = params.interview;
-
-  const data = await getData(userParam, interviewParam);
+  const data = await getData(params.user, params.interview, params.badge);
 
   if (!data) {
-    return "no answers";
+    notFound();
   }
 
-  const featuredImage = data.user.pfp;
-  const interviewSlug = interviewParam;
-  const badgeSlug = data.user.badges[0].slug;
-  const userName = data.user.name;
-  const userSlug = data.user.slug;
-  const userBadge = data.user.badges[0].singularName;
-  const interviewTitle = data.interview.name;
-  const bio = data.user.userBio;
-  const otherUsers = data.otherUsers;
-  const otherUsersAmount = data.otherUsers.length;
-
-  const jsonLd: WithContext<FAQPage> = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: data.questions
-      .filter((item) => item.answer?.answers?.interviewAnswer)
-      .map((item) => ({
-        "@type": "Question",
-        name: item.mediumQuestion,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: toPlainText(item.answer.answers.interviewAnswer),
-        },
-      })),
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <Hero
-        h1a={
-          <>
-            <div className="md:flex flex-rox items-center flex-wrap hidden ">
-              we asked&nbsp;
-              <InternalLink
-                element={userBadge}
-                href={`/badge/${badgeSlug}`}
-                target={userBadge}
-                eventName="ClickBadgeName"
-                locationOnPage="hero"
-              />
-              &nbsp;
-              <InternalLink
-                element={userName}
-                className="flex flex-rox items-center"
-                href={`/user/${userSlug}`}
-                target={userName}
-                eventName="ClickUserName"
-                locationOnPage="hero"
-              />
-            </div>
-            <div className="flex flex-col md:hidden">
-              <div>we asked</div>
-              <div className="flex flex-row items-center gap-1 border rounded-xl shadow p-2 mt-2 ">
-                {" "}
-                <div className="min-w-[50px]">
-                  <InternalLink
-                    element={
-                      <Image
-                        className="rounded-full"
-                        src={featuredImage}
-                        width={50}
-                        height={50}
-                        alt={userName}
-                        style={{
-                          objectFit: "cover",
-                          width: "50px",
-                          height: "50px",
-                        }}
-                      ></Image>
-                    }
-                    href={`/user/${userSlug}`}
-                    target={userName}
-                    eventName="ClickUserImage"
-                    locationOnPage="hero"
-                  />
-                </div>
-                <UserServices
-                  services={data.user.services}
-                  name={userName}
-                  badgeName={userBadge}
-                />
-              </div>
-            </div>
-          </>
-        }
-        h1b={interviewTitle}
-        excerpt={<PortableText value={bio} />}
-        featuredImageSrc={featuredImage}
-        featuredImageAlt="weasker logo"
-        services={
-          <UserServices
-            services={data.user.services}
-            name={userName}
-            badgeName={userBadge}
-          />
-        }
-        featuredImageUrl={`/user/${userSlug}`}
-      />
-      <div className="flex flex-col sm:flex-row gap-5 sm:gap-20">
-        <div className="md:max-w-[70%] flex flex-col">
-          <QAndA
-            questions={data.questions}
-            userDetails={data.user}
-            interviewSlug={interviewSlug}
-            otherUsersAmount={otherUsersAmount}
-          />
-        </div>
-        <div>
-          <SidebarInterviewPage
-            questions={data.questions}
-            otherUsers={otherUsers}
-            interviewSlug={interviewSlug}
-          />
-        </div>
-      </div>
-    </>
-  );
+  if (params.user == "all")
+    return <InterviewAllPage data={data} params={params} />;
+  else return <InterviewPage data={data} params={params} />;
 }

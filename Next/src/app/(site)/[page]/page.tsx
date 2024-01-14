@@ -1,30 +1,60 @@
-import HeroHP from "@/components/Hero-hp";
-import {
-  getInnerPage,
-  getInnerPageMeta,
-} from "../../../../sanity/sanity-utils";
 import { Metadata } from "next";
-import { PortableText } from "@portabletext/react";
 import capitalize from "@/helpers/capitalize";
+import { fetchData } from "@/utils/payloadFetch";
+import { pageRes, pageSeoRes } from "../../../../types/Responses";
+import { defaultImages } from "../../../utils/defaultImages";
+import { notFound } from "next/navigation";
+import GenericPage from "@/components/pages/GenericPage";
 
 type Props = {
   params: { page: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const meta = await getInnerPageMeta(params.page);
+  const query = `{
+      Pages(where: { seo__slug: { equals: "${params.page}" } }) {
+        docs {
+          name
+          seo {
+            title
+            description
+            image {
+              url
+              filename
+            }
+            keywords {
+              keyword
+            }
+          }
+        }
+      }
+    }
+    `;
+  const data: pageSeoRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Pages",
+    mustHave: ["Pages"],
+  });
 
-  const metaTitle = capitalize(
-    meta.seoTitle ? meta.seoTitle : `${meta.name} | weasker`
-  );
+  if (!data) {
+    return {};
+  }
 
-  const metaDescription = meta.seoDescription
-    ? meta.seoDescription
+  const seoMeta = data.data.Pages.docs[0];
+  const pageName = seoMeta.name;
+  const image = seoMeta.seo.image?.url || defaultImages.weaskerLogoUrl;
+  const seoTitle = seoMeta.seo.title;
+  const seoDescription = seoMeta.seo.description;
+
+  const metaTitle = capitalize(seoTitle ? seoTitle : `${pageName} | weasker`);
+  const metaDescription = seoDescription
+    ? seoDescription
     : `${capitalize(
-        meta.name
+        pageName
       )} - We interview experts from all fields and compare their answers, compiling diverse and reliable information`;
 
-  const ogImage = meta.ogImage || meta.image;
+  const ogImage = `/api/og?img=${image}&preTitle=${process.env.SITE_NAME}.com&title=${pageName}`;
   const slug = params.page;
 
   return {
@@ -36,38 +66,57 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://www.weasker.com/${slug}`,
       title: metaTitle,
       description: metaDescription,
-      siteName: "weasker",
+      siteName: process.env.SITE_NAME,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      siteId: "1743914690978164736",
+      creator: process.env.SITE_NAME,
+      creatorId: "1743914690978164736",
+      images: [ogImage],
     },
   };
 }
 
-async function getData(pageParam: string) {
-  const res = await getInnerPage(pageParam);
-  if (!res) {
-    throw new Error("Failed to fetch data");
+async function getData(pageSlug: string): Promise<pageRes | null> {
+  const query = `{
+    Pages(where: { seo__slug: { equals: "${pageSlug}" } }) {
+      docs {
+        name
+        richText_html
+        seo {
+          title
+          description
+          excerpt
+          image {
+            url
+          }
+          keywords {
+            keyword
+          }
+        }
+      }
+    }
   }
+  `;
+  const res: pageRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Pages",
+    mustHave: ["Pages"],
+  });
   return res;
 }
 
-export default async function About({ params }: Props) {
+export default async function Page({ params }: Props) {
   const pageParam = params.page;
-
   const data = await getData(pageParam);
 
   if (!data) {
-    return "no page";
+    notFound();
   }
 
-  const title = data.name;
-  const excerpt = data.excerpt;
-  const content = data.content;
-
-  return (
-    <>
-      <HeroHP h1a="" h1b={title} excerpt={excerpt} />
-      <text className="md:max-w-[60%] mx-auto">
-        <PortableText value={content} />
-      </text>
-    </>
-  );
+  return <GenericPage data={data} params={params} />;
 }

@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
-import { getSiteMapData } from "../../../sanity/sanity-utils";
+import { fetchData } from "@/utils/payloadFetch";
+import { siteMapRes } from "../../../types/Responses";
 
 const WEBSITE_HOST_URL = process.env.SITE_URL || "https://www.weasker.com";
 
@@ -12,41 +13,146 @@ type changeFrequency =
   | "yearly"
   | "never";
 
+async function getData() {
+  const query = `
+    {
+      Interviews {
+        docs {
+          seo {
+            slug
+          }
+          updatedAt
+          badge{seo{slug}}
+          questions {
+            question {
+              answers {
+                user {
+                  seo {
+                    slug
+                  }
+                }
+              }
+              seo {
+                slug
+              }
+            }
+          }
+        }
+      }
+      Users{
+        docs{
+          seo{slug}
+          updatedAt
+        }
+      }
+      Badges{
+        docs{
+          seo{slug}
+          updatedAt
+        }
+      }
+      Pages{docs{seo{slug} updatedAt}}
+    }    
+    `;
+
+  const data: siteMapRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Interviews",
+  });
+
+  if (!data) {
+    return null;
+  }
+  return data;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  let data = await getSiteMapData();
+  const data = await getData();
 
-  const questions = data.questions.map((item, index) => ({
-    url: `${WEBSITE_HOST_URL}/question/${item.badgeSlug}/${item.questionSlug}`,
-    lastModified: item.updated,
-    changeFrequency: "daily" as changeFrequency,
-  }));
+  if (!data) {
+    return [
+      {
+        url: WEBSITE_HOST_URL,
+        lastModified: new Date(),
+        changeFrequency: "daily" as changeFrequency,
+      },
+    ];
+  }
 
-  const interviews = data.interviews.map((item, index) => ({
-    url: `${WEBSITE_HOST_URL}/interview/${item.badgeSlug}/${item.userSlug}/${item.interviewSlug}`,
-    lastModified: item.updated,
-    changeFrequency: "daily" as changeFrequency,
-  }));
+  const questions = data.data.Interviews.docs.flatMap((interview) => {
+    return interview.questions.map((question) => {
+      const badgeSlug = interview.badge.seo.slug;
+      const interviewUpdatedAt = interview.updatedAt;
+      const interviewSlug = interview.seo.slug;
+      const questionSlug = question.question.seo.slug;
+      return {
+        url: `${WEBSITE_HOST_URL}/question/${badgeSlug}/${interviewSlug}/${questionSlug}`,
+        lastModified: interviewUpdatedAt,
+        changeFrequency: "daily" as changeFrequency,
+      };
+    });
+  });
 
-  const users = data.users.map((item, index) => ({
-    url: `${WEBSITE_HOST_URL}/user/${item.userSlug}`,
-    lastModified: item.updated,
-    changeFrequency: "weekly" as changeFrequency,
-  }));
+  const uniqueUrls = new Set();
+  const interviews = data.data.Interviews.docs.flatMap((interview) => {
+    const badgeSlug = interview.badge.seo.slug;
+    const interviewUpdatedAt = interview.updatedAt;
+    const interviewSlug = interview.seo.slug;
 
-  const badges = data.badges.map((item, index) => ({
-    url: `${WEBSITE_HOST_URL}/badge/${item.badgeSlug}`,
-    lastModified: item.updated,
-    changeFrequency: "weekly" as changeFrequency,
-  }));
+    return interview.questions.flatMap((question) => {
+      return question.question.answers
+        .filter((answer) => {
+          const userSlug = answer.user.seo.slug;
+          const url = `${WEBSITE_HOST_URL}/interview/${badgeSlug}/${userSlug}/${interviewSlug}`;
 
-  const pages = data.pages.map((item, index) => ({
-    url:
-      item.pageSlug == "/"
-        ? `${WEBSITE_HOST_URL}`
-        : `${WEBSITE_HOST_URL}/${item.pageSlug}`,
-    lastModified: item.updated,
-    changeFrequency: "weekly" as changeFrequency,
-  }));
+          if (!uniqueUrls.has(url)) {
+            uniqueUrls.add(url);
+            return true;
+          }
 
-  return [...questions, ...interviews, ...users, ...badges, ...pages];
+          return false;
+        })
+        .map((answer) => {
+          const userSlug = answer.user.seo.slug;
+          return {
+            url: `${WEBSITE_HOST_URL}/interview/${badgeSlug}/${userSlug}/${interviewSlug}`,
+            lastModified: interviewUpdatedAt,
+            changeFrequency: "daily" as changeFrequency,
+          };
+        });
+    });
+  });
+
+  const users = data.data.Users.docs.map((user) => {
+    const slug = user.seo.slug;
+    const lastModified = user.updatedAt;
+    return {
+      url: `${WEBSITE_HOST_URL}/user/${slug}`,
+      lastModified,
+      changeFrequency: "weekly" as changeFrequency,
+    };
+  });
+
+  const badges = data.data.Badges.docs.map((badge) => {
+    const slug = badge.seo.slug;
+    const lastModified = badge.updatedAt;
+    return {
+      url: `${WEBSITE_HOST_URL}/badge/${slug}`,
+      lastModified,
+      changeFrequency: "weekly" as changeFrequency,
+    };
+  });
+
+  const pages = data.data.Pages.docs.map((page) => {
+    const slug = page.seo.slug;
+    const lastModified = page.updatedAt;
+    return {
+      url: slug == "/" ? `${WEBSITE_HOST_URL}` : `${WEBSITE_HOST_URL}/${slug}`,
+      lastModified,
+      changeFrequency: "weekly" as changeFrequency,
+    };
+  });
+
+  return [...pages, ...badges, ...users, ...interviews, ...questions];
 }

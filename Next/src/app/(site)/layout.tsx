@@ -2,27 +2,44 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react";
+import { defaultImages } from "@/utils/defaultImages";
 
 const inter = Inter({ subsets: ["latin"] });
+const noto_Sans = Noto_Sans({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const ogImage = `/api/og?img=${defaultImages.weaskerLogoUrl}&preTitle=Interviewing experts&title=weasker.com`;
+
+const metaTitle = `${process.env.SITE_NAME} - Interviewing Experts`;
+const metaDescription =
+  "We interview groups of experts and compare their answers, generating diverse and reliable information sources.";
 
 export const metadata: Metadata = {
-  applicationName: "weasker",
-  authors: { name: "weasker team", url: "https://www.weasker.com" },
-  title: "Weasker - Interviewing Experts",
-  description:
-    "We interview groups of experts and compare their answers, generating diverse and reliable information sources.",
+  applicationName: process.env.SITE_NAME,
+  authors: { name: process.env.SITE_NAME, url: process.env.SITE_URL },
+  title: metaTitle,
+  description: metaDescription,
   openGraph: {
-    images: [
-      "https://cdn.sanity.io/images/86a07a92/production/1e515c858d118200af9cec5e0c78a3dba499e5f8-1200x630.png",
-    ],
+    images: [ogImage],
     type: "website",
-    url: `https://www.weasker.com`,
-    title: `Weasker - Interviewing Experts`,
-    description:
-      "We interview groups of experts and compare their answers, generating diverse and reliable information sources",
-    siteName: "weasker",
+    url: process.env.SITE_URL,
+    title: metaTitle,
+    description: metaDescription,
+    siteName: process.env.SITE_NAME,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: metaTitle,
+    description: metaDescription,
+    siteId: "1743914690978164736",
+    creator: process.env.SITE_NAME,
+    creatorId: "1743914690978164736",
+    images: [ogImage],
   },
 };
 
@@ -32,13 +49,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="scroll-pt-[30px] sm:scroll-pt-[60px]">
+      <body className={`bg-[#F4F4F4] ${noto_Sans.className}`}>
         <header className="top-0">
           <Navbar />
         </header>
-
-        <main className="flex min-h-screen flex-col gap-8 items-center w-11/12 sm:max-w-7xl mx-auto">
+        <main className="flex min-h-screen flex-col items-center">
           {children}
           <Analytics />
         </main>

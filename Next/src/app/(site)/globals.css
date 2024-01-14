@@ -16,23 +16,24 @@ body {
 }
 
 main a {
-  @apply text-tl-light-blue;
+  /* @apply text-tl-light-blue; */
   transition: color 0.3s ease;
 }
 
-main a:hover {
+/* main a:hover {
   color: #0d55a1;
-}
+
+} */
 
 main h1 {
-  @apply text-3xl;
+  @apply text-xl;
   @apply sm:text-5xl;
   @apply font-bold;
 }
 
 main h2 {
   @apply text-base;
-  @apply sm:text-3xl;
+  @apply sm:text-lg;
   @apply font-bold;
 }
 
@@ -48,4 +49,8 @@ text h2 {
 
 text p {
   @apply mb-5;
+}
+
+.smallCaps {
+  font-variant: small-caps;
 }

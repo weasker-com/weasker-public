@@ -1,64 +1,36 @@
-import Image, { StaticImageData } from "next/image";
-import SocialShareButtons from "./SocialShareButtons";
-import { InternalLink } from "./links/InternalLink";
+"use client";
+import { defaultImages } from "@/utils/defaultImages";
+import { CldImage } from "next-cloudinary";
 
 type HeroProps = {
-  h1a?: string | React.JSX.Element[] | JSX.Element;
-  h1b: string;
-  excerpt: string | JSX.Element;
-  featuredImageSrc: string | StaticImageData;
-  featuredImageAlt: string;
-  services?: React.ReactNode;
-  featuredImageUrl?: string;
+  title: string;
+  preTitle?: string | JSX.Element;
+  image: string | null;
+  alt?: string;
+  location: "hp" | "page" | "interview" | "question" | "badge" | "user";
 };
 
-const Hero = ({
-  h1a,
-  h1b,
-  excerpt,
-  featuredImageSrc,
-  featuredImageAlt,
-  services,
-  featuredImageUrl,
-}: HeroProps) => {
+const Hero = ({ title, preTitle, image, alt, location }: HeroProps) => {
   return (
-    <div className="flex flex-row sm:pt-10 pt-5">
-      <div className="md:max-w-[70%] flex flex-col gap-2.5">
-        <h1 className="capitalize flex flex-col gap-2.5">
-          <span className="flex sm:flex-row flex-row sm:items-center sm:gap-2 text-base sm:text-xl font-medium flex-wrap">
-            {h1a}
-          </span>
-          <span className="font-bold sm:text-5xl text-xl">{h1b}</span>
-        </h1>
-        <div className="font-normal sm:w-[90%]">
-          <span>{excerpt}</span>
-        </div>
-        <div className="flex sm:hidden">
-          <SocialShareButtons />
-        </div>
-      </div>
-      <div className="hidden md:flex my-auto mx-auto flex-col items-center gap-2 align-center border rounded-xl p-5 shadow">
-        <InternalLink
-          element={
-            <Image
-              width={130}
-              height={130}
-              src={featuredImageSrc}
-              alt={featuredImageAlt}
-              style={{
-                borderRadius: "100px",
-                objectFit: "cover",
-                width: "130px",
-                height: "130px",
-              }}
-            />
-          }
-          href={featuredImageUrl || "/"}
-          eventName="ClickFeaturedImage"
-          target={featuredImageAlt}
-          locationOnPage="hero"
+    <div className="h-max sm:py-10 border-b border-zinc-100 bg-white w-full">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-5 items-center sm:ml-2 lg:mx-auto max-w-[1000px] mr-auto p-2 sm:p-0">
+        <CldImage
+          src={image || defaultImages.weaskerLogo}
+          alt={alt || title}
+          width={200}
+          height={200}
+          className="w-[100px] h-[100px] sm:w-[150px] sm:h-[150px] object-cover rounded-full border border-tl-dark-blue border-[2px] sm:border-[5px]"
         />
-        <span>{services}</span>
+        <h1 className="flex flex-col gap-1 sm:max-w-[70%] text-center sm:text-left">
+          {preTitle && (
+            <span
+              className={`text-base sm:text-lg font-medium text-weasker-grey`}
+            >
+              {preTitle}&nbsp;
+            </span>
+          )}
+          <span className="capitalize my-2 sm:my-o">{title}</span>
+        </h1>
       </div>
     </div>
   );

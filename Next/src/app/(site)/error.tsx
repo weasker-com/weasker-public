@@ -17,7 +17,7 @@ export default function Error({
   return (
     <div className="mt-[10%] sm:mt-[5%] flex flex-col gap-10 items-center">
       <BiMessageSquareError size={100} />
-      <h1>Page Not Found</h1>
+      <h1>An Error Occurred</h1>
       <div className="flex flex-row gap-5">
         <button className="border shadow px-5 rounded" onClick={() => reset()}>
           Refresh

@@ -1,36 +1,79 @@
-import { PortableText } from "@portabletext/react";
-import Image from "next/image";
-import HeroUser from "@/components/Hero-user";
-import { User } from "../../../../../types/user-type";
-import {
-  getUserPage,
-  getUserPageMeta,
-} from "../../../../../sanity/sanity-utils";
-import UserServices from "@/components/UserServices";
 import capitalize from "@/helpers/capitalize";
 import { Metadata } from "next";
-import { ProfilePage, WithContext } from "schema-dts";
-import { InternalLink } from "@/components/links/InternalLink";
+import { userPageRes, userSeoRes } from "../../../../../types/Responses";
+import { fetchData } from "@/utils/payloadFetch";
+import { toSentence } from "../../../../helpers/toSentence";
+import { notFound } from "next/navigation";
+import UserPage from "@/components/pages/UserPage";
 
 type Props = {
   params: { user: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const meta = await getUserPageMeta(params.user);
+  const query = `
+  {
+    Users(where: { seo__slug: { equals: "${params.user}" } }) {
+      docs {
+        userName
+        seo {
+          title
+          description
+          excerpt
+          image {
+            url
+            filename
+          }
+        }
+        userBadges {
+          bio
+          services{name url}
+          badge {
+            pluralName
+            singularName
+            seo {
+              slug
+              image{url filename}
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
+
+  const data: userSeoRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Users",
+    mustHave: ["Users"],
+  });
+
+  if (!data) {
+    return {};
+  }
+
+  const user = data.data.Users.docs[0];
+
+  const seoTitle = user.seo.title;
+  const seoDescription = user.seo.description;
+  const badgesSingularNamesArray = user.userBadges.map((item) => {
+    return item.badge.singularName;
+  });
+
+  const badgesSingularNames = toSentence(badgesSingularNamesArray);
+  const userName = user.userName;
+  const userImage = user.seo.image?.url;
 
   const metaTitle = capitalize(
-    meta.seoTitle
-      ? meta.seoTitle
-      : `${meta.badgeSingularName} ${meta.name} - User page`
+    seoTitle ? seoTitle : `${userName} - Weasker page`
   );
 
-  const metaDescription = meta.seoDescription
-    ? meta.seoDescription
-    : `Click here to view ${meta.badgeSingularName} ${meta.name} user page and view their interviews.`;
+  const metaDescription = seoDescription
+    ? seoDescription
+    : `${userName} is a ${badgesSingularNames}. Visit their user-page on ${process.env.SITE_NAME}`;
 
-  const ogImage = meta.ogImage;
-  const slug = meta.slug;
+  const ogImage = `/api/og?img=${userImage}&preTitle=Weasker.com&title=${userName} expert page`;
 
   return {
     title: metaTitle,
@@ -38,127 +81,92 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       images: [ogImage],
       type: "website",
-      url: `https://www.weasker.com/user/${slug}`,
+      url: `https://www.weasker.com/user/${params.user}`,
       title: metaTitle,
       description: metaDescription,
-      siteName: "weasker",
+      siteName: process.env.SITE_NAME,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      siteId: "1743914690978164736",
+      creator: process.env.SITE_NAME,
+      creatorId: "1743914690978164736",
+      images: [ogImage],
     },
   };
 }
 
 async function getData(userParam: string) {
-  const res = await getUserPage(userParam);
-  if (!res) {
-    throw new Error("Failed to fetch data");
+  const query = `
+  {
+    Users(where: { seo__slug: { equals: "${userParam}" } }) {
+      docs {
+        userName
+        id
+        seo {
+          title
+          description
+          excerpt
+          image {
+            url
+            filename
+          }
+        }
+        userBadges {
+          bio
+          services {
+            name
+            url
+          }
+          badge {
+            pluralName
+            singularName
+            seo {
+              excerpt
+              slug
+              image {
+                url
+                filename
+              }
+            }
+          }
+        }
+      }
+    }
+    UserInterviews( slug: "${userParam}"){
+      docs{
+        name
+        seo{slug excerpt image{url filename}}
+        badge{pluralName singularName seo{slug}}
+        questions{question{shortQuestion}}
+    }
+    }
   }
-  return res;
+  `;
+
+  const data: userPageRes | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Users",
+    mustHave: ["Users"],
+  });
+
+  if (!data) {
+    return null;
+  }
+
+  return data;
 }
 
 export default async function User({ params }: Props) {
   const userParam = params.user;
-
   const data = await getData(userParam);
 
   if (!data) {
-    return "no question";
+    notFound();
   }
 
-  const metaTitle = data.seoTitle;
-  const metaDescription = data.seoDescription;
-
-  const userBadges = data.badges.map((item, index) => (
-    <InternalLink
-      element={
-        <>
-          <Image
-            alt={item.name}
-            className="w-[25px] sm:w-[35px]"
-            width={35}
-            height={35}
-            src={item.image}
-            style={{
-              width: "35px",
-              height: "35px",
-              borderRadius: "100px",
-            }}
-          ></Image>
-          {item.singularName}
-        </>
-      }
-      href={`/badge/${item.slug}`}
-      className="flex flex-row items-center gap-1 text-tl-dark-blue"
-      eventName="ClickBadgeName"
-      target={item.singularName}
-      locationOnPage="hero"
-    />
-  ));
-
-  const userInterviews = data.interviews.map((item, index) => (
-    <InternalLink
-      element={
-        <>
-          <Image
-            className="w-[50px] h-[50px] sm:w-[65px] sm:h-[65px]"
-            src={item.interview.image}
-            alt={item.interview.name}
-            width={65}
-            height={65}
-            style={{
-              borderRadius: "100px",
-            }}
-          ></Image>
-          <div className="flex flex-col">
-            <span className="text-tl-dark-blue">{data.name}</span>
-            <p>{item.interview.name}</p>
-          </div>
-        </>
-      }
-      href={`/interview/${data.badges[0].slug}/${userParam}/${item.interview.slug}`}
-      className="flex flex-row w-full gap-2 sm:gap-5 my-5 items-center capitalize"
-      eventName="ClickInterviewPage"
-      target={item.interview.name}
-      locationOnPage="Interviews list"
-    />
-  ));
-
-  const userName = data.name;
-  const badgeName = data.badges[0].name;
-  const badgeSingularName = data.badges[0].singularName;
-  const pfp = data.pfp;
-
-  const jsonLd: WithContext<ProfilePage> = {
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    mainEntity: {
-      "@type": "Person",
-      name: userName,
-      jobTitle: badgeSingularName,
-      image: pfp,
-      url: `https://www.weasker.com/user/${params.user}`,
-      award: data.badges.map((item, index) => {
-        return `${item.name} Badge`;
-      }),
-    },
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <HeroUser
-        h1={data.name}
-        badges={userBadges}
-        services={<UserServices services={data.services} />}
-        excerpt={<PortableText value={data.bio} />}
-        featuredImageSrc={data.pfp}
-        featuredImageAlt={data.name}
-      />
-      <div className="sm:w-[70%]">
-        <h2>Interviews</h2>
-        {userInterviews}
-      </div>
-    </>
-  );
+  return <UserPage data={data} params={params} />;
 }
