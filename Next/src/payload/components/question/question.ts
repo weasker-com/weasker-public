@@ -1,11 +1,11 @@
-import type { Field } from "payload/types";
+import type { GroupField } from "payload/types";
 import { seo } from "../seo";
 import { answer } from "../answer/answer";
 
-export const question: Field = {
+export const question: GroupField = {
   name: "question",
-  label: "Question",
   type: "group",
+  label: "question",
   fields: [
     {
       name: "index",

@@ -32,16 +32,20 @@ export async function fetchData<T>({
   collection,
   mustHave,
 }: PayLoadFetchInterface): Promise<T | null> {
+  cache: "no-store";
   const headers = {
     "Content-Type": "application/json",
   };
 
   try {
-    const response = await fetch(`${process.env.PAYLOAD_SITE}/api/graphql`, {
-      method,
-      headers,
-      body: JSON.stringify({ query }),
-    })
+    const response = await fetch(
+      `${process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL}/api/graphql`,
+      {
+        method,
+        headers,
+        body: JSON.stringify({ query }),
+      }
+    )
       .then(checkStatus)
       .then(parseJSON);
 
