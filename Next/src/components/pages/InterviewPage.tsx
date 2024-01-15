@@ -27,20 +27,20 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
   const params = data.params;
 
   const interview = data.data.data.BadgeInterview.docs[0];
-  const user = data.data.data.InterviewUser?.docs[0];
-  const userBadge = data.data.data.InterviewUser?.docs[0].userBadges.filter(
+  const user = data.data.data.InterviewUser.docs[0];
+  const userBadge = data.data.data.InterviewUser.docs[0].userBadges.filter(
     (item) => item.badge.seo.slug == params.badge
   )[0];
-  const pfp = user?.seo.image?.url || null;
+  const pfp = user.seo.image?.url || null;
   const interviewSlug = params.interview;
   const badgeSlug = params.badge;
-  const userName = user?.userName;
+  const userName = user.userName;
   const userSlug = params.user;
   const badgePluralName = interview.badge.pluralName;
-  const badgeSingularName = userBadge?.badge.singularName;
+  const badgeSingularName = userBadge.badge.singularName;
   const badgeImage = interview.badge.seo.image?.url || null;
   const interviewTitle = interview.name;
-  const bio = userBadge?.bio;
+  const bio = userBadge.bio;
   const questions = interview.questions;
 
   const uniqueUsers = new Set();
@@ -187,7 +187,7 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
             title={`Contact ${userName}`}
             linkStyle="blue"
             array={userBadge.services.map((item) => {
-              const arrayItem: SidebarBoxProps['array'][number] = {
+              const arrayItem: SidebarBoxProps["array"][number] = {
                 name: item.name,
                 url: item.url,
                 icon: <IoLinkOutline size={20} />,
@@ -272,7 +272,6 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
           })}
         </div>
         <div className="lg:block hidden flex flex-col gap-2 w-[30%] text-sm">
-
           <SidebarBox
             title={"Bio"}
             element={
@@ -293,7 +292,7 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
             title={"Contact"}
             linkStyle="blue"
             array={userBadge.services.map((item) => {
-              const arrayItem: SidebarBoxProps['array'][number] = {
+              const arrayItem: SidebarBoxProps["array"][number] = {
                 name: item.name,
                 url: item.url,
                 icon: <IoLinkOutline size={20} />,
@@ -321,20 +320,19 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
               }
             />
           }
-          {
-            <SidebarBox
-              title={"Contact"}
-              linkStyle="blue"
-              array={userBadge.services.map((item) => {
-                return {
-                  name: item.name,
-                  url: item.url,
-                  icon: <IoLinkOutline size={20} />,
-                  eventName: "ClickQuestionPage",
-                };
-              })}
-            />
-          }
+          <SidebarBox
+            title={"Contact"}
+            linkStyle="blue"
+            array={userBadge.services.map((item) => {
+              const arrayItem: SidebarBoxProps["array"][number] = {
+                name: item.name,
+                url: item.url,
+                icon: <IoLinkOutline size={20} />,
+                eventName: "ClickQuestionPage",
+              };
+              return arrayItem;
+            })}
+          />
 
           <SidebarBox
             title={"Questions"}

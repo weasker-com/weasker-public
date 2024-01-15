@@ -245,54 +245,56 @@ const Answer: React.FC<AnswerProps> = ({
                 )}
               </div>
             )}
-            <div className="flex flex-row items-center text-weasker-grey gap-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center text-weasker-grey gap-5">
               {updatedAt && (
                 <div className="first-letter:uppercase">
                   {formatDistanceToNow(updatedAt, { addSuffix: true })}
                 </div>
               )}
-              {location !== "interview" && (
-                <>
-                  <InternalLink
-                    element={
-                      <span className="flex flex-row gap-1 items-center">
-                        <TbMessageShare />
-                        Full interview
-                      </span>
-                    }
-                    href={`/interview/${badgeSlug}/${
-                      location == "allInterview" ? chosenUserSlug : userSlug
-                    }/${interviewSlug}`}
-                    eventName="ClickInterviewPage"
-                    target="Read full interview"
-                    locationOnPage={questionSlug}
-                    style={"blue"}
-                  />
-                </>
-              )}
-
-              {otherUsersAmount > 0 &&
-                location !== "question" &&
-                location !== "allInterview" && (
-                  <div>
+              <div className="flex flex-row gap-5">
+                {location !== "interview" && (
+                  <>
                     <InternalLink
-                      href={`/question/${badgeSlug}/${interviewSlug}/${questionSlug}`}
-                      style={"blue"}
                       element={
                         <span className="flex flex-row gap-1 items-center">
-                          <TbMessages />
-                          {otherUsersAmount}
-                          {otherUsersAmount == 1
-                            ? " other answer"
-                            : " other answers"}
+                          <TbMessageShare />
+                          Full interview
                         </span>
                       }
-                      eventName="ClickReadMoreAnswers"
-                      target="Read more answers"
+                      href={`/interview/${badgeSlug}/${
+                        location == "allInterview" ? chosenUserSlug : userSlug
+                      }/${interviewSlug}`}
+                      eventName="ClickInterviewPage"
+                      target="Read full interview"
                       locationOnPage={questionSlug}
+                      style={"blue"}
                     />
-                  </div>
+                  </>
                 )}
+
+                {otherUsersAmount > 0 &&
+                  location !== "question" &&
+                  location !== "allInterview" && (
+                    <div>
+                      <InternalLink
+                        href={`/question/${badgeSlug}/${interviewSlug}/${questionSlug}`}
+                        style={"blue"}
+                        element={
+                          <span className="flex flex-row gap-1 items-center">
+                            <TbMessages />
+                            {otherUsersAmount}
+                            {otherUsersAmount == 1
+                              ? " other answer"
+                              : " other answers"}
+                          </span>
+                        }
+                        eventName="ClickReadMoreAnswers"
+                        target="Read more answers"
+                        locationOnPage={questionSlug}
+                      />
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
         </div>

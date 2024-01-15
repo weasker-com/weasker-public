@@ -165,7 +165,7 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
           </div>
         </div>
       )}
-      {(activeTab == "users" || activeTab == null) && (
+      {activeTab == "users" && (
         <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2">
           <div className="lg:w-[70%] flex flex-col">
             {users.length > 0 ? (
