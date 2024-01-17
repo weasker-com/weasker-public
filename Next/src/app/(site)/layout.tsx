@@ -6,6 +6,7 @@ import { Noto_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { defaultImages } from "@/utils/defaultImages";
+import { AuthProvider } from "../../providers/Auth/Auth"; //CONTINUE HERE
 
 const inter = Inter({ subsets: ["latin"] });
 const noto_Sans = Noto_Sans({
