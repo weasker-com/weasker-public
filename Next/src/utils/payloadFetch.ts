@@ -32,7 +32,6 @@ export async function fetchData<T>({
   collection,
   mustHave,
 }: PayLoadFetchInterface): Promise<T | null> {
-  cache: "no-store";
   const headers = {
     "Content-Type": "application/json",
   };
@@ -44,6 +43,7 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
+        cache: "no-store",
       }
     )
       .then(checkStatus)
