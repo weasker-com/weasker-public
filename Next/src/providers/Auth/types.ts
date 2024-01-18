@@ -7,6 +7,10 @@ export type ResetPassword = (args: {
   token: string;
 }) => Promise<User>;
 
+export type UserData = {
+  data: { loginUser: { user: User } };
+};
+
 export type ForgotPassword = (args: { email: string }) => Promise<User>; // eslint-disable-line no-unused-vars
 
 export type Create = (args: {
@@ -24,4 +28,6 @@ export interface AuthContext {
   user?: User | null;
   setUser: (user: User | null) => void; // eslint-disable-line no-unused-vars
   login: Login;
+  logout: Logout;
+  loginNEW: Login;
 }

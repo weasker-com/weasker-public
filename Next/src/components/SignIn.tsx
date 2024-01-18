@@ -1,55 +1,38 @@
 "use client";
 
-import { login } from "@/utils/login";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "../providers/Auth/Auth"; //CONTINUE HERE
+import { useAuth } from "../providers/Auth/Auth";
+import { Dispatch, SetStateAction } from "react";
 
-const SignInComp = () => {
-  const [user, setUser] = useState<any | null>();
+interface SignInCompProps {
+  setSignInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
+}
+
+const SignInComp: React.FC<SignInCompProps> = ({ setSignInModalIsOpen }) => {
   const router = useRouter();
   const [password, setPassword] = useState<string | null>();
   const [email, setEmail] = useState<string | null>();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const { login, loginNEW } = useAuth();
 
   useEffect(() => {
     setEmail(emailRef.current.value);
     setPassword(passwordRef.current.value);
   }, []);
 
-  async function handleSubmitNEW(e) {
-    e.preventDefault();
-    const loginUser = await Auth.signin;
-
-    if (!loginUser?.data?.loginUser?.user) {
-      setErrorMessage(
-        "There was an error with the credentials provided. Please try again."
-      );
-    }
-
-    router.push("/");
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
-    const loginUser = await login(`mutation {
-        loginUser(email: "${email}", password: "${password}") {
-          user {
-            id
-            email
-          }
-        }
-      }`);
-
-    if (!loginUser?.data?.loginUser?.user) {
+    const loginUser = await loginNEW(email, password);
+    if (loginUser) {
+      router.push("/");
+      setSignInModalIsOpen(false);
+    } else
       setErrorMessage(
         "There was an error with the credentials provided. Please try again."
       );
-    }
-
-    router.push("/");
   }
 
   return (
