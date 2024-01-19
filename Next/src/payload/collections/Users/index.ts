@@ -1,7 +1,9 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo";
-// import { isAdmin, isAdminFieldLevel } from '../access/isAdmin';
-// import { isAdminOrSelf } from '../access/isAdminOrSelf';
+import { isAdmin, isAdminFieldLevel } from "../../access/isAdmin";
+import { isAdminOrSelf } from "../../access/isAdminOrSelf";
+import { anyone } from "../../access/anyone";
+import { checkRole } from "../../access/checkRole";
 
 const Users: CollectionConfig = {
   slug: "users",
@@ -11,6 +13,9 @@ const Users: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: isAdminOrSelf,
+    delete: isAdminOrSelf,
+    update: isAdminOrSelf,
   },
   fields: [
     {
@@ -39,8 +44,8 @@ const Users: CollectionConfig = {
       hasMany: true,
       defaultValue: ["endUser"],
       access: {
-        // create: isAdminFieldLevel,
-        // update: isAdminFieldLevel,
+        create: isAdminFieldLevel,
+        update: isAdminFieldLevel,
       },
       options: [
         {

@@ -2,6 +2,10 @@ import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo/index";
 import { question } from "../../components/question/question";
 import { isEqual } from "lodash";
+import { isAdmin, isAdminFieldLevel } from "../../access/isAdmin";
+import { isAdminOrSelf } from "../../access/isAdminOrSelf";
+import { checkRole } from "../../access/checkRole";
+import { anyone } from "../../access/anyone";
 
 export const Interviews: CollectionConfig = {
   slug: "interviews",
@@ -11,6 +15,9 @@ export const Interviews: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: isAdmin,
+    delete: isAdmin,
+    update: anyone,
   },
   fields: [
     {

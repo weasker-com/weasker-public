@@ -54,6 +54,7 @@ export const answer: Field = {
       name: "updatedAt",
       label: "Updated at",
       type: "date",
+      defaultValue: () => new Date(),
       admin: {
         readOnly: true,
         date: {
