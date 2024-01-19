@@ -202,8 +202,9 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
                         return (
                           <ExternalLink
                             key={index}
+                            className={"plausible-event-name=service-click"}
                             element={
-                              <div className="flex flex-row gap-1 items-center">
+                              <div className="plausible-event-name=service-click flex flex-row gap-1 items-center">
                                 <HiOutlineExternalLink /> <>{item.name}</>
                               </div>
                             }

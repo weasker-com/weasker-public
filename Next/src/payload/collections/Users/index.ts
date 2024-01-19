@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo";
-// import { isAdmin, isAdminFieldLevel } from '../access/isAdmin';
-// import { isAdminOrSelf } from '../access/isAdminOrSelf';
+import { isAdmin, isAdminFieldLevel } from "../../access/isAdmin";
+import { isAdminOrSelf } from "../../access/isAdminOrSelf";
 
 const Users: CollectionConfig = {
   slug: "users",
@@ -33,14 +33,13 @@ const Users: CollectionConfig = {
     },
     {
       name: "roles",
-      // Save this field to JWT so we can use from `req.user`
       saveToJWT: true,
       type: "select",
       hasMany: true,
       defaultValue: ["endUser"],
       access: {
-        // create: isAdminFieldLevel,
-        // update: isAdminFieldLevel,
+        create: isAdminFieldLevel,
+        update: isAdminFieldLevel,
       },
       options: [
         {

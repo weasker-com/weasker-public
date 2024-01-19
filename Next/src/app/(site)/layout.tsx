@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Noto_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
-import { Analytics } from "@vercel/analytics/react";
+
 import { defaultImages } from "@/utils/defaultImages";
+import PlausibleProvider from "next-plausible";
 
 const inter = Inter({ subsets: ["latin"] });
 const noto_Sans = Noto_Sans({
@@ -50,15 +51,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-pt-[30px] sm:scroll-pt-[60px]">
+      <head>
+        <PlausibleProvider
+          domain={process.env.NAKED_SITE_URL}
+          // trackLocalhost={true}
+          // enabled={true}
+          taggedEvents={true}
+        />
+      </head>
       <body className={`bg-[#F4F4F4] ${noto_Sans.className}`}>
         <header className="top-0">
           <Navbar />
         </header>
         <main className="flex min-h-screen flex-col items-center">
           {children}
-          <Analytics />
         </main>
-
         <footer>
           <Footer />
         </footer>
