@@ -9,6 +9,10 @@ import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { CldImage } from "next-cloudinary";
 import { defaultImages } from "@/utils/defaultImages";
+import { Media } from "@/payload/payload-types";
+import { PiSignIn } from "react-icons/pi";
+import { PiSignOut } from "react-icons/pi";
+import { PiUserCircle } from "react-icons/pi";
 
 const Navbar = () => {
   const router = useRouter();
@@ -24,12 +28,14 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    setShowDropdown(false);
+  }, [!user, ref]);
+
+  useEffect(() => {
     const handleOutSideClick = (event) => {
       if (menuRef.current?.contains(event.target)) {
-        // If the clicked element is the username div, toggle the dropdown
         setShowDropdown((prevState) => !prevState);
       } else if (!ref.current?.contains(event.target)) {
-        // If the clicked element is outside the dropdown, close it
         setShowDropdown(false);
       }
     };
@@ -66,7 +72,8 @@ const Navbar = () => {
                     width={50}
                     height={50}
                     src={
-                      user.seo.image.filename || defaultImages.defaultUserImage
+                      (user.seo.image as Media)?.cloudinary?.public_id ||
+                      defaultImages.defaultUserImage
                     }
                     alt={user.userName}
                     className="w-[30px] h-[30px] cover rounded-full border-2 "
@@ -82,8 +89,10 @@ const Navbar = () => {
                 handleSignInClick();
               }}
             >
-              {user?.userName}
-              Sign-in
+              <div className=" flex flex-row items-center gap-1 hover:text-tl-light-blue border p-2 w-28 sm:w-40 rounded-t">
+                <PiSignIn />
+                Sign-in
+              </div>
             </button>
           )}
         </div>
@@ -94,19 +103,21 @@ const Navbar = () => {
           >
             <ul className="flex flex-col gap-2">
               <li
-                className="hover:cursor-pointer hover:text-tl-light-blue"
+                className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue"
                 onClick={() => {
                   console.log("account");
                 }}
               >
+                <PiUserCircle />
                 Account
               </li>
               <li
-                className="hover:cursor-pointer hover:text-tl-light-blue"
+                className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue"
                 onClick={() => {
                   handleLogOutClick();
                 }}
               >
+                <PiSignOut />
                 Logout
               </li>
             </ul>
