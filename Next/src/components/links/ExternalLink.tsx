@@ -1,5 +1,5 @@
 "use client";
-import { track } from "@vercel/analytics";
+
 import { usePathname } from "next/navigation";
 
 interface ExternalLinkProps {
@@ -15,11 +15,8 @@ interface ExternalLinkProps {
 const ExternalLink: React.FC<ExternalLinkProps> = ({
   style,
   element,
-  target,
   href,
   className,
-  eventName,
-  locationOnPage,
 }) => {
   const pathname = usePathname();
   return (
@@ -33,9 +30,6 @@ const ExternalLink: React.FC<ExternalLinkProps> = ({
         "hover:underline underline-offset-4 decoration-inherit decoration-2"
       }`}
       href={href}
-      onClick={() => {
-        track(eventName, { target, location: pathname, locationOnPage });
-      }}
     >
       {element}
     </a>
