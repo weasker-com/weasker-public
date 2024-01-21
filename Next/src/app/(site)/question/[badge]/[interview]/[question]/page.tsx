@@ -102,7 +102,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const metaDescription = seoDescription ? seoDescription : `${longQuestion}`;
 
-  const ogImage = `/api/og?img=${questionImage}&preTitle=question for ${badgePluralName}&title=${shortQuestion}`;
+  const ogImage = `${process.env.SITE_URL}/api/og?img=${questionImage}&preTitle=question for ${badgePluralName}&title=${shortQuestion}`;
 
   const authors = users.map((item, index) => {
     return { name: item.name, url: `https://www.weasker/user/${item.slug}` };

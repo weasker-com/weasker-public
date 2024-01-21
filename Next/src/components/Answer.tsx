@@ -159,7 +159,9 @@ const Answer: React.FC<AnswerProps> = ({
                   </div>
                 </div>
               }
-              href={`/user/${userSlug}`}
+              href={`/user/${
+                location == "allInterview" ? chosenUserSlug : userSlug
+              }`}
               eventName="ClickUserImage"
               target={userName}
               locationOnPage={questionSlug}

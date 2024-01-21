@@ -5,6 +5,7 @@ import { isAdminOrSelf } from "../../access/isAdminOrSelf";
 import { anyone } from "../../access/anyone";
 import { checkRole } from "../../access/checkRole";
 
+
 const Users: CollectionConfig = {
   slug: "users",
   auth: true,
@@ -38,7 +39,6 @@ const Users: CollectionConfig = {
     },
     {
       name: "roles",
-      // Save this field to JWT so we can use from `req.user`
       saveToJWT: true,
       type: "select",
       hasMany: true,

@@ -1,5 +1,4 @@
 "use client";
-import { track } from "@vercel/analytics";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { IoLinkOutline } from "react-icons/io5";
@@ -33,10 +32,6 @@ const SocialShareButtons = () => {
   }, []);
 
   const handleCopy = () => {
-    track("ClickCopyLinkButton", {
-      location: pathname,
-      locationOnPage: "sidebar",
-    });
     navigator.clipboard.writeText(`https://weasker.com${pathname}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -48,13 +43,7 @@ const SocialShareButtons = () => {
         <TwitterShareButton
           url={`https://www.weasker.com${pathname}`}
           title={ogTitle}
-          via={"weasker"}
-          onClick={() => {
-            track("ClickTwitterShareButton", {
-              location: pathname,
-              locationOnPage: "sidebar",
-            });
-          }}
+          via={"weasker_com"}
         >
           <TwitterIcon size={25} round />
         </TwitterShareButton>
@@ -62,24 +51,12 @@ const SocialShareButtons = () => {
           url={`https://weasker.com${pathname}`}
           title={ogTitle}
           summary={ogDescription}
-          onClick={() => {
-            track("ClickLinkedinShareButton", {
-              location: pathname,
-              locationOnPage: "sidebar",
-            });
-          }}
         >
           <LinkedinIcon size={25} round />
         </LinkedinShareButton>
         <RedditShareButton
           url={`https://weasker.com${pathname}`}
           title={ogTitle}
-          onClick={() => {
-            track("ClickRedditShareButton", {
-              location: pathname,
-              locationOnPage: "sidebar",
-            });
-          }}
         >
           <RedditIcon size={25} round />
         </RedditShareButton>

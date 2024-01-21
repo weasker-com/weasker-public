@@ -4,9 +4,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Noto_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
-import { Analytics } from "@vercel/analytics/react";
 import { defaultImages } from "@/utils/defaultImages";
+import PlausibleProvider from "next-plausible";
 import { AuthProvider } from "../../providers/Auth/Auth";
+
 
 const inter = Inter({ subsets: ["latin"] });
 const noto_Sans = Noto_Sans({
@@ -14,7 +15,7 @@ const noto_Sans = Noto_Sans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-const ogImage = `/api/og?img=${defaultImages.weaskerLogoUrl}&preTitle=Interviewing experts&title=weasker.com`;
+const ogImage = `${process.env.SITE_URL}/api/og?img=${defaultImages.weaskerLogoUrl}&preTitle=Interviewing experts&title=weasker.com`;
 
 const metaTitle = `${process.env.SITE_NAME} - Interviewing Experts`;
 const metaDescription =
@@ -51,6 +52,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-pt-[30px] sm:scroll-pt-[60px]">
+      <head>
+        <PlausibleProvider
+          domain={process.env.SITE_NAKED_URL}
+          // trackLocalhost={true}
+          // enabled={true}
+          taggedEvents={true}
+        />
+      </head>
       <body className={`bg-[#F4F4F4] ${noto_Sans.className}`}>
         <AuthProvider>
           <header className="top-0">

@@ -38,6 +38,7 @@
 		"html-to-text": "^9.0.5",
 		"next": "13.4.19",
 		"next-cloudinary": "^5.16.0",
+		"next-plausible": "^3.12.0",
 		"next-share": "^0.25.0",
 		"patch-package": "^8.0.0",
 		"payload": "^2.0.0",

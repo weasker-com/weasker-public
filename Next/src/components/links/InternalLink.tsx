@@ -1,6 +1,5 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { track } from "@vercel/analytics";
 import Link from "next/link";
 
 interface InternalLinkProps {
@@ -44,17 +43,6 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
         "hover:underline underline-offset-4 decoration-inherit decoration-2"
       }`}
       href={href}
-      onClick={(e) => {
-        if (onclick) {
-          onclick(e);
-        }
-
-        track(eventName, {
-          target,
-          location: pathname,
-          locationOnPage,
-        });
-      }}
     >
       {element}
     </Link>
