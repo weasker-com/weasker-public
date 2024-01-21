@@ -1,5 +1,9 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo/index";
+import { isAdmin, isAdminFieldLevel } from "../../access/isAdmin";
+import { isAdminOrSelf } from "../../access/isAdminOrSelf";
+import { checkRole } from "../../access/checkRole";
+import { anyone } from "../../access/anyone";
 
 export const Badges: CollectionConfig = {
   slug: "badges",
@@ -9,6 +13,9 @@ export const Badges: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: isAdmin,
+    delete: isAdmin,
+    update: anyone,
   },
   fields: [
     {

@@ -4,9 +4,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Noto_Sans } from "next/font/google";
 import Footer from "@/components/Footer";
-
 import { defaultImages } from "@/utils/defaultImages";
 import PlausibleProvider from "next-plausible";
+import { AuthProvider } from "../../providers/Auth/Auth";
+
 
 const inter = Inter({ subsets: ["latin"] });
 const noto_Sans = Noto_Sans({
@@ -60,15 +61,18 @@ export default function RootLayout({
         />
       </head>
       <body className={`bg-[#F4F4F4] ${noto_Sans.className}`}>
-        <header className="top-0">
-          <Navbar />
-        </header>
-        <main className="flex min-h-screen flex-col items-center">
-          {children}
-        </main>
-        <footer>
-          <Footer />
-        </footer>
+        <AuthProvider>
+          <header className="top-0">
+            <Navbar />
+          </header>
+          <main className="flex min-h-screen flex-col items-center">
+            {children}
+            <Analytics />
+          </main>
+          <footer>
+            <Footer />
+          </footer>
+        </AuthProvider>
       </body>
     </html>
   );

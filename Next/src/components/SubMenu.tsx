@@ -22,7 +22,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ children }) => {
 
   return (
     <>
-      <div className="sticky top-0 z-10 h-max sm:py-5 border-b border-zinc-100 bg-white w-full">
+      <div className="sticky top-0 h-max sm:py-5 border-b border-zinc-100 bg-white w-full">
         <ul
           className={`flex flex-row ${
             React.Children.count(children) > 3
