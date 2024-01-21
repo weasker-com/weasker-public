@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? seoDescription
     : `${userName} is a ${badgesSingularNames}. Visit their user-page on ${process.env.SITE_NAME}`;
 
-  const ogImage = `/api/og?img=${userImage}&preTitle=Weasker.com&title=${userName} expert page`;
+  const ogImage = `${process.env.SITE_URL}/api/og?img=${userImage}&preTitle=Weasker.com&title=${userName} expert page`;
 
   return {
     title: metaTitle,

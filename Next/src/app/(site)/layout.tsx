@@ -14,7 +14,7 @@ const noto_Sans = Noto_Sans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-const ogImage = `/api/og?img=${defaultImages.weaskerLogoUrl}&preTitle=Interviewing experts&title=weasker.com`;
+const ogImage = `${process.env.SITE_URL}/api/og?img=${defaultImages.weaskerLogoUrl}&preTitle=Interviewing experts&title=weasker.com`;
 
 const metaTitle = `${process.env.SITE_NAME} - Interviewing Experts`;
 const metaDescription =
@@ -53,7 +53,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-pt-[30px] sm:scroll-pt-[60px]">
       <head>
         <PlausibleProvider
-          domain={process.env.NEXT_PUBLIC_NAKED_SITE_URL}
+          domain={process.env.SITE_URL}
           // trackLocalhost={true}
           // enabled={true}
           taggedEvents={true}
