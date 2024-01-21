@@ -53,7 +53,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-pt-[30px] sm:scroll-pt-[60px]">
       <head>
         <PlausibleProvider
-          domain={process.env.NAKED_SITE_URL}
+          domain={process.env.NEXT_PUBLIC_NAKED_SITE_URL}
           // trackLocalhost={true}
           // enabled={true}
           taggedEvents={true}
