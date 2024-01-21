@@ -43,7 +43,7 @@ const SocialShareButtons = () => {
         <TwitterShareButton
           url={`https://www.weasker.com${pathname}`}
           title={ogTitle}
-          via={"weasker"}
+          via={"weasker_com"}
         >
           <TwitterIcon size={25} round />
         </TwitterShareButton>
