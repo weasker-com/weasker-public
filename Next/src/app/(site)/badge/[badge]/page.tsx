@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? seoDescription
     : `We interviewed ${usersAmount} of the best ${pluralName}, read what each ${singularName} had to say.`;
 
-  const ogImage = `/api/og?img=${image}&preTitle=weasker.com&title=${singularName} badge`;
+  const ogImage = `${process.env.SITE_URL}/api/og?img=${image}&preTitle=weasker.com&title=${singularName} badge`;
 
   const slug = params.badge;
 

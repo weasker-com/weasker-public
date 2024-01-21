@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         pageName
       )} - We interview experts from all fields and compare their answers, compiling diverse and reliable information`;
 
-  const ogImage = `/api/og?img=${image}&preTitle=${process.env.SITE_NAME}.com&title=${pageName}`;
+  const ogImage = `${process.env.SITE_URL}/api/og?img=${image}&preTitle=${process.env.SITE_NAME}.com&title=${pageName}`;
   const slug = params.page;
 
   return {
