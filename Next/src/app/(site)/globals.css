@@ -43,6 +43,12 @@ main h3 {
   @apply font-semibold;
 }
 
+main p {
+  &:not(:last-child) {
+    @apply mb-3;
+  }
+}
+
 text h2 {
   @apply mb-3;
 }
