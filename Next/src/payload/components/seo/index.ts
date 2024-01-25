@@ -11,6 +11,7 @@ export const seo: Field = {
       label: "Slug",
       type: "text",
       required: true,
+      unique: true,
       maxLength: 100,
     },
     {

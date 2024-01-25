@@ -488,6 +488,7 @@ export type userPageRes = {
       docs: {
         userName: string;
         seo: {
+          slug: string;
           title: string | null;
           description: string | null;
           excerpt: string | null;

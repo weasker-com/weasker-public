@@ -1,9 +1,8 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { InternalLink } from "./links/InternalLink";
 import Modal from "./Modal";
-import SignInComp from "./SignIn";
+import SignInComp from "./LoginComp";
 import { useAuth } from "../providers/Auth/Auth";
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -13,6 +12,7 @@ import { Media } from "@/payload/payload-types";
 import { PiSignIn } from "react-icons/pi";
 import { PiSignOut } from "react-icons/pi";
 import { PiUserCircle } from "react-icons/pi";
+import RegisterComp from "./RegisterComp";
 
 const Navbar = () => {
   const router = useRouter();
@@ -21,6 +21,7 @@ const Navbar = () => {
   const { user } = useAuth();
   const { logout } = useAuth();
   const [signInModalIsOpen, setSignInModalIsOpen] = useState(false);
+  const [signUpModalIsOpen, setSignUpModalIsOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSignInClick = () => {
@@ -61,6 +62,7 @@ const Navbar = () => {
             target="HP"
             locationOnPage="Navbar"
           />
+
           {user ? (
             <div>
               <div
@@ -80,6 +82,7 @@ const Navbar = () => {
                   />
                   <div className="font-bold">{user?.userName}</div>
                 </div>
+
                 <MdOutlineKeyboardArrowDown className="" />
               </div>
             </div>
@@ -102,14 +105,9 @@ const Navbar = () => {
             ref={ref}
           >
             <ul className="flex flex-col gap-2">
-              <li
-                className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue"
-                onClick={() => {
-                  console.log("account");
-                }}
-              >
+              <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
                 <PiUserCircle />
-                Account
+                <InternalLink element={"Account"} href={"/account"} />
               </li>
               <li
                 className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue"
@@ -126,7 +124,20 @@ const Navbar = () => {
       </div>
       {signInModalIsOpen && (
         <Modal onclick={() => setSignInModalIsOpen(false)}>
-          <SignInComp setSignInModalIsOpen={setSignInModalIsOpen} />
+          <SignInComp
+            location={"modal"}
+            setSignInModalIsOpen={setSignInModalIsOpen}
+            setSignUpModalIsOpen={setSignUpModalIsOpen}
+          />
+        </Modal>
+      )}
+      {signUpModalIsOpen && (
+        <Modal onclick={() => setSignUpModalIsOpen(false)}>
+          <RegisterComp
+            location={"modal"}
+            setSignInModalIsOpen={setSignInModalIsOpen}
+            setSignUpModalIsOpen={setSignUpModalIsOpen}
+          />
         </Modal>
       )}
     </div>

@@ -1,6 +1,5 @@
 import type { User } from "../../payload/payload-types";
 
-// eslint-disable-next-line no-unused-vars
 export type ResetPassword = (args: {
   password: string;
   passwordConfirm: string;
@@ -11,23 +10,29 @@ export type UserData = {
   data: { loginUser: { user: User } };
 };
 
-export type ForgotPassword = (args: { email: string }) => Promise<User>; // eslint-disable-line no-unused-vars
+export type ForgotPassword = (args: { email: string }) => Promise<User>;
 
 export type Create = (args: {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-}) => Promise<User>; // eslint-disable-line no-unused-vars
+}) => Promise<User>;
 
 export type Login = (email: string, password: string) => Promise<User>;
+
+export type Register = (
+  email: string,
+  password: string,
+  userName: string
+) => Promise<User>;
 
 export type Logout = () => Promise<void>;
 
 export interface AuthContext {
   user?: User | null;
-  setUser: (user: User | null) => void; // eslint-disable-line no-unused-vars
+  setUser: (user: User | null) => void;
   login: Login;
   logout: Logout;
-  loginNEW: Login;
+  register: Register;
 }

@@ -1,6 +1,6 @@
 "use client";
-
 import type { User } from "../../payload/payload-types";
+import kebabCase from "lodash/kebabCase";
 import React, {
   createContext,
   useCallback,
@@ -8,10 +8,11 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { USER, gql } from "./gql";
 import { AuthContext } from "./types";
 import axios from "axios";
-
+const EXTERNAL_SERVER_URL =
+  process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL ||
+  process.env.NEXT_PUBLIC_SITE_URL;
 const Context = createContext({} as AuthContext);
 
 export const AuthProvider: React.FC<{
@@ -19,31 +20,11 @@ export const AuthProvider: React.FC<{
 }> = ({ children }) => {
   const [user, setUser] = useState<User | null>();
 
-  const login = async (email: string, password: string) => {
-    const query = `
-      mutation {
-        loginUser(email: "${email}", password: "${password}") {
-          user {
-            ${USER}
-          }
-          exp
-        }
-      }
-    `;
-
-    const method = "POST";
-    const response = await gql({ query, method });
-    const loginUser = response?.data?.loginUser?.user;
-    setUser(loginUser);
-    localStorage.setItem("user", loginUser);
-    return loginUser;
-  };
-
-  async function loginNEW(email: string, password: string): Promise<any> {
+  async function login(email: string, password: string): Promise<any> {
     try {
       const res = await axios({
         method: "POST",
-        url: `http://localhost:4000/api/users/login?depth=2`,
+        url: `${EXTERNAL_SERVER_URL}/api/users/login?depth=2`,
         withCredentials: true,
         data: {
           email,
@@ -61,11 +42,45 @@ export const AuthProvider: React.FC<{
     }
   }
 
+  async function register(
+    email: string,
+    password: string,
+    userName: string
+  ): Promise<any> {
+    try {
+      console.log(email, password, userName);
+      const res = await axios({
+        method: "POST",
+        url: `${EXTERNAL_SERVER_URL}/api/users/`,
+        withCredentials: true,
+        data: {
+          email,
+          password,
+          userName,
+          seo: { slug: userName },
+        },
+      });
+
+      if (res.data.user) {
+        const registeredUser = res.data.user;
+        setUser(registeredUser);
+        return registeredUser;
+      } else {
+        return res;
+      }
+    } catch (error) {
+      console.error(
+        "Login failed:",
+        error.response.data.errors[0].data[0].message
+      );
+    }
+  }
+
   async function refreshAuthentication() {
     try {
       const res = await axios({
         method: "GET",
-        url: `http://localhost:4000/api/users/me`,
+        url: `${EXTERNAL_SERVER_URL}/api/users/me`,
         withCredentials: true,
       });
 
@@ -89,7 +104,7 @@ export const AuthProvider: React.FC<{
     try {
       await axios({
         method: "POST",
-        url: `http://localhost:4000/api/users/logout`,
+        url: `${EXTERNAL_SERVER_URL}/api/users/logout`,
         withCredentials: true,
         data: user,
       });
@@ -104,9 +119,9 @@ export const AuthProvider: React.FC<{
       value={{
         user,
         setUser,
-        login,
         logout,
-        loginNEW,
+        login,
+        register,
       }}
     >
       {children}

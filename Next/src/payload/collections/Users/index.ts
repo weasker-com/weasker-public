@@ -5,7 +5,6 @@ import { isAdminOrSelf } from "../../access/isAdminOrSelf";
 import { anyone } from "../../access/anyone";
 import { checkRole } from "../../access/checkRole";
 
-
 const Users: CollectionConfig = {
   slug: "users",
   auth: true,
@@ -14,7 +13,7 @@ const Users: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: isAdminOrSelf,
+    create: () => true,
     delete: isAdminOrSelf,
     update: isAdminOrSelf,
   },
@@ -36,6 +35,7 @@ const Users: CollectionConfig = {
       label: "User name",
       type: "text",
       required: true,
+      unique: true,
     },
     {
       name: "roles",
@@ -66,6 +66,7 @@ const Users: CollectionConfig = {
       name: "userBadges",
       label: "User badges",
       type: "array",
+      required: false,
       fields: [
         {
           name: "badge",
@@ -84,7 +85,7 @@ const Users: CollectionConfig = {
           name: "services",
           label: "Services",
           type: "array",
-          required: true,
+          required: false,
           fields: [
             {
               name: "name",

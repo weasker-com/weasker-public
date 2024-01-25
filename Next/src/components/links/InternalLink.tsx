@@ -7,7 +7,7 @@ interface InternalLinkProps {
   href: string;
   className?: string;
   style?: "blue" | "inherit";
-  eventName:
+  eventName?:
     | "ClickUserName"
     | "ClickUserImage"
     | "ClickInterviewPage"
@@ -18,8 +18,8 @@ interface InternalLinkProps {
     | "ClickQuestionPage"
     | "ClickInnerPage"
     | "ClickSubMenu";
-  target: string;
-  locationOnPage: string;
+  target?: string;
+  locationOnPage?: string;
   onclick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
