@@ -78,6 +78,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: metaTitle,
     description: metaDescription,
     authors: author,
+    alternates: {
+      canonical: `https://www.weasker.com/interview/${slugA}/all/${slugC}/`,
+    },
     openGraph: {
       images: [ogImage],
       type: "website",
