@@ -43,7 +43,7 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
-        cache: "no-store",
+        next: { revalidate: 3600 * 12 },
       }
     )
       .then(checkStatus)
