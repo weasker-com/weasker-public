@@ -1,7 +1,6 @@
-export const revalidate = 0;
 import { notFound } from "next/navigation";
 import { getMeUser } from "@/utils/getMeUser";
-import AccountPage from "@/components/pages/AccountPage";
+import ClientPage from "@/app/(site)/account/clientPage";
 import { fetchData } from "@/utils/payloadFetch";
 import { userPageRes } from "../../../../types/Responses";
 
@@ -13,12 +12,13 @@ async function getData() {
   return data;
 }
 
-async function getUserContent(userSlug: string) {
+export async function getUserContent(userSlug: string) {
   const query = `
   {
     Users(where: { seo__slug: { equals: "${userSlug}" } }) {
       docs {
         userName
+        displayName
         id
         seo {
           slug
@@ -88,5 +88,5 @@ export default async function Account() {
     notFound();
   }
 
-  return <AccountPage data={userContent} />;
+  return <ClientPage data={userContent} />;
 }

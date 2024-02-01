@@ -6,6 +6,7 @@ import express from "express";
 import { getPayloadClient } from "./payload/payload-client";
 import { v2 as cloudinary } from "cloudinary";
 import { mediaManagement } from "payload-cloudinary-plugin";
+import email from "./payload/email/transport";
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env.local"),
@@ -26,6 +27,7 @@ const start = async (): Promise<void> => {
   const payload = await getPayloadClient({
     initOptions: {
       express: app,
+      email,
       onInit: async (newPayload) => {
         newPayload.logger.info(
           `Payload Admin URL: ${newPayload.getAdminURL()}`

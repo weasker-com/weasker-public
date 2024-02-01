@@ -1,10 +1,28 @@
 import type { User } from "../../payload/payload-types";
 
-export type ResetPassword = (args: {
-  password: string;
-  passwordConfirm: string;
-  token: string;
-}) => Promise<User>;
+export type ErrorResponse = {
+  response: {
+    data: {
+      errors: {
+        name: string;
+        data: { message: string; field: string }[];
+        message: string;
+      }[];
+    };
+  };
+};
+
+export type UserResponse = {
+  response: {
+    data: {
+      errors: {
+        name: string;
+        data: { message: string; field: string }[];
+        message: string;
+      }[];
+    };
+  };
+};
 
 export type UserData = {
   data: { loginUser: { user: User } };
@@ -19,13 +37,13 @@ export type Create = (args: {
   lastName: string;
 }) => Promise<User>;
 
-export type Login = (email: string, password: string) => Promise<User>;
+export type Login = (email: string, password: string) => Promise<User | []>;
 
 export type Register = (
   email: string,
   password: string,
   userName: string
-) => Promise<User>;
+) => Promise<User | ErrorResponse>;
 
 export type Logout = () => Promise<void>;
 

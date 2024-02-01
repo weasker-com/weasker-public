@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { InternalLink } from "./links/InternalLink";
 import Modal from "./Modal";
-import SignInComp from "./LoginComp";
+import LoginComp from "./LoginComp";
 import { useAuth } from "../providers/Auth/Auth";
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -13,6 +13,7 @@ import { PiSignIn } from "react-icons/pi";
 import { PiSignOut } from "react-icons/pi";
 import { PiUserCircle } from "react-icons/pi";
 import RegisterComp from "./RegisterComp";
+import ForgotPasswordComp from "./ForgotPasswordComp";
 
 const Navbar = () => {
   const router = useRouter();
@@ -20,12 +21,14 @@ const Navbar = () => {
   const menuRef = useRef(null);
   const { user } = useAuth();
   const { logout } = useAuth();
-  const [signInModalIsOpen, setSignInModalIsOpen] = useState(false);
+  const [logInModalIsOpen, setLogInModalIsOpen] = useState(false);
   const [signUpModalIsOpen, setSignUpModalIsOpen] = useState(false);
+  const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] =
+    useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSignInClick = () => {
-    setSignInModalIsOpen(true);
+    setLogInModalIsOpen(true);
   };
 
   useEffect(() => {
@@ -48,6 +51,7 @@ const Navbar = () => {
 
   const handleLogOutClick = async () => {
     await logout();
+    router.push("/");
   };
 
   return (
@@ -92,9 +96,9 @@ const Navbar = () => {
                 handleSignInClick();
               }}
             >
-              <div className=" flex flex-row items-center gap-1 hover:text-tl-light-blue border p-2 w-28 sm:w-40 rounded-t">
+              <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue border p-2 w-28 sm:w-40 rounded-t smallCaps">
                 <PiSignIn />
-                Sign-in
+                Log in
               </div>
             </button>
           )}
@@ -122,12 +126,13 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      {signInModalIsOpen && (
-        <Modal onclick={() => setSignInModalIsOpen(false)}>
-          <SignInComp
+      {logInModalIsOpen && (
+        <Modal onclick={() => setLogInModalIsOpen(false)}>
+          <LoginComp
             location={"modal"}
-            setSignInModalIsOpen={setSignInModalIsOpen}
+            setLogInModalIsOpen={setLogInModalIsOpen}
             setSignUpModalIsOpen={setSignUpModalIsOpen}
+            setForgotPasswordModalIsOpen={setForgotPasswordModalIsOpen}
           />
         </Modal>
       )}
@@ -135,8 +140,18 @@ const Navbar = () => {
         <Modal onclick={() => setSignUpModalIsOpen(false)}>
           <RegisterComp
             location={"modal"}
-            setSignInModalIsOpen={setSignInModalIsOpen}
+            setLogInModalIsOpen={setLogInModalIsOpen}
             setSignUpModalIsOpen={setSignUpModalIsOpen}
+          />
+        </Modal>
+      )}
+      {forgotPasswordModalIsOpen && (
+        <Modal onclick={() => setForgotPasswordModalIsOpen(false)}>
+          <ForgotPasswordComp
+            location={"modal"}
+            setLogInModalIsOpen={setLogInModalIsOpen}
+            setSignUpModalIsOpen={setSignUpModalIsOpen}
+            setForgotPasswordModalIsOpen={setForgotPasswordModalIsOpen}
           />
         </Modal>
       )}

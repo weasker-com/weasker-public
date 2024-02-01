@@ -12,12 +12,35 @@ import { Interviews } from "./collections/Interviews/index";
 import { customGraphQLQueries } from "./graphql/queries";
 import cloudinaryPlugin from "payload-cloudinary-plugin/dist/plugins";
 
+const mockModulePath = path.resolve(__dirname, "./emptyModule.js");
+
 export default buildConfig({
   collections: [Users, Pages, Media, Badges, Interviews],
   serverURL: process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL,
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
+    webpack: (config) => ({
+      ...config,
+      resolve: {
+        ...config?.resolve,
+        alias: [
+          "fs",
+          "handlebars",
+          "inline-css",
+          path.resolve(__dirname, "./email/transport"),
+          path.resolve(__dirname, "./email/generateEmailHTML"),
+          path.resolve(__dirname, "./email/generateForgotPasswordEmail"),
+          path.resolve(__dirname, "./email/generateVerificationEmail"),
+        ].reduce(
+          (aliases, importPath) => ({
+            ...aliases,
+            [importPath]: mockModulePath,
+          }),
+          config.resolve.alias
+        ),
+      },
+    }),
   },
   cors: process.env.WHITELIST_ORIGINS
     ? process.env.WHITELIST_ORIGINS.split(",")

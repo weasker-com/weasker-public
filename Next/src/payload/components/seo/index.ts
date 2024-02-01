@@ -35,8 +35,8 @@ export const seo: Field = {
       label: "Excerpt",
       type: "textarea",
       required: false,
-      minLength: 40,
-      maxLength: 500,
+      minLength: 0,
+      maxLength: 300,
     },
     {
       name: "image",

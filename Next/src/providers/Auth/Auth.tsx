@@ -1,14 +1,7 @@
 "use client";
 import type { User } from "../../payload/payload-types";
-import kebabCase from "lodash/kebabCase";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { AuthContext } from "./types";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { AuthContext, ErrorResponse } from "./types";
 import axios from "axios";
 const EXTERNAL_SERVER_URL =
   process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL ||
@@ -46,9 +39,8 @@ export const AuthProvider: React.FC<{
     email: string,
     password: string,
     userName: string
-  ): Promise<any> {
+  ): Promise<User | ErrorResponse> {
     try {
-      console.log(email, password, userName);
       const res = await axios({
         method: "POST",
         url: `${EXTERNAL_SERVER_URL}/api/users/`,
@@ -61,18 +53,16 @@ export const AuthProvider: React.FC<{
         },
       });
 
-      if (res.data.user) {
-        const registeredUser = res.data.user;
-        setUser(registeredUser);
+      if (res.data.doc) {
+        const registeredUser: User = res.data.doc;
+        setUser(res.data.doc);
         return registeredUser;
       } else {
-        return res;
+        throw new Error("Registration did not return a user object.");
       }
     } catch (error) {
-      console.error(
-        "Login failed:",
-        error.response.data.errors[0].data[0].message
-      );
+      console.error("Login failed:", error);
+      return error;
     }
   }
 
@@ -112,6 +102,10 @@ export const AuthProvider: React.FC<{
     } catch (error) {
       console.error("Logout failed:", error.message);
     }
+  }
+
+  interface ResetPasswordInterface {
+    password: string;
   }
 
   return (

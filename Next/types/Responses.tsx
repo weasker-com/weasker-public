@@ -1,3 +1,5 @@
+import { Interview, User } from "@/payload/payload-types";
+
 export type pageRes = {
   data: {
     Pages: {
@@ -485,59 +487,10 @@ export type userSeoRes = {
 export type userPageRes = {
   data: {
     Users: {
-      docs: {
-        userName: string;
-        seo: {
-          slug: string;
-          title: string | null;
-          description: string | null;
-          excerpt: string | null;
-          image: {
-            filename: string;
-            url: string;
-          } | null;
-        };
-        userBadges: {
-          bio: string;
-          services: {
-            name: string;
-            url: string;
-          }[];
-          badge: {
-            pluralName: string;
-            singularName: string;
-            seo: {
-              slug: string;
-              excerpt: string;
-              image: {
-                filename: string;
-                url: string;
-              } | null;
-            };
-          };
-        }[];
-      }[];
+      docs: User[];
     };
     UserInterviews: {
-      docs: {
-        name: string;
-        seo: {
-          slug: string;
-          excerpt: string | null;
-          image: {
-            filename: string;
-            url: string;
-          } | null;
-        };
-        badge: {
-          pluralName: string;
-          singularName: string;
-          seo: {
-            slug: string;
-          };
-        };
-        questions: { question: { shortQuestion: string } }[];
-      }[];
+      docs: Interview[];
     };
   };
 };

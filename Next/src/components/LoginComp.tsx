@@ -3,26 +3,26 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../providers/Auth/Auth";
 import { Dispatch, SetStateAction } from "react";
-import { usePathname } from "next/navigation";
 import { InternalLink } from "./links/InternalLink";
 
 interface LoginCompProps {
-  setSignInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setSignUpModalIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setForgotPasswordModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   goToPath?: string;
   goBack?: boolean;
   location: "modal" | "page";
 }
 
 const LoginComp: React.FC<LoginCompProps> = ({
-  setSignInModalIsOpen,
+  setLogInModalIsOpen,
   setSignUpModalIsOpen,
+  setForgotPasswordModalIsOpen,
   goToPath,
   goBack,
   location,
 }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const [password, setPassword] = useState<string | null>();
   const [email, setEmail] = useState<string | null>();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -35,11 +35,15 @@ const LoginComp: React.FC<LoginCompProps> = ({
     setPassword(passwordRef.current.value);
   }, []);
 
+  useEffect(() => {
+    setErrorMessage(null);
+  }, [password, email]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     const loginUser = await login(email, password);
     if (loginUser) {
-      setSignInModalIsOpen && setSignInModalIsOpen(false);
+      setLogInModalIsOpen && setLogInModalIsOpen(false);
       goToPath && router.push(goToPath);
       goBack && router.back();
     } else
@@ -50,8 +54,14 @@ const LoginComp: React.FC<LoginCompProps> = ({
 
   async function handleSignUpClick(e) {
     e.preventDefault();
-    setSignInModalIsOpen && setSignInModalIsOpen(false);
+    setLogInModalIsOpen && setLogInModalIsOpen(false);
     setSignUpModalIsOpen && setSignUpModalIsOpen(true);
+  }
+
+  async function handleForgotPasswordClick(e) {
+    e.preventDefault();
+    setLogInModalIsOpen && setLogInModalIsOpen(false);
+    setForgotPasswordModalIsOpen && setForgotPasswordModalIsOpen(true);
   }
 
   return (
@@ -60,8 +70,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
         Log in
       </h1>
       <span className="text-sm font-light text-weasker-grey">
-        By continuing, you are setting up a Weasker account and agree to
-        our&nbsp;
+        By logging in, you agree to our&nbsp;
         {
           <InternalLink
             href="/"
@@ -69,7 +78,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
             className="underline"
           />
         }
-        &nbsp;and&nbsp;
+        &nbsp;and acknowledge that you understand the&nbsp;
         {
           <InternalLink
             href="/"
@@ -107,26 +116,40 @@ const LoginComp: React.FC<LoginCompProps> = ({
             ref={passwordRef}
           />
         </div>
-        <button className="rounded px-5 py-1 mt-3 bg-tl-light-blue text-white">
+        <button
+          disabled={email === "" || password === ""}
+          className="rounded px-5 py-1 mt-3 bg-tl-light-blue disabled:bg-slate-100 text-white disabled:text-weasker-grey"
+        >
           LOG IN
         </button>
         {errorMessage && <div className="text-sm">{errorMessage}</div>}
         <span className="text-sm font-light text-weasker-grey">
-          New to Weasker? &nbsp;
+          Forgot your&nbsp;
           {location == "page" && (
-            <InternalLink
-              href="/register"
-              element="SIGN UP"
-              className="font-bold"
-              style="blue"
-            />
+            <InternalLink href="/password" element="password?" style="blue" />
+          )}
+          {location == "modal" && (
+            <span
+              onClick={(e) => {
+                handleForgotPasswordClick(e);
+              }}
+              className="hover:cursor-pointer text-tl-light-blue"
+            >
+              password?
+            </span>
+          )}
+        </span>
+        <span className="text-sm font-light text-weasker-grey">
+          New to Weasker?&nbsp;
+          {location == "page" && (
+            <InternalLink href="/register" element="SIGN UP" style="blue" />
           )}
           {location == "modal" && (
             <span
               onClick={(e) => {
                 handleSignUpClick(e);
               }}
-              className="font-bold hover:cursor-pointer text-tl-light-blue"
+              className="hover:cursor-pointer text-tl-light-blue"
             >
               SIGN UP
             </span>

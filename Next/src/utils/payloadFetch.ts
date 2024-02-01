@@ -43,9 +43,7 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
-        next: {
-          revalidate: 0,
-        },
+        next: { revalidate: 3600 * 12 },
       }
     )
       .then(checkStatus)

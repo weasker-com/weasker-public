@@ -29,6 +29,7 @@ export default function CreateAccount() {
         </div>
       ) : (
         <div className="flex flex-col items-center gap-5 py-5 px-10 bg-white mt-10 text-base w-4/5">
+          <span className="text-base">You are logged in as</span>
           <div className="flex flex-row gap-1 items-center">
             <CldImage
               width={100}
@@ -42,7 +43,6 @@ export default function CreateAccount() {
             />
             <div className="font-bold">{user?.userName}</div>
           </div>
-          <span className="text-base">You already have an account</span>
         </div>
       )}
     </>
