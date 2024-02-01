@@ -1,19 +1,19 @@
 "use client";
 
-import { changeEmail, forgotPassword } from "@/utils/profileCRUD";
+import { forgotPassword } from "@/utils/profileCRUD";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useAuth } from "../providers/Auth/Auth";
 import Loading from "@/app/(site)/loading";
 import { HiOutlineMail } from "react-icons/hi";
 
-interface ChangeEmailCompProps {
+interface ForgotPasswordCompProps {
   setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setSignUpModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setForgotPasswordModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   location: "modal" | "page";
 }
 
-const ForgotPasswordComp: React.FC<ChangeEmailCompProps> = ({
+const ForgotPasswordComp: React.FC<ForgotPasswordCompProps> = ({
   setLogInModalIsOpen,
   setSignUpModalIsOpen,
   setForgotPasswordModalIsOpen,

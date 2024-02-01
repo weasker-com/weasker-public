@@ -182,7 +182,6 @@ export async function forgotPassword(email: string): Promise<any> {
       });
       return sendEmail;
     } else {
-      console.log("email failed");
       return null;
     }
   } catch (error) {

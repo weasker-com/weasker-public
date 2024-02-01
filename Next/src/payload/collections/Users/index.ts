@@ -18,7 +18,6 @@ import { AfterChangeHook } from "payload/dist/globals/config/types";
 const validatePassword: CollectionBeforeValidateHook = ({
   operation,
   data: { password },
-  req,
 }) => {
   if (operation !== "create") {
     return;
@@ -57,10 +56,8 @@ const validatePassword: CollectionBeforeValidateHook = ({
 
 const validateUserName: CollectionBeforeValidateHook = ({
   operation,
-  context,
   data: { userName },
 }) => {
-  console.log("context", context);
   if (operation !== "create") {
     return;
   }
@@ -76,7 +73,7 @@ const validateUserName: CollectionBeforeValidateHook = ({
   if (message) throw new ValidationError([{ message, field: "userName" }]);
 };
 
-const sendEmail: CollectionAfterChangeHook = ({ req, doc, context }) => {
+const sendEmail: CollectionAfterChangeHook = ({ req, doc }) => {
   // Random attempt at sending an email
   req.payload.sendEmail({
     to: doc.email,
@@ -95,10 +92,10 @@ const sendEmail: CollectionAfterChangeHook = ({ req, doc, context }) => {
 const Users: CollectionConfig = {
   slug: "users",
   auth: {
-    verify: {
-      generateEmailSubject: () => "Verify your email",
-      generateEmailHTML: generateVerificationEmail,
-    },
+    // verify: {
+    //   generateEmailSubject: () => "Verify your email",
+    //   generateEmailHTML: generateVerificationEmail,
+    // },
     forgotPassword: {
       generateEmailSubject: () => "Reset your password",
       generateEmailHTML: generateForgotPasswordEmail,
