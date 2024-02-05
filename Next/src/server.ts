@@ -23,6 +23,15 @@ const cloudinaryConfig = cloudinary.config({
 
 app.use(mediaManagement(cloudinaryConfig));
 
+const setRobotsHeader = (req, res, next) => {
+  if (req.hostname === "weasker.up.railway.app") {
+    res.set("X-Robots-Tag", "noindex");
+  }
+  next();
+};
+
+app.use(setRobotsHeader);
+
 const start = async (): Promise<void> => {
   const payload = await getPayloadClient({
     initOptions: {

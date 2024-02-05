@@ -50,6 +50,7 @@ export const AuthProvider: React.FC<{
           password,
           userName,
           seo: { slug: userName },
+          validate: true,
         },
       });
 
@@ -104,6 +105,30 @@ export const AuthProvider: React.FC<{
     }
   }
 
+  async function updatePassword(user: User, password: string): Promise<any> {
+    try {
+      const res = await axios({
+        method: "UPDATE",
+        url: `${EXTERNAL_SERVER_URL}/api/users/`,
+        withCredentials: true,
+        data: {
+          user,
+          password,
+        },
+      });
+
+      if (res.data.doc) {
+        const updatedPassword = res.data.doc;
+        return updatedPassword;
+      } else {
+        throw new Error("Password update failed");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      return error;
+    }
+  }
+
   interface ResetPasswordInterface {
     password: string;
   }
@@ -116,6 +141,8 @@ export const AuthProvider: React.FC<{
         logout,
         login,
         register,
+        updatePassword,
+        refreshAuthentication,
       }}
     >
       {children}

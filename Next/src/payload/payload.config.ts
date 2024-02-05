@@ -61,4 +61,5 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
   }),
+  debug: process.env.NODE_ENV !== "production",
 });

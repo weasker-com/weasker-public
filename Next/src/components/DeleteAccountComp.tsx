@@ -97,7 +97,7 @@ const DeleteAccountComp: React.FC<ChangePasswordCompProps> = ({
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 items-start">
             <input
               type="checkbox"
               id="checkbox"

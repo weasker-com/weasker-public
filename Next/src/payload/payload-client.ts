@@ -3,6 +3,7 @@ import path from "path";
 import type { Payload } from "payload";
 import payload from "payload";
 import type { InitOptions } from "payload/config";
+import email from "./email/transport";
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
@@ -33,6 +34,7 @@ export const getPayloadClient = async ({
     cached.promise = payload.init({
       secret: process.env.PAYLOAD_SECRET,
       local: initOptions?.express ? false : true,
+      email: email,
       ...(initOptions || {}),
     });
   }

@@ -1,12 +1,18 @@
 import generateEmailHTML from "./generateEmailHTML";
 
-const generateForgotPasswordEmail = async ({ token }): Promise<string> =>
+const generateForgotPasswordEmail = async ({ token, user }): Promise<string> =>
   generateEmailHTML({
-    headline: "Locked out?",
-    content: "<p>Let&apos;s get you back in.</p>",
+    headline: "Reset your password",
+    content: `<p>
+    Hey ${user.userName},
+    </p> 
+    <p>
+    To set up a new password to your Weasker account, click "Reset Your Password" below, or use this link:
+    <a style="color:#007BFF;" href=${process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL}/reset-password?token=${token}&user=${user.userName}>https://www.weasker.com/reset-password<a>
+    </p>`,
     cta: {
       buttonLabel: "Reset your password",
-      url: `${process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL}/reset-password?token=${token}`,
+      url: `${process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL}/reset-password?token=${token}&user=${user.userName}`,
     },
   });
 

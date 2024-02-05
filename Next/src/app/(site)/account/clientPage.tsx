@@ -25,7 +25,7 @@ const ClientPage: React.FC<AccountPageProps> = ({ data }) => {
   const badges = userAccount.userBadges;
   const interviews = data.data.UserInterviews.docs;
   const userName = userAccount.userName;
-  const pfp = (userAccount.seo.image as Media)?.filename;
+  const pfp = (user?.seo?.image as Media)?.filename;
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchParamsTab: string | null = searchParams.get("tab");

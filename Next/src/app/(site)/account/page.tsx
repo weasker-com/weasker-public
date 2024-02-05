@@ -81,12 +81,14 @@ export default async function Account() {
   if (!user) {
     notFound();
   }
+  console.log("account user", user);
 
   const userContent = await getUserContent(user.seo.slug);
 
   if (!userContent) {
     notFound();
   }
+  console.log("account userContent", userContent);
 
   return <ClientPage data={userContent} />;
 }

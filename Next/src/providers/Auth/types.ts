@@ -29,6 +29,7 @@ export type UserData = {
 };
 
 export type ForgotPassword = (args: { email: string }) => Promise<User>;
+export type UpdatePassword = (user: User, password: string) => Promise<any>;
 
 export type Create = (args: {
   email: string;
@@ -46,6 +47,7 @@ export type Register = (
 ) => Promise<User | ErrorResponse>;
 
 export type Logout = () => Promise<void>;
+export type RefreshAuthentication = () => Promise<void>;
 
 export interface AuthContext {
   user?: User | null;
@@ -53,4 +55,6 @@ export interface AuthContext {
   login: Login;
   logout: Logout;
   register: Register;
+  updatePassword: UpdatePassword;
+  refreshAuthentication: RefreshAuthentication;
 }

@@ -2,7 +2,9 @@
 
 import { getPayloadClient } from "@/payload/payload-client";
 import { User } from "@/payload/payload-types";
+import { Media } from "@/payload/payload-types";
 import { cookies } from "next/headers";
+import { ClassificationType } from "typescript";
 
 interface DisplayNameInterface {
   user: User;
@@ -39,26 +41,27 @@ export async function updateDisplayName({
 
 interface UploadImageInterface {
   user: User;
-  uploadedImage: any;
+  image: Media;
 }
 
 export async function uploadUserPfp({
   user,
-  uploadedImage,
+  image,
 }: UploadImageInterface): Promise<any> {
   try {
     const payload = await getPayloadClient();
-    const result = await payload.create({
-      collection: "media",
-      overrideAccess: true,
+    const result = await payload.update({
+      collection: "users",
       user: user,
+      id: user.id,
+      overrideAccess: false,
       data: {
-        cloudinary: {},
+        seo: { image: image.id },
       },
-      file: uploadedImage,
     });
 
     if (result) {
+      console.log(result);
       return result;
     } else {
       return null;
@@ -140,6 +143,9 @@ export async function updatePassword(
     const payload = await getPayloadClient();
     const result = await payload.update({
       collection: "users",
+      context: {
+        validate: true,
+      },
       overrideAccess: true,
       id: user.id,
       data: {
@@ -148,7 +154,29 @@ export async function updatePassword(
     });
 
     if (result) {
+      console.log("result", result);
       return result;
+    } else {
+      console.log("no result", result);
+      return null;
+    }
+  } catch (error) {
+    console.log("error updating password: ", error);
+    console.error("Failed to update password:", error);
+  }
+}
+
+export async function forgotPassword(email: string): Promise<any> {
+  try {
+    const payload = await getPayloadClient();
+    const emailSent = await payload.forgotPassword({
+      collection: "users",
+      data: {
+        email,
+      },
+    });
+    if (emailSent) {
+      return emailSent;
     } else {
       return null;
     }
@@ -157,32 +185,30 @@ export async function updatePassword(
   }
 }
 
-export async function forgotPassword(email: string): Promise<any> {
+interface ResetPasswordInterface {
+  token: string;
+  password: string;
+}
+
+export async function resetPassword({
+  token,
+  password,
+}: ResetPasswordInterface): Promise<any> {
   try {
     const payload = await getPayloadClient();
-
-    const token = await payload.forgotPassword({
+    const resetPassword = await payload.resetPassword({
       collection: "users",
+      overrideAccess: true,
+      context: {
+        validate: true,
+      },
       data: {
-        email,
+        token,
+        password,
       },
     });
-
-    if (token) {
-      const url = `https://weasker.com/reset-password?token=${token}`;
-      const sendEmail = await payload.sendEmail({
-        to: email,
-        from: "sender@example.com",
-        subject: "Reset your Weasker password",
-        html: `<h1>Thank you for your order!</h1>
-        <p>Click this link</p>
-         ${url}
-        <p>Total: </p>
-      `,
-      });
-      return sendEmail;
-    } else {
-      return null;
+    if (resetPassword) {
+      return resetPassword;
     }
   } catch (error) {
     console.error("Failed to update password:", error);

@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { defaultImages } from "@/utils/defaultImages";
 import PlausibleProvider from "next-plausible";
 import { AuthProvider } from "../../providers/Auth/Auth";
+import NextTopLoader from "nextjs-toploader";
 
 const noto_Sans = Noto_Sans({
   subsets: ["latin"],
@@ -57,6 +58,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`bg-[#F4F4F4] ${noto_Sans.className}`}>
+        <NextTopLoader showSpinner={false} color="#007BFF" shadow={false} />
         <AuthProvider>
           <header className="top-0">
             <Navbar />

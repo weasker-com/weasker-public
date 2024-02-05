@@ -3,6 +3,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style type="text/css">
     body,
     html {
@@ -24,7 +25,7 @@
     p,
     em,
     strong {
-      font-family: sans-serif;
+      font-family: 'Noto Sans', sans-serif;
     }
 
     body {
@@ -233,6 +234,16 @@
         height: 20px !important;
       }
     }
+    .smallCaps {
+  font-variant: small-caps;
+}
+    .logo {
+      color: #253c4c;
+      font-weight: 800;
+      font-size: xx-large;
+      font-variant: small-caps;
+      text-decoration: none;
+    }
   </style>
 </head>
 
@@ -263,9 +274,8 @@
                                       <tr>
                                         <td>
                                           <!-- LOGO -->
-                                          <a href="https://payloadcms.com/" target="_blank">
-                                            <img src="https://payloadcms.com/images/logo-dark.png" width="150"
-                                              height="auto" />
+                                          <a href="https://www.weasker.com/" class="logo" target="_blank">
+                                         Weasker
                                           </a>
                                         </td>
                                       </tr>
@@ -275,7 +285,7 @@
                                       <tr>
                                         <td>
                                           <!-- HEADLINE -->
-                                          <h1 style="margin: 0 0 30px;">{{headline}}</h1>
+                                          <h1 class="smallCaps" style="margin: 0 0 30px;">{{headline}}</h1>
                                         </td>
                                       </tr>
                                       <tr>
@@ -287,7 +297,7 @@
                                           {{#if cta}}
                                           <div>
                                             <a href="{{cta.url}}"
-                                              style="background-color:#222222;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:60px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;">
+                                              style="background-color:#007BFF;border-radius:4px;color:#ffffff;display:inline-block;font-family:'Noto Sans', sans-serif;font-size:13px;font-weight:bold;line-height:60px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none; text-transform:capitalize;">
                                               {{cta.buttonLabel}}
                                             </a>
                                           </div>

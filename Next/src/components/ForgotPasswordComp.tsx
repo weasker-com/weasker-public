@@ -2,7 +2,6 @@
 
 import { forgotPassword } from "@/utils/profileCRUD";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { useAuth } from "../providers/Auth/Auth";
 import Loading from "@/app/(site)/loading";
 import { HiOutlineMail } from "react-icons/hi";
 
@@ -24,7 +23,6 @@ const ForgotPasswordComp: React.FC<ForgotPasswordCompProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const emailRef = useRef(null);
-  const { user, login } = useAuth();
 
   useEffect(() => {
     setEmail(emailRef.current.value);
@@ -61,7 +59,18 @@ const ForgotPasswordComp: React.FC<ForgotPasswordCompProps> = ({
         <span className="text-lg">Check your inbox</span>
         <span className="text-center">
           You'll get a password recovery email if the address you provided has
-          been verified.{" "}
+          been verified.
+        </span>
+        <span className="text-center text-xs">
+          Didn't get an email? Make sure to check your spam or{" "}
+          <span
+            className="text-tl-light-blue hover:cursor-pointer"
+            onClick={() => {
+              setSuccess(false), setIsLoading(false), setErrorMessage(null);
+            }}
+          >
+            try a different email address
+          </span>
         </span>
       </div>
     );

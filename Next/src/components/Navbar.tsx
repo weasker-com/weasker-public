@@ -56,11 +56,11 @@ const Navbar = () => {
 
   return (
     <div className="h-max border-b border-zinc-100 bg-white">
-      <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3">
+      <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3 z-10">
         <div className=" flex flex-row justify-between items-center my-auto py-1 ">
           <InternalLink
             element={<>Weasker</>}
-            className="text-4xl font-extrabold smallCaps text-tl-dark-blue "
+            className="text-4xl font-extrabold smallCaps text-tl-dark-blue"
             href="/"
             eventName="ClickInnerPage"
             target="HP"

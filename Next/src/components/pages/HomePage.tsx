@@ -196,13 +196,6 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
 
   return (
     <>
-      <Hero
-        location={"hp"}
-        title={"Interviewing experts"}
-        preTitle={"weasker.com"}
-        image={defaultImages.weaskerLogo}
-        alt={"weasker.com home page"}
-      />
       <SubMenu>
         <div
           onClick={() => {

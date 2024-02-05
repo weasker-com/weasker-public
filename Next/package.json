@@ -43,6 +43,7 @@
 		"next-cloudinary": "^5.16.0",
 		"next-plausible": "^3.12.0",
 		"next-share": "^0.25.0",
+		"nextjs-toploader": "^1.6.6",
 		"patch-package": "^8.0.0",
 		"payload": "^2.0.0",
 		"payload-cloudinary-plugin": "^0.1.1",

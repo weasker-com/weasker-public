@@ -44,12 +44,18 @@ const ChangePasswordComp: React.FC<ChangePasswordCompProps> = ({
       if (changedPassword) {
         setSuccess(true);
         setIsLoading(false);
-      } else setIsLoading(false);
-      setErrorMessage("Password change didn't work. Please try again.");
-    } else setIsLoading(false);
-    setErrorMessage(
-      "There was an error with the credentials provided. Please try again."
-    );
+      } else {
+        setIsLoading(false);
+        setErrorMessage(
+          "A Password needs a minimum of 8 characters with upper and lower case letters and at least one symbol."
+        );
+      }
+    } else {
+      setIsLoading(false);
+      setErrorMessage(
+        "There was an error with the credentials provided. Please try again."
+      );
+    }
   }
 
   if (success) {

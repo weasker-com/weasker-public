@@ -16,9 +16,11 @@ import Modal from "@/components/Modal";
 import ChangeEmailComp from "@/components/ChangeEmailComp";
 import ChangePasswordComp from "@/components/ChangePasswordComp";
 import DeleteAccountComp from "@/components/DeleteAccountComp";
+import axios from "axios";
+import Loading from "../loading";
 
 export const ProfileTab = () => {
-  const { user } = useAuth();
+  const { user, refreshAuthentication } = useAuth();
   const [displayName, setDisplayName] = useState(user.displayName || "");
   const [displayNameSaved, setDisplayNameSaved] = useState(false);
   const [about, setAbout] = useState(user.seo.excerpt || "");
@@ -28,10 +30,17 @@ export const ProfileTab = () => {
   const [aboutSaved, setAboutSaved] = useState(false);
   const [newImage, setNewImage] = useState(null);
   const [imageObjectURL, setImageObjectURL] = useState(null);
+  const [imageIsUploading, setImageIsUploading] = useState(false);
+  const [imageIsSaved, setImageIsSaved] = useState(false);
+  const [imageButtonsShowing, setImageButtonsShowing] = useState(false);
   const [emailModalIsOpen, setEmailModalIsOpen] = useState(false);
   const [passwordModalIsOpen, setPasswordModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] =
     useState(false);
+
+  useEffect(() => {
+    refreshAuthentication();
+  }, [imageIsSaved]);
 
   const handleDisplayNameBlur = async () => {
     if (displayName !== user.displayName) {
@@ -77,6 +86,7 @@ export const ProfileTab = () => {
     if (event.target.files && event.target.files[0]) {
       const i = event.target.files[0];
       setNewImage(i);
+      setImageButtonsShowing(true);
       setImageObjectURL(URL.createObjectURL(i));
     }
   };
@@ -84,22 +94,34 @@ export const ProfileTab = () => {
   const handleRemoveImageFromClient = () => {
     if (imageObjectURL) {
       setImageObjectURL(null);
+      setImageButtonsShowing(false);
       setNewImage(null);
     }
   };
 
-  const handleSaveImage = async (event) => {
+  const handleSaveImageNew = async (event) => {
+    setImageIsUploading(true);
     const body = new FormData();
     body.append("file", newImage);
-    const response = uploadUserPfp({
-      user,
-      uploadedImage: {
-        data: body,
-        mimetype: "png",
-        name: newImage.name,
-        size: newImage.size,
-      },
-    });
+    try {
+      const uploadImage = await axios.post("/api/media", body, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+      if (uploadImage?.data?.doc?.filename) {
+        const image = uploadImage.data.doc;
+        const uploadImageToDB = uploadUserPfp({ user, image });
+        setImageButtonsShowing(false);
+        setImageIsUploading(false);
+        setImageIsSaved(true);
+        setTimeout(() => {
+          setImageIsSaved(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   const handleChangeEmailClick = () => {
@@ -185,7 +207,7 @@ export const ProfileTab = () => {
             <div className="flex items-center sm:w-full px-auto"></div>
           </div>
           <div className="flex flex-row justify-between">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col gap-1 w-full">
               <label className="text-base font-bold" htmlFor="image">
                 Profile image
               </label>
@@ -233,24 +255,38 @@ export const ProfileTab = () => {
                     />
                   </label>
                 </div>
-                <div
-                  className={`flex flex-row gap-2 max-w-[100px] justify-start content-start ${
-                    imageObjectURL ? "block" : "hidden"
-                  }`}
-                >
-                  <button
-                    className="text-xs max-h-12 border border-tl-light-blue text-tl-light-blue rounded-lg py-1 px-2 "
-                    onClick={handleSaveImage}
+                {imageIsUploading ? (
+                  <div className="flex flex-row max-w-[100px] justify-start content-start">
+                    <Loading />
+                  </div>
+                ) : (
+                  <div
+                    className={`flex flex-row gap-2 max-w-[100px] justify-start content-start ${
+                      imageButtonsShowing ? "block" : "hidden"
+                    }`}
                   >
-                    Save
-                  </button>
-                  <button
-                    onClick={handleRemoveImageFromClient}
-                    className="text-xs max-h-12 border border-red-600 rounded-lg py-1 px-2 text-red-600"
-                  >
-                    Remove
-                  </button>
-                </div>
+                    <button
+                      className="text-xs max-h-12 border border-tl-light-blue text-tl-light-blue rounded-lg py-1 px-2 "
+                      onClick={handleSaveImageNew}
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleRemoveImageFromClient}
+                      className="text-xs max-h-12 border border-red-600 rounded-lg py-1 px-2 text-red-600"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div
+                className={`transition-opacity ease-in-out duration-300 flex flex-row items-center gap-1 p-[2px] text-xs self-end text-emerald-500 border-emerald-500 border rounded ${
+                  imageIsSaved ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <IoIosCheckmarkCircleOutline />
+                Saved
               </div>
             </div>
             <div className="flex items-center sm:w-full px-auto"></div>
