@@ -1,16 +1,16 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
-import { resetPassword } from "@/utils/profileCRUD";
+import React, { ReactNode, useEffect, useState } from "react";
 import Loading from "@/app/(site)/loading";
 import { FaCheckCircle } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
-import LoginComp from "./LoginComp";
 import { InternalLink } from "./links/InternalLink";
+import { useAuth } from "../providers/Auth/Auth";
 
 interface ResetPasswordCompProps {}
 
-const ResetPasswordComp: React.FC<ResetPasswordCompProps> = ({}) => {
+const ResetPasswordComp: React.FC<ResetPasswordCompProps> = () => {
+  const { resetPassword, resetPasswordError, resetPasswordLoading } = useAuth();
   const [newPassword, setNewPassword] = useState<string | null>("");
   const [confirmPassword, setConfirmPassword] = useState<string | null>("");
   const [checkMarkIsChecked, setCheckMarkIsChecked] = useState(false);
@@ -18,7 +18,6 @@ const ResetPasswordComp: React.FC<ResetPasswordCompProps> = ({}) => {
     null
   );
   const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const searchParamsToken: string | null = searchParams.get("token");
   const searchParamsUserName: string | null = searchParams.get("user");
@@ -31,16 +30,15 @@ const ResetPasswordComp: React.FC<ResetPasswordCompProps> = ({}) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
-    const passwordReset = await resetPassword({
-      token: searchParamsToken,
-      password: newPassword,
-    });
+
+    const passwordReset = await resetPassword(searchParamsToken, newPassword);
     if (passwordReset) {
-      setIsLoading(false);
       setSuccess(true);
-    } else {
-      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (resetPasswordError) {
       setErrorMessage(
         <span>
           The link you clicked has expired or is invalid.
@@ -52,7 +50,7 @@ const ResetPasswordComp: React.FC<ResetPasswordCompProps> = ({}) => {
         </span>
       );
     }
-  }
+  }, [resetPasswordError]);
 
   if (success) {
     return (
@@ -115,7 +113,7 @@ const ResetPasswordComp: React.FC<ResetPasswordCompProps> = ({}) => {
               id="checkbox"
               name="checkbox"
               className="p-2 border rounded"
-              onChange={(e) => setCheckMarkIsChecked(!checkMarkIsChecked)}
+              onChange={() => setCheckMarkIsChecked(!checkMarkIsChecked)}
             />
             <label htmlFor="checkbox" className="text-xs">
               I am aware that updating my password will sign me out of all
@@ -129,11 +127,12 @@ const ResetPasswordComp: React.FC<ResetPasswordCompProps> = ({}) => {
               !checkMarkIsChecked ||
               newPassword === "" ||
               confirmPassword == "" ||
-              newPassword !== confirmPassword
+              newPassword !== confirmPassword ||
+              resetPasswordLoading == true
             }
             className="rounded px-5 py-1 mt-3 bg-tl-light-blue disabled:bg-slate-100 text-white disabled:text-weasker-grey"
           >
-            {isLoading ? <Loading /> : "SET PASSWORD"}
+            {resetPasswordLoading ? <Loading /> : "SET PASSWORD"}
           </button>
           {errorMessage && <div className="text-sm">{errorMessage}</div>}
         </form>

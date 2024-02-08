@@ -3,6 +3,7 @@ import { getMeUser } from "@/utils/getMeUser";
 import ClientPage from "@/app/(site)/account/clientPage";
 import { fetchData } from "@/utils/payloadFetch";
 import { userPageRes } from "../../../../types/Responses";
+import NoAuth from "@/components/NoAuth";
 
 async function getData() {
   const data = await getMeUser();
@@ -79,16 +80,14 @@ export default async function Account() {
   const user = await getData();
 
   if (!user) {
-    notFound();
+    return <NoAuth />;
   }
-  console.log("account user", user);
 
   const userContent = await getUserContent(user.seo.slug);
 
   if (!userContent) {
     notFound();
   }
-  console.log("account userContent", userContent);
 
   return <ClientPage data={userContent} />;
 }

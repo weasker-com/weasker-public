@@ -2,18 +2,21 @@ import ListItem from "@/components/ListItem";
 import { Badge, Interview, Media } from "@/payload/payload-types";
 import { CldImage } from "next-cloudinary";
 
-interface InterviewsTab {
+interface InterviewsTabProps {
   interviews: Interview[];
 }
 
-export const InterviewsTab = ({ interviews }: InterviewsTab) => {
+export const InterviewsTab = ({ interviews }: InterviewsTabProps) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 lg:max-w-[1000px] mt-2 w-full mt-2">
       <div className="flex flex-col w-full">
         {interviews.length > 0 ? (
-          interviews.map((item) => {
+          interviews.map((item, index) => {
             return (
-              <div className="flex flex-col bg-white mx-2 p-2 lg:px-10 lg:py-3 border gap-10">
+              <div
+                key={index}
+                className="flex flex-col bg-white mx-2 p-2 lg:px-10 lg:py-3 border gap-10"
+              >
                 <div className="flex flex-row justify-between items-center hover:cursor-pointer">
                   <div className="flex flex-row items-center content-center gap-3">
                     <CldImage

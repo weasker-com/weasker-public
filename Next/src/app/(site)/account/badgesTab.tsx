@@ -8,11 +8,11 @@ import { User } from "payload/auth";
 import { useState } from "react";
 import { IoTrashOutline } from "react-icons/io5";
 
-interface BadgesTab {
+interface BadgesTabProps {
   badges: User["userBadges"];
 }
 
-export const BadgesTab = ({ badges }: BadgesTab) => {
+export const BadgesTab = ({ badges }: BadgesTabProps) => {
   const [expandedBadge, setExpandedBadge] = useState(null);
   const toggleBadgeExpansion = (badgeSlug: string) => {
     if (expandedBadge === badgeSlug) {
@@ -26,11 +26,14 @@ export const BadgesTab = ({ badges }: BadgesTab) => {
     <div className="flex flex-col sm:flex-row gap-3 lg:max-w-[1000px] mt-2 w-full">
       <div className="w-full flex flex-col gap-2">
         {Array.isArray(badges) && badges.length > 0 ? (
-          badges.map((item) => {
+          badges.map((item, index) => {
             const isExpanded = expandedBadge === (item.badge as Badge).seo.slug;
             const article = getArticle((item.badge as Badge).singularName);
             return (
-              <div className="flex flex-col bg-white mx-2 p-2 lg:px-10 lg:py-3 border gap-10">
+              <div
+                key={index}
+                className="flex flex-col bg-white mx-2 p-2 lg:px-10 lg:py-3 border gap-10"
+              >
                 <div
                   onClick={() =>
                     toggleBadgeExpansion((item.badge as Badge).seo.slug)

@@ -1,7 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { deleteAccount } from "@/utils/profileCRUD";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useAuth } from "../providers/Auth/Auth";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/(site)/loading";
@@ -11,43 +10,60 @@ interface ChangePasswordCompProps {
   setDeleteAccountModalIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
-const DeleteAccountComp: React.FC<ChangePasswordCompProps> = ({
-  setDeleteAccountModalIsOpen,
-}) => {
+const DeleteAccountComp: React.FC<ChangePasswordCompProps> = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>("");
   const [email, setEmail] = useState<string | null>("");
   const [checkMarkIsChecked, setCheckMarkIsChecked] = useState(false);
-  const passwordRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { user, setUser, login } = useAuth();
+  const {
+    user,
+    setUser,
+    login,
+    deleteUser,
+    deleteUserError,
+    loginError,
+    deleteUserLoading,
+  } = useAuth();
   const [success, setSuccess] = useState(false);
+
   useEffect(() => {
     setErrorMessage(null);
   }, [password, email]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
     const loginUser = await login(email, password);
     if (loginUser) {
-      const deletedAccount = await deleteAccount(user);
+      const deletedAccount = await deleteUser(user);
       if (deletedAccount) {
+        console.log(deletedAccount);
         setUser(null);
         setSuccess(true);
         setTimeout(() => {
           router.push("/");
         }, 2000);
-      } else setIsLoading(false);
-      setErrorMessage(
-        "We had an issue deleting your account. Please try again"
-      );
-    } else setIsLoading(false);
-    setErrorMessage(
-      "There was an error with the credentials provided. Please try again."
-    );
+      }
+    }
   }
+
+  useEffect(() => {
+    if (deleteUserError) {
+      setErrorMessage("An error occurred. Please try again");
+    }
+  }, [deleteUserError]);
+
+  useEffect(() => {
+    if (loginError) {
+      if (loginError.response.status == 401) {
+        setErrorMessage(
+          "There was an error with the login credentials provided. Please try again."
+        );
+      } else {
+        setErrorMessage("An error ocurred. Please try again.");
+      }
+    }
+  }, [loginError]);
 
   if (success) {
     return (
@@ -103,7 +119,7 @@ const DeleteAccountComp: React.FC<ChangePasswordCompProps> = ({
               id="checkbox"
               name="checkbox"
               className="p-2 border rounded"
-              onChange={(e) => setCheckMarkIsChecked(!checkMarkIsChecked)}
+              onChange={() => setCheckMarkIsChecked(!checkMarkIsChecked)}
             />
             <label htmlFor="checkbox" className="text-xs">
               I understand that deleted accounts cannot be restored
@@ -114,7 +130,7 @@ const DeleteAccountComp: React.FC<ChangePasswordCompProps> = ({
             disabled={password === "" || email === "" || !checkMarkIsChecked}
             className="rounded px-5 py-1 mt-3 bg-red-600 disabled:bg-slate-100 text-white disabled:text-weasker-grey"
           >
-            {isLoading ? <Loading /> : "DELETE ACCOUNT"}
+            {deleteUserLoading ? <Loading /> : "DELETE ACCOUNT"}
           </button>
           {errorMessage && <div className="text-sm">{errorMessage}</div>}
         </form>

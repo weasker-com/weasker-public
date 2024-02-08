@@ -7,7 +7,6 @@ const template = fs.readFileSync
   ? fs.readFileSync(path.join(__dirname, "./template.html"), "utf8")
   : "";
 
-// Compile the template
 const getHTML = Handlebars.compile(template);
 
 const generateEmailHTML = async (data): Promise<string> => {

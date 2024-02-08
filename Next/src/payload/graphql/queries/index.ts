@@ -7,7 +7,9 @@ import { getInterviewUser } from "./getInterviewUser";
 import { getUserInterviews } from "./getUserInterviews";
 
 export type customGraphQLQueryType = (
+  // eslint-disable-next-line no-unused-vars
   GraphQL: typeof ImportedGraphQL,
+  // eslint-disable-next-line no-unused-vars
   payload: Payload
 ) => Record<string, unknown>;
 export const customGraphQLQueries: customGraphQLQueryType = (

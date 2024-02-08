@@ -3,7 +3,7 @@ import { useAuth } from "../../../providers/Auth/Auth";
 import { userPageRes } from "../../../../types/Responses";
 import { defaultImages } from "@/utils/defaultImages";
 import Hero from "../../../components/Hero";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import SubMenu from "../../../components/SubMenu";
@@ -40,56 +40,57 @@ const ClientPage: React.FC<AccountPageProps> = ({ data }) => {
     router.push(`${pathname}?tab=${slug}`);
   };
 
-  if (user?.seo?.slug == userAccount?.seo?.slug) {
-    return (
-      <>
-        <Hero
-          title={userName}
-          preTitle={"Account"}
-          image={pfp || defaultImages.defaultUserImage}
-          location={"user"}
-        />
-        <SubMenu>
-          <div
-            onClick={() => {
-              handleTabSelect("profile");
-            }}
-            className={`flex flex-row items-center gap-1 ${
-              (activeTab == "profile" || activeTab == null) &&
-              "text-tl-light-blue"
-            }`}
-          >
-            <PiUserCircleGearThin size={20} />
-            Profile
-          </div>
-          <div
-            onClick={() => {
-              handleTabSelect("badges");
-            }}
-            className={`flex flex-row items-center gap-1 ${
-              activeTab == "badges" && "text-tl-light-blue"
-            }`}
-          >
-            <PiShieldCheckLight size={20} />
-            Badges
-          </div>
-          <div
-            onClick={() => {
-              handleTabSelect("interviews");
-            }}
-            className={`flex flex-row items-center gap-1 ${
-              activeTab == "interviews" && "text-tl-light-blue"
-            }`}
-          >
-            <LiaMicrophoneSolid size={20} /> interviews
-          </div>
-        </SubMenu>
-        {(activeTab == "profile" || activeTab == null) && <ProfileTab />}
-        {activeTab == "badges" && <BadgesTab badges={badges} />}
-        {activeTab == "interviews" && <InterviewsTab interviews={interviews} />}
-      </>
-    );
+  if (user?.seo?.slug !== userAccount?.seo?.slug) {
+    return null;
   }
+  return (
+    <>
+      <Hero
+        title={userName}
+        preTitle={"Account"}
+        image={pfp || defaultImages.defaultUserImage}
+        location={"user"}
+      />
+      <SubMenu>
+        <div
+          onClick={() => {
+            handleTabSelect("profile");
+          }}
+          className={`flex flex-row items-center gap-1 ${
+            (activeTab == "profile" || activeTab == null) &&
+            "text-tl-light-blue"
+          }`}
+        >
+          <PiUserCircleGearThin size={20} />
+          Profile
+        </div>
+        <div
+          onClick={() => {
+            handleTabSelect("badges");
+          }}
+          className={`flex flex-row items-center gap-1 ${
+            activeTab == "badges" && "text-tl-light-blue"
+          }`}
+        >
+          <PiShieldCheckLight size={20} />
+          Badges
+        </div>
+        <div
+          onClick={() => {
+            handleTabSelect("interviews");
+          }}
+          className={`flex flex-row items-center gap-1 ${
+            activeTab == "interviews" && "text-tl-light-blue"
+          }`}
+        >
+          <LiaMicrophoneSolid size={20} /> interviews
+        </div>
+      </SubMenu>
+      {(activeTab == "profile" || activeTab == null) && <ProfileTab />}
+      {activeTab == "badges" && <BadgesTab badges={badges} />}
+      {activeTab == "interviews" && <InterviewsTab interviews={interviews} />}
+    </>
+  );
 };
 
 export default ClientPage;

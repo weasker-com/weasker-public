@@ -1,26 +1,16 @@
-import {
-  CollectionAfterChangeHook,
-  CollectionBeforeValidateHook,
-  CollectionConfig,
-} from "payload/types";
+import { CollectionBeforeValidateHook, CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo";
-import { isAdmin, isAdminFieldLevel } from "../../access/isAdmin";
+import { isAdminFieldLevel } from "../../access/isAdmin";
 import { isAdminOrSelf } from "../../access/isAdminOrSelf";
-import { anyone } from "../../access/anyone";
 import { checkRole } from "../../access/checkRole";
 import { ValidationError } from "payload/errors";
-import { readConfigFile } from "typescript";
 import { loginAfterCreate } from "./hooks/loginAfterCreate";
-import generateVerificationEmail from "../../email/generateVerificationEmail";
 import generateForgotPasswordEmail from "../../email/generateForgotPasswordEmail";
-import { AfterChangeHook } from "payload/dist/globals/config/types";
 
 const validatePassword: CollectionBeforeValidateHook = ({
-  operation,
-  context,
-  data: { password, validate },
+  data: { password },
 }) => {
-  if (!validate && !context.validate) {
+  if (typeof password !== "string") {
     return;
   }
 
@@ -44,7 +34,7 @@ const validatePassword: CollectionBeforeValidateHook = ({
     errorMessages.push("Password must have uppercase letters. ");
   }
 
-  const hasSymbols = /[$-/:-?{-~!"^_`\[\]]/.test(password);
+  const hasSymbols = /[$-/:-?{-~!"^_`[\]]/.test(password);
   if (!hasSymbols) {
     errorMessages.push("Password must include at least one symbol. ");
   }
@@ -77,10 +67,8 @@ const validateUserName: CollectionBeforeValidateHook = ({
 const Users: CollectionConfig = {
   slug: "users",
   auth: {
-    // verify: {
-    //   generateEmailSubject: () => "Verify your email",
-    //   generateEmailHTML: generateVerificationEmail,
-    // },
+    // maxLoginAttempts: 10,
+    // lockTime: 60 * 1000 * 60 * 12,
     forgotPassword: {
       generateEmailSubject: () => "Reset your Weasker password",
       generateEmailHTML: generateForgotPasswordEmail,

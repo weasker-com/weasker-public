@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 interface ModalProps {
-  children: JSX.Element;
+  children: React.JSX.Element;
   onclick?: (
     event: React.MouseEvent<HTMLDivElement> | React.MouseEvent<SVGElement>
   ) => void;

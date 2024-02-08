@@ -1,9 +1,4 @@
 "use client";
-import {
-  updateDisplayName,
-  updateUserAbout,
-  uploadUserPfp,
-} from "@/utils/profileCRUD";
 import { useAuth } from "../../../providers/Auth/Auth";
 import { useEffect, useState } from "react";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
@@ -13,14 +8,22 @@ import Image from "next/image";
 import { LiaCloudUploadAltSolid } from "react-icons/lia";
 import { IoTrashOutline } from "react-icons/io5";
 import Modal from "@/components/Modal";
-import ChangeEmailComp from "@/components/ChangeEmailComp";
-import ChangePasswordComp from "@/components/ChangePasswordComp";
+import ChangeEmailComp from "@/components/UpdateEmailComp";
+import ChangePasswordComp from "@/components/UpdatePasswordComp";
 import DeleteAccountComp from "@/components/DeleteAccountComp";
-import axios from "axios";
 import Loading from "../loading";
 
 export const ProfileTab = () => {
-  const { user, refreshAuthentication } = useAuth();
+  const {
+    user,
+    setUser,
+    refreshAuthentication,
+    updateUser,
+    uploadImage,
+    updateUserLoading,
+    uploadImageLoading,
+    uploadImageError,
+  } = useAuth();
   const [displayName, setDisplayName] = useState(user.displayName || "");
   const [displayNameSaved, setDisplayNameSaved] = useState(false);
   const [about, setAbout] = useState(user.seo.excerpt || "");
@@ -30,9 +33,11 @@ export const ProfileTab = () => {
   const [aboutSaved, setAboutSaved] = useState(false);
   const [newImage, setNewImage] = useState(null);
   const [imageObjectURL, setImageObjectURL] = useState(null);
-  const [imageIsUploading, setImageIsUploading] = useState(false);
   const [imageIsSaved, setImageIsSaved] = useState(false);
   const [imageButtonsShowing, setImageButtonsShowing] = useState(false);
+  const [imageErrorMessage, setImageErrorMessage] = useState<null | string>(
+    null
+  );
   const [emailModalIsOpen, setEmailModalIsOpen] = useState(false);
   const [passwordModalIsOpen, setPasswordModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] =
@@ -40,18 +45,15 @@ export const ProfileTab = () => {
 
   useEffect(() => {
     refreshAuthentication();
-  }, [imageIsSaved]);
+  }, [imageIsSaved, refreshAuthentication]);
 
   const handleDisplayNameBlur = async () => {
     if (displayName !== user.displayName) {
-      const result = await updateDisplayName({
-        user,
-        newDisplayName: displayName,
-        userId: user.id,
-      });
+      const res = await updateUser(user, { displayName });
 
-      if (result) {
+      if (res) {
         setDisplayNameSaved(true);
+        setUser(res);
         setTimeout(() => {
           setDisplayNameSaved(false);
         }, 3000);
@@ -67,13 +69,10 @@ export const ProfileTab = () => {
 
   const handleAboutBlur = async () => {
     if (about !== user.seo.excerpt) {
-      const result = await updateUserAbout({
-        user,
-        newAboutText: about,
-        userId: user.id,
-      });
+      const res = await updateUser(user, { seo: { excerpt: about } });
 
-      if (result) {
+      if (res) {
+        setUser(res);
         setAboutSaved(true);
         setTimeout(() => {
           setAboutSaved(false);
@@ -85,9 +84,15 @@ export const ProfileTab = () => {
   const uploadToClient = (event) => {
     if (event.target.files && event.target.files[0]) {
       const i = event.target.files[0];
-      setNewImage(i);
-      setImageButtonsShowing(true);
-      setImageObjectURL(URL.createObjectURL(i));
+
+      if (i.type === "image/png" || i.type === "image/jpeg") {
+        setNewImage(i);
+        setImageButtonsShowing(true);
+        setImageObjectURL(URL.createObjectURL(i));
+        setImageErrorMessage(null);
+      } else {
+        setImageErrorMessage("Please upload a .png or .jpg image.");
+      }
     }
   };
 
@@ -99,30 +104,40 @@ export const ProfileTab = () => {
     }
   };
 
-  const handleSaveImageNew = async (event) => {
-    setImageIsUploading(true);
+  const handleSaveImageNEW = async () => {
     const body = new FormData();
     body.append("file", newImage);
-    try {
-      const uploadImage = await axios.post("/api/media", body, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      });
-      if (uploadImage?.data?.doc?.filename) {
-        const image = uploadImage.data.doc;
-        const uploadImageToDB = uploadUserPfp({ user, image });
-        setImageButtonsShowing(false);
-        setImageIsUploading(false);
-        setImageIsSaved(true);
-        setTimeout(() => {
-          setImageIsSaved(false);
-        }, 3000);
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
+    const uploadedImage = await uploadImage(body);
+    if (uploadedImage.status == 201) {
+      const image = uploadedImage.data.doc;
+      updateUser(user, { seo: { image: image.id } });
+      setImageButtonsShowing(false);
+      setImageIsSaved(true);
+      setTimeout(() => {
+        setImageIsSaved(false);
+      }, 3000);
     }
   };
+
+  useEffect(() => {
+    if (uploadImageError) {
+      if (uploadImageError.response.status === 400) {
+        const errors = uploadImageError.response.data.errors;
+        for (let error of errors) {
+          if (error.name === "ValidationError") {
+            const field = error.data[0].field;
+            const message = error.data[0].message;
+            if (field === "email" && message === "Value must be unique") {
+              setImageErrorMessage("This Email address is already registered");
+            }
+          }
+        }
+      }
+      if (uploadImageError.response.status === 500) {
+        setImageErrorMessage("An error occurred. Please try again");
+      }
+    }
+  }, [uploadImageError]);
 
   const handleChangeEmailClick = () => {
     setEmailModalIsOpen(true);
@@ -255,7 +270,13 @@ export const ProfileTab = () => {
                     />
                   </label>
                 </div>
-                {imageIsUploading ? (
+                {imageErrorMessage && (
+                  <div className="text-xs text-red-600">
+                    {imageErrorMessage}
+                  </div>
+                )}
+                {(updateUserLoading && imageButtonsShowing) ||
+                (imageButtonsShowing && uploadImageLoading) ? (
                   <div className="flex flex-row max-w-[100px] justify-start content-start">
                     <Loading />
                   </div>
@@ -267,7 +288,7 @@ export const ProfileTab = () => {
                   >
                     <button
                       className="text-xs max-h-12 border border-tl-light-blue text-tl-light-blue rounded-lg py-1 px-2 "
-                      onClick={handleSaveImageNew}
+                      onClick={handleSaveImageNEW}
                     >
                       Save
                     </button>
@@ -280,6 +301,7 @@ export const ProfileTab = () => {
                   </div>
                 )}
               </div>
+
               <div
                 className={`transition-opacity ease-in-out duration-300 flex flex-row items-center gap-1 p-[2px] text-xs self-end text-emerald-500 border-emerald-500 border rounded ${
                   imageIsSaved ? "opacity-100" : "opacity-0"
@@ -344,12 +366,12 @@ export const ProfileTab = () => {
       </div>
       {emailModalIsOpen && (
         <Modal onclick={() => setEmailModalIsOpen(false)}>
-          <ChangeEmailComp setEmailModalIsOpen={setEmailModalIsOpen} />
+          <ChangeEmailComp />
         </Modal>
       )}
       {passwordModalIsOpen && (
         <Modal onclick={() => setPasswordModalIsOpen(false)}>
-          <ChangePasswordComp setPasswordModalIsOpen={setPasswordModalIsOpen} />
+          <ChangePasswordComp />
         </Modal>
       )}
       {deleteAccountModalIsOpen && (

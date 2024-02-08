@@ -1,16 +1,16 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../providers/Auth/Auth";
 import { Dispatch, SetStateAction } from "react";
 import { InternalLink } from "./links/InternalLink";
+import Loading from "@/app/(site)/loading";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface LoginCompProps {
   setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setSignUpModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setForgotPasswordModalIsOpen?: Dispatch<SetStateAction<boolean>>;
-  goToPath?: string;
-  goBack?: boolean;
   location: "modal" | "page";
 }
 
@@ -18,17 +18,18 @@ const LoginComp: React.FC<LoginCompProps> = ({
   setLogInModalIsOpen,
   setSignUpModalIsOpen,
   setForgotPasswordModalIsOpen,
-  goToPath,
-  goBack,
   location,
 }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const destAfterLogin: string | null = searchParams.get("dest");
   const [password, setPassword] = useState<string | null>();
   const [email, setEmail] = useState<string | null>();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const { login } = useAuth();
+  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+  const { login, loginError, loginLoading } = useAuth();
 
   useEffect(() => {
     setEmail(emailRef.current.value);
@@ -41,16 +42,29 @@ const LoginComp: React.FC<LoginCompProps> = ({
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const loginUser = await login(email, password);
-    if (loginUser) {
+    setErrorMessage(null);
+    const res = await login(email, password);
+    if (res) {
       setLogInModalIsOpen && setLogInModalIsOpen(false);
-      goToPath && router.push(goToPath);
-      goBack && router.back();
-    } else
-      setErrorMessage(
-        "There was an error with the credentials provided. Please try again."
-      );
+      console.log("destAfterLogin", destAfterLogin);
+      if (location == "page") {
+        destAfterLogin ? router.push(destAfterLogin) : router.push("/");
+      }
+    }
   }
+
+  useEffect(() => {
+    if (loginError) {
+      if (loginError.response.status == 401) {
+        setErrorMessage(
+          "There was an error with the credentials provided. Please try again."
+        );
+      }
+      if (loginError.response.status == 500) {
+        setErrorMessage("An error ocurred. Please try again.");
+      }
+    }
+  }, [loginError]);
 
   async function handleSignUpClick(e) {
     e.preventDefault();
@@ -106,43 +120,63 @@ const LoginComp: React.FC<LoginCompProps> = ({
           />
         </div>
         <div className="flex flex-col gap-1 ">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="PASSWORD"
-            className="p-2 border rounded"
-            onChange={(e) => setPassword(e.target.value)}
-            ref={passwordRef}
-          />
+          <div className="relative w-full">
+            <input
+              type={passwordIsVisible ? "text" : "password"}
+              id="password"
+              name="password"
+              placeholder="PASSWORD"
+              className="pl-3 pr-10 py-2 border rounded w-full"
+              ref={passwordRef}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {password !== "" && (
+              <button
+                type="button"
+                onClick={() => setPasswordIsVisible(!passwordIsVisible)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+              >
+                {passwordIsVisible ? "Hide" : "Show"}
+              </button>
+            )}
+          </div>
         </div>
         <button
           disabled={email === "" || password === ""}
           className="rounded px-5 py-1 mt-3 bg-tl-light-blue disabled:bg-slate-100 text-white disabled:text-weasker-grey"
         >
-          LOG IN
+          {loginLoading ? <Loading /> : "LOG IN"}
         </button>
-        {errorMessage && <div className="text-sm">{errorMessage}</div>}
+        {errorMessage && (
+          <div className="text-sm text-red-600">{errorMessage}</div>
+        )}
         <span className="text-sm font-light text-weasker-grey">
-          Forgot your&nbsp;
           {location == "page" && (
-            <InternalLink href="/password" element="password?" style="blue" />
+            <InternalLink
+              href="/forgot-password"
+              element="Forgot your password?"
+            />
           )}
           {location == "modal" && (
             <span
               onClick={(e) => {
                 handleForgotPasswordClick(e);
               }}
-              className="hover:cursor-pointer text-tl-light-blue"
+              className="hover:cursor-pointer"
             >
-              password?
+              Forgot your password?
             </span>
           )}
         </span>
         <span className="text-sm font-light text-weasker-grey">
           New to Weasker?&nbsp;
           {location == "page" && (
-            <InternalLink href="/register" element="SIGN UP" style="blue" />
+            <InternalLink
+              href="/register"
+              element="SIGN UP"
+              style="blue"
+              className="font-bold"
+            />
           )}
           {location == "modal" && (
             <span

@@ -19,6 +19,7 @@ const SocialShareButtons = () => {
 
   useEffect(() => {
     const metaOgTitle = document.querySelector("meta[property='og:title']");
+
     if (metaOgTitle) {
       setOgTitle(metaOgTitle.getAttribute("content") || "");
     }
@@ -26,7 +27,8 @@ const SocialShareButtons = () => {
     const metaOgDescription = document.querySelector(
       "meta[property='og:description']"
     );
-    if (metaOgTitle) {
+
+    if (metaOgDescription) {
       setOgDescription(metaOgTitle.getAttribute("content") || "");
     }
   }, []);

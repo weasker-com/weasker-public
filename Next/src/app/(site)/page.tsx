@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import HomePage from "@/components/pages/HomePage";
 
 async function getData() {
+  console.time("getDataHP");
   const query = `{
         Interviews {
           docs {
@@ -65,18 +66,21 @@ async function getData() {
   });
 
   if (!data) {
+    console.timeEnd("getDataHP");
     return null;
   }
-
+  console.timeEnd("getDataHP");
   return data;
 }
 
 export default async function Home() {
+  console.time("HomeRenderTime");
   const data = await getData();
 
   if (!data) {
+    console.timeEnd("HomeRenderTime");
     notFound();
   }
-
+  console.timeEnd("HomeRenderTime");
   return <HomePage data={data} />;
 }

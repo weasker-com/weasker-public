@@ -11,50 +11,37 @@ export type ErrorResponse = {
     };
   };
 };
-
-export type UserResponse = {
-  response: {
-    data: {
-      errors: {
-        name: string;
-        data: { message: string; field: string }[];
-        message: string;
-      }[];
-    };
-  };
-};
-
-export type UserData = {
-  data: { loginUser: { user: User } };
-};
-
-export type ForgotPassword = (args: { email: string }) => Promise<User>;
-export type UpdatePassword = (user: User, password: string) => Promise<any>;
-
-export type Create = (args: {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}) => Promise<User>;
-
-export type Login = (email: string, password: string) => Promise<User | []>;
-
-export type Register = (
-  email: string,
-  password: string,
-  userName: string
-) => Promise<User | ErrorResponse>;
-
-export type Logout = () => Promise<void>;
-export type RefreshAuthentication = () => Promise<void>;
-
+/* eslint-disable no-unused-vars */
 export interface AuthContext {
   user?: User | null;
   setUser: (user: User | null) => void;
-  login: Login;
-  logout: Logout;
-  register: Register;
-  updatePassword: UpdatePassword;
-  refreshAuthentication: RefreshAuthentication;
+  login: (email: string, password: string) => Promise<User | []>;
+  logout: () => Promise<void>;
+  refreshAuthentication: () => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    userName: string
+  ) => Promise<User | ErrorResponse>;
+  updateUser: (user: User, data: any) => Promise<any>;
+  uploadImage: (body: any) => Promise<any>;
+  deleteUser: (user: User) => Promise<any>;
+  resetPassword: (token: string, password: string) => Promise<any>;
+  forgotPassword: (email: string) => Promise<User>;
+  loginLoading: Boolean;
+  loginError: any;
+  registerLoading: Boolean;
+  registerError: any;
+  logoutError: any;
+  logOutLoading: Boolean;
+  updateUserLoading: Boolean;
+  updateUserError: any;
+  uploadImageLoading: Boolean;
+  uploadImageError: any;
+  deleteUserLoading: Boolean;
+  deleteUserError: any;
+  resetPasswordLoading: Boolean;
+  resetPasswordError: any;
+  forgotPasswordLoading: Boolean;
+  forgotPasswordError: any;
 }

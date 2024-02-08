@@ -1,9 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo/index";
-import { isAdmin, isAdminFieldLevel } from "../../access/isAdmin";
-import { isAdminOrSelf } from "../../access/isAdminOrSelf";
-import { checkRole } from "../../access/checkRole";
-import { anyone } from "../../access/anyone";
+import { isAdmin } from "../../access/isAdmin";
 
 import {
   HTMLConverterFeature,

@@ -2,10 +2,7 @@ import { cookies } from "next/headers";
 import type { User } from "../payload/payload-types";
 import axios from "axios";
 
-export const getMeUser = async (args?: {
-  nullUserRedirect?: string;
-  validUserRedirect?: string;
-}): Promise<User> => {
+export const getMeUser = async (): Promise<User> => {
   const cookieStore = cookies();
   const token = cookieStore.get("payload-token")?.value;
 

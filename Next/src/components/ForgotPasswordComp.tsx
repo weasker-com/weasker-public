@@ -1,9 +1,17 @@
 "use client";
 
-import { forgotPassword } from "@/utils/profileCRUD";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Loading from "@/app/(site)/loading";
 import { HiOutlineMail } from "react-icons/hi";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../providers/Auth/Auth";
+import { find } from "@/utils/payloadClientReq";
 
 interface ForgotPasswordCompProps {
   setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
@@ -18,38 +26,66 @@ const ForgotPasswordComp: React.FC<ForgotPasswordCompProps> = ({
   setForgotPasswordModalIsOpen,
   location,
 }) => {
+  const router = useRouter();
+  const { forgotPassword, forgotPasswordError, forgotPasswordLoading } =
+    useAuth();
   const [email, setEmail] = useState<string | null>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [findEmailLoading, setFindEmailLoading] = useState(false);
   const emailRef = useRef(null);
 
   useEffect(() => {
     setEmail(emailRef.current.value);
   }, []);
 
+  useEffect(() => {
+    setErrorMessage(null);
+  }, [email]);
+
   async function handleSubmit(e) {
+    setErrorMessage(null);
+    setFindEmailLoading(true);
     e.preventDefault();
-    setIsLoading(true);
-    const resetPassword = await forgotPassword(email);
-    if (resetPassword) {
-      setSuccess(true);
-    } else setIsLoading(false);
-    setErrorMessage(
-      "There was an error with the email provided. Please try again."
-    );
+    const isEmailRegistered = await find("users", { email: { equals: email } });
+    if (isEmailRegistered.docs.length > 0) {
+      setFindEmailLoading(false);
+      const res = await forgotPassword(email);
+      if (res) {
+        setSuccess(true);
+      }
+    } else {
+      setFindEmailLoading(false);
+      setErrorMessage(
+        "The email address you provided isn't registered with us"
+      );
+    }
   }
 
+  useEffect(() => {
+    if (forgotPasswordError) {
+      setErrorMessage(
+        "There was an error with the email provided. Please try again."
+      );
+    }
+  }, [forgotPasswordError]);
+
   async function handleLogInClick(e) {
-    e.preventDefault();
-    setLogInModalIsOpen && setLogInModalIsOpen(true);
-    setForgotPasswordModalIsOpen && setForgotPasswordModalIsOpen(false);
+    e.preventDefault(),
+      location == "modal" &&
+        (setLogInModalIsOpen && setLogInModalIsOpen(true),
+        setForgotPasswordModalIsOpen && setForgotPasswordModalIsOpen(false));
+
+    location == "page" && router.push("/login");
   }
 
   async function handleSignUpClick(e) {
     e.preventDefault();
-    setSignUpModalIsOpen && setSignUpModalIsOpen(true);
-    setForgotPasswordModalIsOpen && setForgotPasswordModalIsOpen(false);
+    location == "modal" &&
+      (setSignUpModalIsOpen && setSignUpModalIsOpen(true),
+      setForgotPasswordModalIsOpen && setForgotPasswordModalIsOpen(false));
+
+    location == "page" && router.push("/register");
   }
 
   if (success) {
@@ -58,18 +94,20 @@ const ForgotPasswordComp: React.FC<ForgotPasswordCompProps> = ({
         <HiOutlineMail className="text-emerald-500" size={50} />
         <span className="text-lg">Check your inbox</span>
         <span className="text-center">
-          You'll get a password recovery email if the address you provided has
-          been verified.
+          You&apos;ll get a password recovery email from us
         </span>
         <span className="text-center text-xs">
-          Didn't get an email? Make sure to check your spam or{" "}
+          Didn&apos;t get an email? <br />
+          Make sure to check your spam
+          <br />
+          or try a{" "}
           <span
             className="text-tl-light-blue hover:cursor-pointer"
             onClick={() => {
-              setSuccess(false), setIsLoading(false), setErrorMessage(null);
+              setSuccess(false), setErrorMessage(null);
             }}
           >
-            try a different email address
+            different email address
           </span>
         </span>
       </div>
@@ -107,12 +145,20 @@ const ForgotPasswordComp: React.FC<ForgotPasswordCompProps> = ({
             <button onClick={handleLogInClick}>Log in</button>
           </div>
           <button
-            disabled={email == ""}
+            disabled={
+              email == "" || errorMessage !== null || findEmailLoading == true
+            }
             className="rounded px-5 py-1 mt-3 bg-tl-light-blue disabled:bg-slate-100 text-white disabled:text-weasker-grey"
           >
-            {isLoading ? <Loading /> : "RESET PASSWORD"}
+            {forgotPasswordLoading || findEmailLoading ? (
+              <Loading />
+            ) : (
+              "RESET PASSWORD"
+            )}
           </button>
-          {errorMessage && <div className="text-sm">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="text-sm text-red-600">{errorMessage}</div>
+          )}
         </form>
       </div>
     );

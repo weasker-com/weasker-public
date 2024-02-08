@@ -14,7 +14,7 @@ import { FAQPage, WithContext } from "schema-dts";
 import Hero from "../Hero";
 import Answer from "../Answer";
 import SubMenu from "../SubMenu";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "../Modal";
 const { convert } = require("html-to-text");
 
@@ -32,7 +32,6 @@ const InterviewPage: React.FC<InterviewPageProps> = (data) => {
     (item) => item.badge.seo.slug == params.badge
   )[0];
   const pfp = user.seo.image?.url || null;
-  const interviewSlug = params.interview;
   const badgeSlug = params.badge;
   const userName = user.userName;
   const userSlug = params.user;

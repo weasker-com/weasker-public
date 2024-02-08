@@ -5,8 +5,6 @@ import {
   lexicalHTML,
 } from "@payloadcms/richtext-lexical";
 
-let changeHappened = false;
-
 export const answer: Field = {
   name: "answer",
   label: "Answer",

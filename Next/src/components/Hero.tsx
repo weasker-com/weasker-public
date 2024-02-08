@@ -1,16 +1,17 @@
 "use client";
 import { defaultImages } from "@/utils/defaultImages";
 import { CldImage } from "next-cloudinary";
+import React from "react";
 
 type HeroProps = {
   title: string;
-  preTitle?: string | JSX.Element;
+  preTitle?: string | React.JSX.Element;
   image: string | null;
   alt?: string;
   location: "hp" | "page" | "interview" | "question" | "badge" | "user";
 };
 
-const Hero = ({ title, preTitle, image, alt, location }: HeroProps) => {
+const Hero = ({ title, preTitle, image, alt }: HeroProps) => {
   return (
     <div className="h-max sm:py-10 border-b border-zinc-100 bg-white w-full">
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-5 items-center sm:ml-2 lg:mx-auto max-w-[1000px] mr-auto p-2 sm:p-0">

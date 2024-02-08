@@ -1,6 +1,6 @@
 "use client";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import React from "react";
 
 interface InternalLinkProps {
   element: string | React.ReactElement;
@@ -27,13 +27,9 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
   element,
   className,
   href,
-  eventName,
   style,
-  target,
-  locationOnPage,
   onclick,
 }) => {
-  const pathname = usePathname();
   return (
     <Link
       className={`${className} ${

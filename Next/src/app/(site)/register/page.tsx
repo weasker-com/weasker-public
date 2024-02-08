@@ -8,10 +8,6 @@ import RegisterComp from "@/components/RegisterComp";
 
 export default function CreateAccount() {
   const { user } = useAuth();
-  const { logout } = useAuth();
-  const handleLogOutClick = async () => {
-    await logout();
-  };
 
   return (
     <>
@@ -25,7 +21,7 @@ export default function CreateAccount() {
             className="hidden sm:block h-screen w-full max-w-[150px] cover"
           />
 
-          <RegisterComp location={"page"} goBack={true} />
+          <RegisterComp location={"page"} />
         </div>
       ) : (
         <div className="flex flex-col items-center gap-5 py-5 px-10 bg-white mt-10 text-base w-4/5">

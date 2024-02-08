@@ -7,6 +7,7 @@ import { defaultImages } from "@/utils/defaultImages";
 import PlausibleProvider from "next-plausible";
 import { AuthProvider } from "../../providers/Auth/Auth";
 import NextTopLoader from "nextjs-toploader";
+import React from "react";
 
 const noto_Sans = Noto_Sans({
   subsets: ["latin"],

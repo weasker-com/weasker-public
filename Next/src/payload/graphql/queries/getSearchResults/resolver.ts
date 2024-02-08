@@ -6,14 +6,13 @@ interface ResolverArgs {
   questionSlug: string;
 }
 
-export const Resolver = async (obj, args: ResolverArgs, { req }, info) => {
+export const Resolver = async (obj, args: ResolverArgs) => {
   if (!args.badgeSlug) {
     throw new Error("Missing badge slug");
   }
 
   const badgeSlug = args.badgeSlug;
   const interviewSlug = args.interviewSlug;
-  const questionSlug = args.questionSlug;
 
   const question = await payload.find({
     collection: "interviews",

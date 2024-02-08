@@ -5,7 +5,6 @@ import { InternalLink } from "@/components/links/InternalLink";
 
 export default function NotFound({
   error,
-  reset,
 }: {
   error: Error;
   reset: () => void;

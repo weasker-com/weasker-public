@@ -1,27 +1,28 @@
 "use client";
 
-import { changeEmail } from "@/utils/profileCRUD";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../providers/Auth/Auth";
 import Loading from "@/app/(site)/loading";
 import { FaCheckCircle } from "react-icons/fa";
 
-interface ChangeEmailCompProps {
-  setEmailModalIsOpen?: Dispatch<SetStateAction<boolean>>;
-}
+interface UpdateEmailCompProps {}
 
-const ChangeEmailComp: React.FC<ChangeEmailCompProps> = ({
-  setEmailModalIsOpen,
-}) => {
+const UpdateEmailComp: React.FC<UpdateEmailCompProps> = () => {
   const [email, setEmail] = useState<string | null>("");
   const [password, setPassword] = useState<string | null>("");
   const [newEmail, setNewEmail] = useState<string | null>("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const { user, login } = useAuth();
+  const {
+    user,
+    login,
+    loginError,
+    updateUser,
+    updateUserError,
+    updateUserLoading,
+  } = useAuth();
 
   useEffect(() => {
     setEmail(emailRef.current.value);
@@ -30,20 +31,47 @@ const ChangeEmailComp: React.FC<ChangeEmailCompProps> = ({
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
     const loginUser = await login(email, password);
     if (loginUser) {
-      const changedEmail = await changeEmail({ email: newEmail, user });
-      if (changedEmail) {
-        setIsLoading(false);
+      const updatedEmail = await updateUser(user, { email: newEmail });
+      if (updatedEmail) {
         setSuccess(true);
-      } else
-        setErrorMessage("Email address change didn't work. Please try again.");
-    } else setIsLoading(false);
-    setErrorMessage(
-      "There was an error with the credentials provided. Please try again."
-    );
+      }
+    }
   }
+
+  useEffect(() => {
+    if (updateUserError) {
+      if (updateUserError.response.status === 400) {
+        const errors = updateUserError.response.data.errors;
+        for (let error of errors) {
+          if (error.name === "ValidationError") {
+            const field = error.data[0].field;
+            const message = error.data[0].message;
+            if (field === "email" && message === "Value must be unique") {
+              setErrorMessage("This Email address is already registered");
+            }
+          }
+        }
+      }
+      if (updateUserError.response.status === 500) {
+        setErrorMessage("An error occurred. Please try again");
+      }
+    }
+  }, [updateUserError]);
+
+  useEffect(() => {
+    if (loginError) {
+      if (loginError.response.status == 401) {
+        setErrorMessage(
+          "There was an error with the login credentials provided. Please try again."
+        );
+      }
+      if (loginError.response.status == 500) {
+        setErrorMessage("An error ocurred. Please try again.");
+      }
+    }
+  }, [loginError]);
 
   if (success) {
     return (
@@ -79,7 +107,9 @@ const ChangeEmailComp: React.FC<ChangeEmailCompProps> = ({
               name="email"
               className="w-full p-2 border rounded"
               placeholder="EMAIL"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value), setErrorMessage(null);
+              }}
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -89,7 +119,9 @@ const ChangeEmailComp: React.FC<ChangeEmailCompProps> = ({
               name="password"
               className="w-full p-2 border rounded"
               placeholder="PASSWORD"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value), setErrorMessage(null);
+              }}
               ref={passwordRef}
             />
           </div>
@@ -103,21 +135,30 @@ const ChangeEmailComp: React.FC<ChangeEmailCompProps> = ({
               name="newEmail"
               className="w-full p-2 border rounded"
               placeholder="NEW EMAIL"
-              onChange={(e) => setNewEmail(e.target.value)}
+              onChange={(e) => {
+                setNewEmail(e.target.value), setErrorMessage(null);
+              }}
             />
           </div>
 
           <button
-            disabled={newEmail === "" || email == "" || password == ""}
+            disabled={
+              errorMessage !== null ||
+              newEmail === "" ||
+              email == "" ||
+              password == ""
+            }
             className="rounded px-5 py-1 mt-3 bg-tl-light-blue disabled:bg-slate-100 text-white disabled:text-weasker-grey"
           >
-            {isLoading ? <Loading /> : "SAVE EMAIL"}
+            {updateUserLoading ? <Loading /> : "SAVE EMAIL"}
           </button>
-          {errorMessage && <div className="text-sm">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="text-sm text-red-600">{errorMessage}</div>
+          )}
         </form>
       </div>
     );
   }
 };
 
-export default ChangeEmailComp;
+export default UpdateEmailComp;

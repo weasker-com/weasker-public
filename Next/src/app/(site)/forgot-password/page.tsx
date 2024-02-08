@@ -1,19 +1,13 @@
 "use client";
 
-import ResetPasswordComp from "@/components/ResetPasswordComp";
 import { useAuth } from "../../../providers/Auth/Auth";
 import { defaultImages } from "@/utils/defaultImages";
 import { Media } from "@/payload/payload-types";
 import { CldImage } from "next-cloudinary";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import LoginComp from "@/components/LoginComp";
-import { InternalLink } from "@/components/links/InternalLink";
 import ForgotPasswordComp from "@/components/ForgotPasswordComp";
 
 export default function ResetPassword() {
-  const searchParams = useSearchParams();
-  const searchParamsToken: string | null = searchParams.get("token");
   const { user } = useAuth();
   const { logout } = useAuth();
   const router = useRouter();

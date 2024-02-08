@@ -4,9 +4,7 @@ if (process.env.NODE_ENV === "production") {
   email = {
     fromName: "Payload",
     fromAddress: "info@payloadcms.com",
-    transportOptions: {
-      // Configure a custom transport here
-    },
+    transportOptions: {},
   };
 } else {
   email = {
