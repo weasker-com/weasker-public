@@ -9,9 +9,8 @@ import { IoIosTrendingUp } from "react-icons/io";
 import { TbUsers } from "react-icons/tb";
 import { PiShareFatThin } from "react-icons/pi";
 import SocialShareButtons from "../SocialShareButtons";
-import Hero from "../Hero";
 import SubMenu from "../SubMenu";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../Modal";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -25,7 +24,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
     ...interviews.map((interview) => interview.questions.length)
   );
 
-  interface curatedAnswers {
+  interface curatedAnswersProps {
     user: {
       userName: string;
       seo: {
@@ -122,7 +121,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
     };
   }
 
-  let curatedAnswers: curatedAnswers[] = [];
+  let curatedAnswers: curatedAnswersProps[] = [];
 
   for (let qIndex = 0; qIndex < maxQuestions; qIndex++) {
     interviews.forEach((interview) => {
@@ -145,7 +144,7 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
     });
   }
 
-  const structuredAnswers = curatedAnswers.map((item, index) => {
+  const structuredAnswers = curatedAnswers.map((item) => {
     return {
       location: "hp",
       interviewSlug: item.interview.seo.slug,
@@ -196,13 +195,6 @@ const HomePage: React.FC<HomePagePorps> = (data) => {
 
   return (
     <>
-      <Hero
-        location={"hp"}
-        title={"Interviewing experts"}
-        preTitle={"weasker.com"}
-        image={defaultImages.weaskerLogo}
-        alt={"weasker.com home page"}
-      />
       <SubMenu>
         <div
           onClick={() => {

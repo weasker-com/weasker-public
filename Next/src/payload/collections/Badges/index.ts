@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo/index";
+import { isAdmin } from "../../access/isAdmin";
 
 export const Badges: CollectionConfig = {
   slug: "badges",
@@ -9,6 +10,9 @@ export const Badges: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: isAdmin,
+    delete: isAdmin,
+    update: isAdmin,
   },
   fields: [
     {

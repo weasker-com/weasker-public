@@ -2,6 +2,7 @@ import { defaultImages } from "@/utils/defaultImages";
 import { pageRes } from "../../../types/Responses";
 import Hero from "../Hero";
 import parse from "html-react-parser";
+import React from "react";
 
 interface GeericPageProps {
   data: pageRes;

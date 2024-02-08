@@ -4,7 +4,7 @@ import { userPageRes, userSeoRes } from "../../../../../types/Responses";
 import { fetchData } from "@/utils/payloadFetch";
 import { toSentence } from "../../../../helpers/toSentence";
 import { notFound } from "next/navigation";
-import UserPage from "@/components/pages/UserPage";
+import UserPage from "@/app/(site)/user/[user]/UserPage";
 
 type Props = {
   params: { user: string };

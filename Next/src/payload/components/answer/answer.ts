@@ -5,8 +5,6 @@ import {
   lexicalHTML,
 } from "@payloadcms/richtext-lexical";
 
-let changeHappened = false;
-
 export const answer: Field = {
   name: "answer",
   label: "Answer",
@@ -54,6 +52,7 @@ export const answer: Field = {
       name: "updatedAt",
       label: "Updated at",
       type: "date",
+      defaultValue: () => new Date(),
       admin: {
         readOnly: true,
         date: {

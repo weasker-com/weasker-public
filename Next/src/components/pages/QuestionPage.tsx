@@ -14,7 +14,7 @@ import { InternalLink } from "../links/InternalLink";
 import Answer from "../Answer";
 import ListItem from "../ListItem";
 import SubMenu from "../SubMenu";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "../Modal";
 const { convert } = require("html-to-text");
 
@@ -104,7 +104,7 @@ const QuestionPage: React.FC<QuestionPageProps> = (data) => {
       name: mediumQuestion,
       text: longQuestion,
       answerCount: answersAmount,
-      suggestedAnswer: relevantQuestion.answers.map((item, index) => {
+      suggestedAnswer: relevantQuestion.answers.map((item) => {
         return {
           "@type": "Answer",
           text: convert(item.answer.richText_html),

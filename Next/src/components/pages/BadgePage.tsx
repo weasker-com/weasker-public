@@ -14,7 +14,7 @@ import { HiOutlineExternalLink } from "react-icons/hi";
 import SocialShareButtons from "../SocialShareButtons";
 import Hero from "../Hero";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SubMenu from "../SubMenu";
 import Modal from "../Modal";
 
@@ -31,7 +31,6 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
   const interviewSlug = data.data.data.BadgeQuestions.docs[0]?.seo.slug;
   const singularName = badge.singularName;
   const pluralName = badge.pluralName;
-  const excerpt = badge.seo.excerpt;
   const badgeImage = badge.seo.image?.url || null;
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -124,6 +123,7 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
                   excerpt={question.question.longQuestion}
                   links={[
                     <InternalLink
+                      key={index}
                       element={
                         <div className="flex flex-row gap-1 items-center">
                           <TbMessages />
@@ -149,7 +149,7 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
             {users.length > 0 && (
               <SidebarBox
                 title={`Top ${pluralName}`}
-                array={users.map((item, index) => {
+                array={users.map((item) => {
                   return {
                     name: item.userName,
                     url: `/user/${item.seo.slug}`,
@@ -186,6 +186,7 @@ const BadgePage: React.FC<BadgePageProps> = (data) => {
                     excerpt={relevantBadge.bio}
                     links={[
                       <InternalLink
+                        key={index}
                         element={
                           <div className="flex flex-row gap-1 items-center">
                             <LiaUserCheckSolid /> <>Badger page</>

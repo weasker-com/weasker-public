@@ -5,7 +5,7 @@ interface ResolverArgs {
   interviewSlug: string;
 }
 
-export const Resolver = async (obj, args: ResolverArgs, { req }, info) => {
+export const Resolver = async (obj, args: ResolverArgs) => {
   if (!args.badgeSlug) {
     throw new Error("Missing badge slug");
   }

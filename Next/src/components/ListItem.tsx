@@ -2,6 +2,7 @@
 
 import { CldImage } from "next-cloudinary";
 import { InternalLink } from "./links/InternalLink";
+import React from "react";
 
 interface InterviewProps {
   location: "hp" | "page" | "interview" | "question" | "badge" | "user";
@@ -10,11 +11,10 @@ interface InterviewProps {
   image?: string;
   excerpt?: string;
   preTitle?: string;
-  links?: JSX.Element[];
+  links?: React.JSX.Element[];
 }
 
 const ListItem: React.FC<InterviewProps> = ({
-  location,
   name,
   slugs,
   image,

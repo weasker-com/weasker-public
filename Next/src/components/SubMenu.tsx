@@ -2,27 +2,31 @@
 import React from "react";
 
 interface SubMenuProps {
-  children: JSX.Element[];
+  children: React.JSX.Element[];
 }
 
 const SubMenu: React.FC<SubMenuProps> = ({ children }) => {
-  const childElements = React.Children.map(children, (child, index) => {
-    return (
-      <li
-        key={index}
-        className={`sm:ml-2 lg:ml-0 sm:gap-1 capitalize 
+  const childElements = React.Children.toArray(children)
+    .filter((child) => child !== null)
+    .map((child, index) => {
+      if (React.isValidElement(child)) {
+        return (
+          <li
+            key={index}
+            className={`sm:ml-2 lg:ml-0 sm:gap-1 capitalize 
          ${
            child.props.selected ? "text-tl-light-blue" : "text-[#253C4C]/70"
          }  hover:cursor-pointer hover:text-tl-light-blue`}
-      >
-        {child}
-      </li>
-    );
-  });
+          >
+            {child}
+          </li>
+        );
+      }
+    });
 
   return (
     <>
-      <div className="sticky top-0 z-10 h-max sm:py-5 border-b border-zinc-100 bg-white w-full">
+      <div className="sticky top-0 h-max sm:py-5 border-b border-zinc-100 bg-white w-full">
         <ul
           className={`flex flex-row ${
             React.Children.count(children) > 3

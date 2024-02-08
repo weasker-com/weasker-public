@@ -6,17 +6,12 @@ import SidebarBox from "../SidebarBox";
 import { defaultImages } from "@/utils/defaultImages";
 import { PiShareFatThin } from "react-icons/pi";
 import SocialShareButtons from "../SocialShareButtons";
-import { LiaUserCheckSolid } from "react-icons/lia";
-import { IoLinkOutline } from "react-icons/io5";
-import { BsFileText } from "react-icons/bs";
 import { InternalLink } from "../links/InternalLink";
-import { FAQPage, WithContext } from "schema-dts";
 import Hero from "../Hero";
 import Answer from "../Answer";
 import SubMenu from "../SubMenu";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "../Modal";
-const { convert } = require("html-to-text");
 
 interface InterviewAllPageProps {
   data: allInterviewPageRes;
@@ -25,21 +20,13 @@ interface InterviewAllPageProps {
 
 const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
   const params = data.params;
-
   const interview = data.data.data.BadgeInterview.docs[0];
-
-  const interviewSlug = params.interview;
   const badgeSlug = params.badge;
-
-  const userSlug = params.user;
   const badgePluralName = interview.badge.pluralName;
   const badgeSingularName = interview.badge.singularName;
-
   const badgeImage = interview.badge.seo.image?.filename || null;
   const interviewTitle = interview.name;
-
   const questions = interview.questions;
-
   const uniqueUsers = new Set();
   const otherUsers = questions.flatMap((question) => {
     return question.question.answers

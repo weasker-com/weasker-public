@@ -1,11 +1,11 @@
 "use client";
+import "next-cloudinary/dist/cld-video-player.css";
 import parse from "html-react-parser";
 import { CldImage, CldVideoPlayer } from "next-cloudinary";
 import { InternalLink } from "./links/InternalLink";
 import { defaultImages } from "@/utils/defaultImages";
-import "next-cloudinary/dist/cld-video-player.css";
 import { TbMessageShare, TbMessages } from "react-icons/tb";
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";

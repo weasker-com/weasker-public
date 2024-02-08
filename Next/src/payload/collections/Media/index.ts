@@ -6,9 +6,11 @@ export const Media: CollectionConfig = {
   upload: {
     staticDir: path.resolve(__dirname, "../../media"),
     disableLocalStorage: true,
+    mimeTypes: ["image/*", "video/*"],
   },
   access: {
     read: () => true,
+    create: () => true,
   },
   fields: [
     {

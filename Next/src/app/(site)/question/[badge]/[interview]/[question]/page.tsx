@@ -6,7 +6,6 @@ import {
 } from "../../../../../../../types/Responses";
 import { fetchData } from "@/utils/payloadFetch";
 import { defaultImages } from "@/utils/defaultImages";
-const { convert } = require("html-to-text");
 import { notFound } from "next/navigation";
 import QuestionPage from "@/components/pages/QuestionPage";
 
@@ -104,7 +103,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const ogImage = `${process.env.SITE_URL}/api/og?img=${questionImage}&preTitle=question for ${badgePluralName}&title=${shortQuestion}`;
 
-  const authors = users.map((item, index) => {
+  const authors = users.map((item) => {
     return { name: item.name, url: `https://www.weasker/user/${item.slug}` };
   });
 

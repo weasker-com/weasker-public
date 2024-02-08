@@ -9,7 +9,7 @@ function replaceWebpWithPng(inputString: string) {
 }
 
 export async function GET(request: Request) {
-  const { searchParams, protocol, host } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const img = searchParams.get("img");
   const smallImg = searchParams.get("smallImg");
   const title = searchParams.get("title");
@@ -54,7 +54,9 @@ export async function GET(request: Request) {
             }}
           >
             {notWebpsmallImg && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
+                alt=""
                 width="200"
                 height="200"
                 src={notWebpsmallImg}
@@ -64,7 +66,9 @@ export async function GET(request: Request) {
               />
             )}
             {notWebpImg && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
+                alt=""
                 width="200"
                 height="200"
                 src={notWebpImg}

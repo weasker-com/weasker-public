@@ -1,13 +1,13 @@
 "use client";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import React from "react";
 
 interface InternalLinkProps {
   element: string | React.ReactElement;
   href: string;
   className?: string;
   style?: "blue" | "inherit";
-  eventName:
+  eventName?:
     | "ClickUserName"
     | "ClickUserImage"
     | "ClickInterviewPage"
@@ -18,8 +18,8 @@ interface InternalLinkProps {
     | "ClickQuestionPage"
     | "ClickInnerPage"
     | "ClickSubMenu";
-  target: string;
-  locationOnPage: string;
+  target?: string;
+  locationOnPage?: string;
   onclick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
@@ -27,13 +27,9 @@ export const InternalLink: React.FC<InternalLinkProps> = ({
   element,
   className,
   href,
-  eventName,
   style,
-  target,
-  locationOnPage,
   onclick,
 }) => {
-  const pathname = usePathname();
   return (
     <Link
       className={`${className} ${

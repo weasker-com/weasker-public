@@ -20,19 +20,20 @@ export interface Config {
 }
 export interface User {
   id: string;
-  firstName?: string | null;
-  lastName?: string | null;
+  displayName?: string | null;
   userName: string;
   roles?: ('admin' | 'editor' | 'endUser')[] | null;
   userBadges?:
     | {
         badge: string | Badge;
         bio: string;
-        services: {
-          name: string;
-          url: string;
-          id?: string | null;
-        }[];
+        services?:
+          | {
+              name: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;

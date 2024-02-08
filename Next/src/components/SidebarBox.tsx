@@ -1,17 +1,18 @@
 "use client";
 
+import React from "react";
 import { InternalLink } from "./links/InternalLink";
 import { CldImage } from "next-cloudinary";
 
 export interface SidebarBoxProps {
   title: string;
-  element?: JSX.Element;
+  element?: React.JSX.Element;
   linkStyle?: "blue" | "inherit";
   array?: {
     name: string;
     url: string;
     image?: string;
-    icon?: JSX.Element;
+    icon?: React.JSX.Element;
 
     eventName:
       | "ClickUserName"
