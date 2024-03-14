@@ -90,16 +90,19 @@ export const AuthProvider: React.FC<{
 
   async function refreshAuthentication() {
     try {
+      setLoginLoading(true);
       const res = await axios({
         method: "GET",
-        url: `${EXTERNAL_SERVER_URL}/api/users/me`,
+        url: `${EXTERNAL_SERVER_URL}/api/users/me?depth=5`,
         withCredentials: true,
       });
 
       if (res.data?.user) {
+        setLoginLoading(false);
         setUser(res.data.user);
         localStorage.setItem("user", JSON.stringify(res.data.user));
       } else {
+        setLoginLoading(false);
         setUser(null);
         localStorage.removeItem("user");
       }
@@ -119,10 +122,12 @@ export const AuthProvider: React.FC<{
         method: "POST",
         url: `${EXTERNAL_SERVER_URL}/api/users/logout`,
         withCredentials: true,
-        data: user,
+        data: user.id,
       });
       setUser(null);
       setLogOutLoading(false);
+      refreshAuthentication();
+      location.reload();
     } catch (error) {
       setLogoutError(error);
       setLogOutLoading(false);

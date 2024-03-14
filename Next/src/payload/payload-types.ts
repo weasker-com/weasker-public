@@ -13,6 +13,8 @@ export interface Config {
     media: Media;
     badges: Badge;
     interviews: Interview;
+    applications: Application;
+    'users-interviews': UsersInterview;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -26,17 +28,18 @@ export interface User {
   userBadges?:
     | {
         badge: string | Badge;
-        bio: string;
-        services?:
-          | {
-              name: string;
-              url: string;
-              id?: string | null;
-            }[]
-          | null;
+        bio?: string | null;
+        links?: {
+          linkOne?: string | null;
+          linkTwo?: string | null;
+          linkThree?: string | null;
+          linkFour?: string | null;
+          linkFive?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
+  userInterviews?: (string | UsersInterview)[] | null;
   seo: Seo;
   updatedAt: string;
   createdAt: string;
@@ -53,61 +56,8 @@ export interface Badge {
   id: string;
   singularName: string;
   pluralName: string;
-  seo: Seo;
-  updatedAt: string;
-  createdAt: string;
-}
-export interface Seo {
-  slug: string;
-  title?: string | null;
-  description?: string | null;
-  excerpt?: string | null;
-  image?: string | Media | null;
-  keywords?:
-    | {
-        keyword?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-}
-export interface Media {
-  id: string;
-  alt?: string | null;
-  cloudinary?: {
-    public_id?: string | null;
-    original_filename?: string | null;
-    format?: string | null;
-    secure_url?: string | null;
-    resource_type?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-}
-export interface Page {
-  id: string;
-  name: string;
-  richText?: {
-    root: {
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      type: string;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  richText_html?: string | null;
+  users?: (string | User)[] | null;
+  interviews?: (string | Interview)[] | null;
   seo: Seo;
   updatedAt: string;
   createdAt: string;
@@ -116,6 +66,7 @@ export interface Interview {
   id: string;
   name: string;
   badge: string | Badge;
+  userInterviews?: (string | UsersInterview)[] | null;
   questions: {
     question: {
       index: number;
@@ -127,6 +78,9 @@ export interface Interview {
         | {
             user: string | User;
             answer?: {
+              questionSlug?: string | null;
+              questionId?: string | null;
+              textAnswer?: string | null;
               richText?: {
                 root: {
                   children: {
@@ -159,6 +113,123 @@ export interface Interview {
     id?: string | null;
   }[];
   seo: Seo;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface UsersInterview {
+  id: string;
+  user: string | User;
+  userSlug?: string | null;
+  interview: string | Interview;
+  interviewSlug?: string | null;
+  badge: string | Badge;
+  badgeSlug?: string | null;
+  answersAmount?: number | null;
+  answers?:
+    | {
+        answer?: {
+          questionSlug?: string | null;
+          questionId?: string | null;
+          textAnswer?: string | null;
+          richText?: {
+            root: {
+              children: {
+                type: string;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              type: string;
+              version: number;
+            };
+            [k: string]: unknown;
+          } | null;
+          richText_html?: string | null;
+          images?:
+            | {
+                image?: string | Media | null;
+                id?: string | null;
+              }[]
+            | null;
+          video?: string | Media | null;
+          updatedAt?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  documentTitle?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+export interface Media {
+  id: string;
+  alt?: string | null;
+  cloudinary?: {
+    public_id?: string | null;
+    original_filename?: string | null;
+    format?: string | null;
+    secure_url?: string | null;
+    resource_type?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+export interface Seo {
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  excerpt?: string | null;
+  image?: string | Media | null;
+  keywords?:
+    | {
+        keyword?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+}
+export interface Page {
+  id: string;
+  name: string;
+  richText?: {
+    root: {
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      type: string;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  richText_html?: string | null;
+  seo: Seo;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Application {
+  id: string;
+  badge: string | Badge;
+  user: string | User;
+  about: string;
+  links?: {
+    linkOne?: string | null;
+    linkTwo?: string | null;
+    linkThree?: string | null;
+  };
+  status?: ('pending' | 'approved' | 'denied') | null;
   updatedAt: string;
   createdAt: string;
 }

@@ -3,25 +3,27 @@ import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../providers/Auth/Auth";
 import { Dispatch, SetStateAction } from "react";
 import { InternalLink } from "./links/InternalLink";
-import Loading from "@/app/(site)/loading";
-import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { WhiteBox } from "./ui/boxes";
+import { BigButton } from "./ui/buttons";
 
 interface LoginCompProps {
   setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setSignUpModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setForgotPasswordModalIsOpen?: Dispatch<SetStateAction<boolean>>;
-  location: "modal" | "page";
+  pageOrModal: "modal" | "page";
+  title?: string;
 }
 
 const LoginComp: React.FC<LoginCompProps> = ({
   setLogInModalIsOpen,
   setSignUpModalIsOpen,
   setForgotPasswordModalIsOpen,
-  location,
+  pageOrModal,
+  title,
 }) => {
-  const router = useRouter();
   const searchParams = useSearchParams();
+
   const destAfterLogin: string | null = searchParams.get("dest");
   const [password, setPassword] = useState<string | null>();
   const [email, setEmail] = useState<string | null>();
@@ -46,9 +48,10 @@ const LoginComp: React.FC<LoginCompProps> = ({
     const res = await login(email, password);
     if (res) {
       setLogInModalIsOpen && setLogInModalIsOpen(false);
-      console.log("destAfterLogin", destAfterLogin);
-      if (location == "page") {
-        destAfterLogin ? router.push(destAfterLogin) : router.push("/");
+      if (pageOrModal == "page") {
+        destAfterLogin
+          ? location.replace(destAfterLogin)
+          : location.replace("/");
       }
     }
   }
@@ -77,17 +80,16 @@ const LoginComp: React.FC<LoginCompProps> = ({
     setLogInModalIsOpen && setLogInModalIsOpen(false);
     setForgotPasswordModalIsOpen && setForgotPasswordModalIsOpen(true);
   }
-
   return (
-    <div className="flex flex-col items-start gap-5 bg-white p-10 rounded-t max-w-[500px]">
+    <WhiteBox>
       <h1 className="text-lg font-extrabold smallCaps text-tl-dark-blue">
-        Log in
+        {title ? title : "Log in"}
       </h1>
       <span className="text-sm font-light text-weasker-grey">
         By logging in, you agree to our&nbsp;
         {
           <InternalLink
-            href="/"
+            href="/user-agreement"
             element="User Agreement"
             className="underline"
           />
@@ -95,7 +97,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
         &nbsp;and acknowledge that you understand the&nbsp;
         {
           <InternalLink
-            href="/"
+            href="/privacy-policy"
             element="Privacy Policy"
             className="underline"
           />
@@ -141,23 +143,23 @@ const LoginComp: React.FC<LoginCompProps> = ({
             )}
           </div>
         </div>
-        <button
+        <BigButton
+          text="LOG IN"
+          loading={loginLoading}
           disabled={email === "" || password === ""}
-          className="rounded px-5 py-1 mt-3 bg-tl-light-blue disabled:bg-slate-100 text-white disabled:text-weasker-grey"
-        >
-          {loginLoading ? <Loading /> : "LOG IN"}
-        </button>
+          className="mt-3 bg-tl-dark-blue"
+        />
         {errorMessage && (
           <div className="text-sm text-red-600">{errorMessage}</div>
         )}
         <span className="text-sm font-light text-weasker-grey">
-          {location == "page" && (
+          {pageOrModal == "page" && (
             <InternalLink
               href="/forgot-password"
               element="Forgot your password?"
             />
           )}
-          {location == "modal" && (
+          {pageOrModal == "modal" && (
             <span
               onClick={(e) => {
                 handleForgotPasswordClick(e);
@@ -170,7 +172,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
         </span>
         <span className="text-sm font-light text-weasker-grey">
           New to Weasker?&nbsp;
-          {location == "page" && (
+          {pageOrModal == "page" && (
             <InternalLink
               href="/register"
               element="SIGN UP"
@@ -178,7 +180,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
               className="font-bold"
             />
           )}
-          {location == "modal" && (
+          {pageOrModal == "modal" && (
             <span
               onClick={(e) => {
                 handleSignUpClick(e);
@@ -190,7 +192,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
           )}
         </span>
       </form>
-    </div>
+    </WhiteBox>
   );
 };
 

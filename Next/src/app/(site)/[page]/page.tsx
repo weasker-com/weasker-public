@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
-import { pageRes, pageSeoRes } from "../../../../types/Responses";
 import { defaultImages } from "../../../utils/defaultImages";
 import { notFound } from "next/navigation";
-import GenericPage from "@/components/pages/GenericPage";
+import GenericPage from "@/app/(site)/[page]/GenericPage";
+import { Media, Page as PageType } from "@/payload/payload-types";
 
 type Props = {
   params: { page: string };
@@ -30,12 +30,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       }
     }
     `;
-  const data: pageSeoRes | null = await fetchData({
-    query,
-    method: "POST",
-    collection: "Pages",
-    mustHave: ["Pages"],
-  });
+  const data: { data: { Pages: { docs: PageType[] } } } | null =
+    await fetchData({
+      query,
+      method: "POST",
+      collection: "Pages",
+      mustHave: ["Pages"],
+    });
 
   if (!data) {
     return {};
@@ -43,7 +44,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const seoMeta = data.data.Pages.docs[0];
   const pageName = seoMeta.name;
-  const image = seoMeta.seo.image?.url || defaultImages.weaskerLogoUrl;
+  const image =
+    (seoMeta.seo.image as Media)?.url || defaultImages.weaskerLogoUrl;
   const seoTitle = seoMeta.seo.title;
   const seoDescription = seoMeta.seo.description;
 
@@ -80,7 +82,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function getData(pageSlug: string): Promise<pageRes | null> {
+async function getData(
+  pageSlug: string
+): Promise<{ data: { Pages: { docs: PageType[] } } } | null> {
   const query = `{
     Pages(where: { seo__slug: { equals: "${pageSlug}" } }) {
       docs {
@@ -101,12 +105,14 @@ async function getData(pageSlug: string): Promise<pageRes | null> {
     }
   }
   `;
-  const res: pageRes | null = await fetchData({
-    query,
-    method: "POST",
-    collection: "Pages",
-    mustHave: ["Pages"],
-  });
+  const res: { data: { Pages: { docs: PageType[] } } } | null = await fetchData(
+    {
+      query,
+      method: "POST",
+      collection: "Pages",
+      mustHave: ["Pages"],
+    }
+  );
   return res;
 }
 

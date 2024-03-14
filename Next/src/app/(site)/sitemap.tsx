@@ -1,6 +1,12 @@
 import { MetadataRoute } from "next";
 import { fetchData } from "@/utils/payloadFetch";
-import { siteMapRes } from "../../../types/Responses";
+import {
+  Badge,
+  Interview,
+  Page,
+  User,
+  UsersInterview,
+} from "@/payload/payload-types";
 
 const WEBSITE_HOST_URL = process.env.SITE_URL || "https://www.weasker.com";
 
@@ -15,47 +21,80 @@ type changeFrequency =
 
 async function getData() {
   const query = `
-    {
-      Interviews {
-        docs {
+  {
+    UsersInterviews(limit: 1000000) {
+      docs {
+        userSlug
+        interviewSlug
+        badgeSlug
+        answersAmount
+        updatedAt
+        answers {
+          answer {
+            questionSlug
+          }
+        }
+      }
+    }
+    Interviews(limit: 1000000) {
+      docs {
+        seo {
+          slug
+        }
+        userInterviews {
+          id
+        }
+        updatedAt
+        badge {
           seo {
             slug
           }
-          updatedAt
-          badge{seo{slug}}
-          questions {
-            question {
-              answers {
-                user {
-                  seo {
-                    slug
-                  }
-                }
-              }
-              seo {
-                slug
-              }
+        }
+        questions {
+          question {
+            seo {
+              slug
             }
           }
         }
       }
-      Users{
-        docs{
-          seo{slug}
-          updatedAt
+    }
+    Users(limit: 1000000) {
+      docs {
+        seo {
+          slug
         }
+        updatedAt
       }
-      Badges{
-        docs{
-          seo{slug}
-          updatedAt
+    }
+    Badges(limit: 1000000) {
+      docs {
+        seo {
+          slug
         }
+        updatedAt
       }
-      Pages{docs{seo{slug} updatedAt}}
-    }    
+    }
+    Pages(limit: 1000000) {
+      docs {
+        seo {
+          slug
+        }
+        updatedAt
+      }
+    }
+  }
     `;
 
-  const data: siteMapRes | null = await fetchData({
+  const data: {
+    data: {
+      UsersInterviews: { docs: UsersInterview[] };
+      Interviews: { docs: Interview[] };
+      Users: { docs: User[] };
+      Badges: { docs: Badge[] };
+      Pages: { docs: Page[] };
+    };
+  } | null = await fetchData({
     query,
     method: "POST",
     collection: "Interviews",
@@ -80,9 +119,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   }
 
+  const userInterviews = data.data.UsersInterviews.docs
+    .filter((item) => {
+      return item.answersAmount > 0;
+    })
+    .map((userInterview) => {
+      return {
+        url: `${WEBSITE_HOST_URL}/interview/${userInterview.badgeSlug}/${userInterview.userSlug}/${userInterview.interviewSlug}`,
+        lastModified: userInterview.updatedAt,
+        changeFrequency: "daily" as changeFrequency,
+      };
+    });
+
+  const allInterviews = data.data.Interviews.docs
+    .filter((item) => {
+      return item.userInterviews.length > 0;
+    })
+    .map((interview) => {
+      return {
+        url: `${WEBSITE_HOST_URL}/interview/${
+          (interview.badge as Badge).seo.slug
+        }/all/${interview.seo.slug}`,
+        lastModified: interview.updatedAt,
+        changeFrequency: "daily" as changeFrequency,
+      };
+    });
+
   const questions = data.data.Interviews.docs.flatMap((interview) => {
     return interview.questions.map((question) => {
-      const badgeSlug = interview.badge.seo.slug;
+      const badgeSlug = (interview.badge as Badge).seo.slug;
       const interviewUpdatedAt = interview.updatedAt;
       const interviewSlug = interview.seo.slug;
       const questionSlug = question.question.seo.slug;
@@ -91,36 +156,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: interviewUpdatedAt,
         changeFrequency: "daily" as changeFrequency,
       };
-    });
-  });
-
-  const uniqueUrls = new Set();
-  const interviews = data.data.Interviews.docs.flatMap((interview) => {
-    const badgeSlug = interview.badge.seo.slug;
-    const interviewUpdatedAt = interview.updatedAt;
-    const interviewSlug = interview.seo.slug;
-
-    return interview.questions.flatMap((question) => {
-      return question.question.answers
-        .filter((answer) => {
-          const userSlug = answer.user.seo.slug;
-          const url = `${WEBSITE_HOST_URL}/interview/${badgeSlug}/${userSlug}/${interviewSlug}`;
-
-          if (!uniqueUrls.has(url)) {
-            uniqueUrls.add(url);
-            return true;
-          }
-
-          return false;
-        })
-        .map((answer) => {
-          const userSlug = answer.user.seo.slug;
-          return {
-            url: `${WEBSITE_HOST_URL}/interview/${badgeSlug}/${userSlug}/${interviewSlug}`,
-            lastModified: interviewUpdatedAt,
-            changeFrequency: "daily" as changeFrequency,
-          };
-        });
     });
   });
 
@@ -154,5 +189,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  return [...pages, ...badges, ...users, ...interviews, ...questions];
+  return [
+    ...pages,
+    ...badges,
+    ...users,
+    ...allInterviews,
+    ...userInterviews,
+    ...questions,
+  ];
 }

@@ -76,7 +76,9 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
         setSuccess(false);
         setSignUpModalIsOpen(false);
       }, 3000);
-      router.push("/account");
+      if (location == "modal") {
+        router.push("/account");
+      }
     }
   }
 
@@ -157,7 +159,7 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
           our&nbsp;
           {
             <InternalLink
-              href="/"
+              href="/user-agreement"
               element="User Agreement"
               className="underline"
             />
@@ -165,7 +167,7 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
           &nbsp;and&nbsp;
           {
             <InternalLink
-              href="/"
+              href="/privacy-policy"
               element="Privacy Policy"
               className="underline"
             />

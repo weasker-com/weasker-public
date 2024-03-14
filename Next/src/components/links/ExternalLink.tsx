@@ -5,10 +5,7 @@ interface ExternalLinkProps {
   element: string | React.ReactElement;
   href: string;
   className?: string;
-  eventName: "ClickUserService" | "ClickImage";
-  target: string;
   style?: "blue" | "inherit";
-  locationOnPage: string;
 }
 
 const ExternalLink: React.FC<ExternalLinkProps> = ({

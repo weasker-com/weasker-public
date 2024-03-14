@@ -1,0 +1,9 @@
+:root {
+  --tl-dark-blue: #253c4c;
+  --font-body: "Noto Sans", sans-serif;
+}
+
+body {
+  color: var(--tl-dark-blue);
+  font-family: var(--font-body);
+}

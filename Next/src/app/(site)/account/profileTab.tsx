@@ -7,23 +7,34 @@ import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { LiaCloudUploadAltSolid } from "react-icons/lia";
 import { IoTrashOutline } from "react-icons/io5";
-import Modal from "@/components/Modal";
+import Modal from "@/components/ui/Modal";
 import ChangeEmailComp from "@/components/UpdateEmailComp";
 import ChangePasswordComp from "@/components/UpdatePasswordComp";
 import DeleteAccountComp from "@/components/DeleteAccountComp";
 import Loading from "../loading";
+import { GentleButton } from "@/components/ui/buttons";
+import { badgeIcon, interviewIcon, profileIcon } from "@/utils/defaultIcons";
+import { WideBox } from "@/components/ui/boxes";
+import { TextAreaInput, TextInput } from "@/components/ui/inputs";
+import revalidateByServerAction from "@/utils/revalidate";
+import { useRouter } from "next/navigation";
 
-export const ProfileTab = () => {
+interface ProfileTabProps {
+  handleTabSelect: any;
+  activeTab: string;
+}
+
+export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
   const {
     user,
     setUser,
-    refreshAuthentication,
     updateUser,
     uploadImage,
     updateUserLoading,
     uploadImageLoading,
     uploadImageError,
   } = useAuth();
+  const router = useRouter();
   const [displayName, setDisplayName] = useState(user.displayName || "");
   const [displayNameSaved, setDisplayNameSaved] = useState(false);
   const [about, setAbout] = useState(user.seo.excerpt || "");
@@ -42,10 +53,6 @@ export const ProfileTab = () => {
   const [passwordModalIsOpen, setPasswordModalIsOpen] = useState(false);
   const [deleteAccountModalIsOpen, setDeleteAccountModalIsOpen] =
     useState(false);
-
-  useEffect(() => {
-    refreshAuthentication();
-  }, [imageIsSaved, refreshAuthentication]);
 
   const handleDisplayNameBlur = async () => {
     if (displayName !== user.displayName) {
@@ -104,7 +111,7 @@ export const ProfileTab = () => {
     }
   };
 
-  const handleSaveImageNEW = async () => {
+  const handleSaveImage = async () => {
     const body = new FormData();
     body.append("file", newImage);
     const uploadedImage = await uploadImage(body);
@@ -113,6 +120,8 @@ export const ProfileTab = () => {
       updateUser(user, { seo: { image: image.id } });
       setImageButtonsShowing(false);
       setImageIsSaved(true);
+      revalidateByServerAction("/");
+      router.refresh();
       setTimeout(() => {
         setImageIsSaved(false);
       }, 3000);
@@ -152,78 +161,42 @@ export const ProfileTab = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
-      <div className="flex flex-col w-full bg-white flex-grow p-5 lg:p-10 gap-5">
+    <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] w-full">
+      <WideBox className="lg:w-[70%] p-5 lg:p-10 gap-5">
         <h2 className="text-lg">Profile</h2>
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-col w-full gap-1">
-              <label className="text-base font-bold" htmlFor="displayName">
-                Display name (optional)
-              </label>
-              <span className="text-weasker-grey text-sm">
-                Select a display name, your username remains the same.
-              </span>
-              <input
-                type="text"
-                id="displayName"
-                name="displayName"
-                className="text-weasker-grey text-sm border p-2 mt-3"
-                placeholder={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                value={displayName}
-                onBlur={handleDisplayNameBlur}
-                maxLength={30}
-              />
+        <div className="flex flex-col gap-8 w-full">
+          <TextInput
+            name={"displayName"}
+            type="text"
+            label={"Display name (optional)"}
+            description={
+              "Select a display name, your username remains the same"
+            }
+            placeHolder={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            value={displayName}
+            onBlur={handleDisplayNameBlur}
+            maxLength={30}
+            saved={displayNameSaved}
+          />
+          <TextAreaInput
+            name={about}
+            label={"About"}
+            description={
+              "A brief description of yourself shown on your profile."
+            }
+            placeHolder={about}
+            onChange={handleAboutChange}
+            onBlur={handleAboutBlur}
+            value={about}
+            maxLength={300}
+            comment={`${300 - aboutLength} characters left`}
+            saved={aboutSaved}
+          />
 
-              <div
-                className={`transition-opacity ease-in-out duration-300 flex flex-row items-center gap-1 p-[2px] text-xs self-end text-emerald-500 border-emerald-500 border rounded ${
-                  displayNameSaved ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <IoIosCheckmarkCircleOutline />
-                Saved
-              </div>
-            </div>
-            <div className="flex items-center sm:w-full px-auto"></div>
-          </div>
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-col w-full gap-1">
-              <label className="text-base font-bold" htmlFor="about">
-                About
-              </label>
-              <span className="text-weasker-grey text-sm">
-                A brief description of yourself shown on your profile.
-              </span>
-              <textarea
-                id="about"
-                name="about"
-                className="text-weasker-grey text-sm border p-2 mt-3"
-                placeholder={about}
-                onChange={handleAboutChange}
-                onBlur={handleAboutBlur}
-                value={about}
-                maxLength={300}
-              />
-              <div className="flex flex-row justify-between text-xs">
-                <span className="text-weasker-grey">
-                  {300 - aboutLength} characters left
-                </span>
-                <div
-                  className={`transition-opacity ease-in-out duration-300 flex flex-row items-center gap-1 p-[2px] self-end text-emerald-500 border-emerald-500 border rounded ${
-                    aboutSaved ? "opacity-100" : "opacity-0"
-                  }`}
-                >
-                  <IoIosCheckmarkCircleOutline />
-                  Saved
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center sm:w-full px-auto"></div>
-          </div>
           <div className="flex flex-row justify-between">
             <div className="flex flex-col gap-1 w-full">
-              <label className="text-base font-bold" htmlFor="image">
+              <label className="text-base font-bold uppercase" htmlFor="image">
                 Profile image
               </label>
               <span className="text-weasker-grey text-sm">
@@ -232,7 +205,7 @@ export const ProfileTab = () => {
               <span className="text-weasker-grey text-sm">
                 Ideal size 400*400 px
               </span>
-              <div className="flex flex-col gap-2 border p-2">
+              <div className="flex flex-col gap-2 border rounded rounded-t-lg p-2">
                 <div className="flex flex-row w-full gap-2">
                   {(user.seo.image as Media)?.cloudinary?.public_id &&
                     !imageObjectURL && (
@@ -257,12 +230,12 @@ export const ProfileTab = () => {
                   )}
                   <label
                     htmlFor="image"
-                    className="flex flex-row gap-1 items-center m-auto max-h-12 border-2 border-tl-light-blue text-tl-light-blue rounded-lg py-1 px-2 hover:cursor-pointer font-bold"
+                    className="flex flex-row gap-1 items-center m-auto max-h-12 border-2 border-tl-light-blue text-tl-light-blue rounded rounded-t-lg py-1 px-2 hover:cursor-pointer font-bold"
                   >
                     <LiaCloudUploadAltSolid size={30} />
                     Upload
                     <input
-                      className="hidden max-h-12 "
+                      className="hidden max-h-12"
                       type="file"
                       name="myImage"
                       id="image"
@@ -287,14 +260,14 @@ export const ProfileTab = () => {
                     }`}
                   >
                     <button
-                      className="text-xs max-h-12 border border-tl-light-blue text-tl-light-blue rounded-lg py-1 px-2 "
-                      onClick={handleSaveImageNEW}
+                      className="text-xs max-h-12 border border-tl-light-blue text-tl-light-blue rounded rounded-t-lg py-1 px-2 "
+                      onClick={handleSaveImage}
                     >
                       Save
                     </button>
                     <button
                       onClick={handleRemoveImageFromClient}
-                      className="text-xs max-h-12 border border-red-600 rounded-lg py-1 px-2 text-red-600"
+                      className="text-xs max-h-12 border border-red-600 rounded rounded-t-lg py-1 px-2 text-red-600"
                     >
                       Remove
                     </button>
@@ -311,7 +284,6 @@ export const ProfileTab = () => {
                 Saved
               </div>
             </div>
-            <div className="flex items-center sm:w-full px-auto"></div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="flex flex-col w-full">
@@ -321,7 +293,7 @@ export const ProfileTab = () => {
             <div className="sm:w-full">
               <button
                 onClick={handleChangeEmailClick}
-                className="mx-auto border border-tl-light-blue text-tl-light-blue rounded-lg py-2 px-5"
+                className="mx-auto border border-tl-light-blue text-tl-light-blue rounded rounded-t-lg py-2 px-5"
               >
                 Change
               </button>
@@ -335,7 +307,7 @@ export const ProfileTab = () => {
             <div className="sm:w-full">
               <button
                 onClick={handleChangePasswordClick}
-                className="mx-auto border border-tl-light-blue text-tl-light-blue rounded-lg py-2 px-5"
+                className="mx-auto border border-tl-light-blue text-tl-light-blue rounded rounded-t-lg py-2 px-5"
               >
                 Change
               </button>
@@ -363,6 +335,42 @@ export const ProfileTab = () => {
             <div className="flex items-center sm:w-full px-auto"></div>
           </div>
         </div>
+      </WideBox>
+      <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
+        <WideBox className="p-5">
+          <div className="flex flex-row flex-wrap gap-2">
+            <GentleButton
+              className={`border border-tl-dark-blue ${
+                (activeTab == "profile" || activeTab == null) &&
+                "border-tl-light-blue text-tl-light-blue"
+              }`}
+              text={<>{profileIcon(20)} Profile</>}
+              onClick={() => {
+                handleTabSelect("profile");
+              }}
+            />
+            <GentleButton
+              className={`border border-tl-dark-blue ${
+                activeTab == "badges" &&
+                "border-tl-light-blue text-tl-light-blue"
+              }`}
+              text={<>{badgeIcon(20)} Badges</>}
+              onClick={() => {
+                handleTabSelect("badges");
+              }}
+            />
+            <GentleButton
+              className={`border border-tl-dark-blue ${
+                activeTab == "interviews" &&
+                "border-tl-light-blue text-tl-light-blue"
+              }`}
+              text={<>{interviewIcon(20)} Interviews</>}
+              onClick={() => {
+                handleTabSelect("interviews");
+              }}
+            />
+          </div>
+        </WideBox>
       </div>
       {emailModalIsOpen && (
         <Modal onclick={() => setEmailModalIsOpen(false)}>

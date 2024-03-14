@@ -27,6 +27,36 @@ export const Badges: CollectionConfig = {
       type: "text",
       required: true,
     },
+    {
+      name: "users",
+      label: "Users",
+      type: "relationship",
+      relationTo: "users",
+      hasMany: true,
+      admin: {
+        // readOnly: true,
+      },
+    },
+    {
+      name: "interviews",
+      label: "Interviews",
+      type: "relationship",
+      relationTo: "interviews",
+      hasMany: true,
+      admin: {
+        // readOnly: true,
+      },
+    },
+    {
+      name: "terms",
+      label: "Badge terms",
+      type: "textarea",
+      admin: {
+        description:
+          "The criteria to determine user eligibility for this badge. Displayed on the badge application form",
+      },
+      required: true,
+    },
     seo,
   ],
 };

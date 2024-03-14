@@ -1,31 +1,22 @@
 import type { Field } from "payload/types";
-import {
-  HTMLConverterFeature,
-  lexicalEditor,
-  lexicalHTML,
-} from "@payloadcms/richtext-lexical";
+// import { updateAnswerDate } from "./hooks/updateAnswerDate";
 
 export const answer: Field = {
   name: "answer",
   label: "Answer",
   type: "group",
+  // hooks: { beforeChange: [updateAnswerDate] },
   fields: [
     {
-      name: "richText",
-      label: "Text answer",
-      type: "richText",
-      required: false,
-
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          HTMLConverterFeature({}),
-        ],
-      }),
+      name: "questionSlug",
+      label: "Question Slug",
+      type: "text",
     },
-    lexicalHTML("richText", {
-      name: "richText_html",
-    }),
+    {
+      name: "textAnswer",
+      label: "Text Answer",
+      type: "textarea",
+    },
     {
       name: "images",
       label: "Images",

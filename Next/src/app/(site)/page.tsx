@@ -1,86 +1,213 @@
 import { fetchData } from "@/utils/payloadFetch";
-import { homePageRes } from "../../../types/Responses";
 import { notFound } from "next/navigation";
-import HomePage from "@/components/pages/HomePage";
+import ClientPage from "./HomePage/ClientPage";
+import {
+  Badge,
+  Interview,
+  UsersInterview,
+  User,
+} from "@/payload/payload-types";
 
 async function getData() {
-  console.time("getDataHP");
   const query = `{
-        Interviews {
-          docs {
-            name
-            seo {
-              slug
-              excerpt
-              image{url filename}
+    UsersInterviews {
+      docs {
+        answersAmount
+        id
+        user {
+          id
+          userName
+          seo {
+            slug
+            image {
+              filename
+              url
             }
+          }
+          userBadges {
+            links {
+              linkOne
+              linkTwo
+              linkThree
+              linkFour
+              linkFive
+            }
+            bio
             badge {
               singularName
-              pluralName
               seo {
                 slug
-                image{url filename}
-              }
-            }
-            questions {
-              question {
-                shortQuestion
-                mediumQuestion
-                seo {
-                  slug
-                }
-                answers {
-                  user {
-                    seo{image{url filename}}
-                    userName
-                    seo {
-                      slug
-                    }
-                  }
-                  answer{updatedAt richText_html video{url filename} images{image {url filename}}}
-                }
               }
             }
           }
         }
-        Badges {
-          docs {
-            pluralName
+        interview {
+          userInterviews {
+            answersAmount
+            answers {
+              answer {
+                textAnswer
+              }
+            }
+          }
+          name
+          id
+          badge {
+            id
             singularName
-            seo{slug image{url filename}}
+            pluralName
+            seo {
+              slug
+              image {
+                filename
+                url
+              }
+            }
+          }
+          seo {
+            slug
+            image {
+              filename
+              url
+            }
+          }
+          questions {
+            question {
+              shortQuestion
+              mediumQuestion
+              longQuestion
+              seo {
+                slug
+                image {
+                  url
+                  filename
+                }
+              }
+              seo {
+                slug
+              }
+            }
           }
         }
-        Users(where: { roles: { equals: endUser } }){
-          docs{
-            userName
-            seo{slug image{url filename}}
+        answers {
+          answer {
+            updatedAt
+            questionSlug
+            images {
+              image {
+                filename
+              }
+            }
+            textAnswer
+            video {
+              filename
+            }
           }
         }
       }
+    }
+    Interviews {
+      docs {
+        userInterviews{id answersAmount}
+        name
+        seo {
+          excerpt
+          slug
+          image {
+            url
+            filename
+          }
+        }
+        badge {
+          pluralName
+          singularName
+          seo {
+            excerpt
+            slug
+            image {
+              url
+              filename
+            }
+          }
+        }
+        questions {
+          question {
+            shortQuestion
+            seo {
+              slug
+            }
+          }
+        }
+      }
+    }
+    Badges(limit: 50) {
+      limit
+      docs {
+        users{id}
+        interviews {
+          id
+        }
+        pluralName
+        singularName
+        seo {
+          slug
+          image {
+            url
+            filename
+          }
+        }
+      }
+    }
+    Users(where: { roles: { equals: endUser } }, limit: 50) {
+      limit
+      docs {
+        userInterviews {
+          id
+        }
+        userBadges {
+          badge {
+            singularName
+          }
+        }
+        userName
+        seo {
+          slug
+          image {
+            url
+            filename
+          }
+        }
+      }
+    }
+  }  
       `;
 
-  const data: homePageRes | null = await fetchData({
+  const data: {
+    data: {
+      Badges: { docs: Badge[] };
+      Users: { docs: User[] };
+      Interviews: { docs: Interview[] };
+      UsersInterviews: { docs: UsersInterview[] };
+    };
+  } | null = await fetchData({
     query,
     method: "POST",
     collection: "Interviews",
   });
 
   if (!data) {
-    console.timeEnd("getDataHP");
     return null;
   }
-  console.timeEnd("getDataHP");
+
   return data;
 }
 
 export default async function Home() {
-  console.time("HomeRenderTime");
   const data = await getData();
 
   if (!data) {
-    console.timeEnd("HomeRenderTime");
     notFound();
   }
-  console.timeEnd("HomeRenderTime");
-  return <HomePage data={data} />;
+
+  return <ClientPage data={data} />;
 }

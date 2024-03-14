@@ -4,8 +4,8 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/api/og/*"],
-      disallow: ["/admin", "account"],
+      allow: ["/", "/api/og/*", "/interview/*/*/*"],
+      disallow: ["/admin", "/account", "/interview/*/edit/*"],
     },
     sitemap:
       `${process.env.SITE_URL}/sitemap.xml` ||
