@@ -2,7 +2,7 @@
 
 import { TextAreaInput, TextInput } from "@/components/ui/inputs";
 import getArticle from "@/helpers/getArticle";
-import { Badge, Media } from "@/payload/payload-types";
+import { Application, Badge, Media } from "@/payload/payload-types";
 import { CldImage } from "next-cloudinary";
 import { useEffect, useState } from "react";
 import { IoTrashOutline } from "react-icons/io5";
@@ -14,6 +14,7 @@ import { InternalLink } from "@/components/links/InternalLink";
 import { WideBox } from "@/components/ui/boxes";
 import { GentleButton } from "@/components/ui/buttons";
 import { badgeIcon, interviewIcon, profileIcon } from "@/utils/defaultIcons";
+import { defaultImages } from "@/utils/defaultImages";
 
 const serviceLinkNames = ["one", "two", "three", "four", "five"];
 interface BadgesTabProps {
@@ -35,6 +36,15 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
   const [serviceLinksSaved, setServiceLinksSaved] = useState({});
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const userPendingBadges =
+    user?.userApplications && user?.userApplications.length > 0
+      ? user.userApplications.filter((item) => {
+          return (item as Application).status == "pending";
+        })
+      : [];
+
+  console.log("userPendingBadges", userPendingBadges);
 
   const handleModalOpen = (slug: string) => {
     setModalIsOpen(true);
@@ -168,6 +178,44 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] w-full">
       <div className="lg:w-[70%] w-full flex flex-col gap-2">
+        {userPendingBadges.length > 0 &&
+          userPendingBadges.map((item, index) => {
+            const badge = (item as Application).badge as Badge;
+            return (
+              <WideBox
+                key={index}
+                className="flex flex-col bg-white p-2 lg:px-10 lg:py-3 gap-10 w-full round"
+              >
+                <div className="flex flex-row justify-between items-center w-full">
+                  <div className="flex flex-row items-center content-center gap-3">
+                    <CldImage
+                      width={200}
+                      height={200}
+                      src={defaultImages.pending}
+                      defaultImage={defaultImages.pending}
+                      alt={badge.pluralName}
+                      className="h-[50px] w-[50px] sm:w-[70px] sm:h-[70px] cover rounded-full"
+                    />
+                    <div>
+                      <span className=" text-weasker-grey">Badge</span>
+                      <h2>{badge.singularName}</h2>
+                      <InternalLink
+                        newTab={true}
+                        style={"blue"}
+                        className="hover:underline"
+                        href={`/badge/${badge.seo.slug}`}
+                        element={
+                          <span className="text-xs">Visit Badge Page</span>
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="text-weasker-grey">Pending</div>
+                </div>
+              </WideBox>
+            );
+          })}
+
         {Array.isArray(user.userBadges) && user.userBadges.length > 0 ? (
           user.userBadges.map((item, index) => {
             const isExpanded =
@@ -187,12 +235,13 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
                         src={
                           ((item.badge as Badge).seo.image as Media).filename
                         }
+                        defaultImage={defaultImages.defaultBadgeImage}
                         alt={(item.badge as Badge).pluralName}
                         className="h-[50px] w-[50px] sm:w-[70px] sm:h-[70px] cover rounded-full border-2 border-weasker-grey"
                       />
 
                       <div>
-                        <span className=" text-weasker-grey">Badge</span>
+                        <span className="text-weasker-grey">Badge</span>
 
                         <h2>{(item.badge as Badge).singularName}</h2>
                         <InternalLink

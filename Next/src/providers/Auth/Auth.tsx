@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{
       setLoginLoading(true);
       const res = await axios({
         method: "POST",
-        url: `${EXTERNAL_SERVER_URL}/api/users/login?depth=2`,
+        url: `${EXTERNAL_SERVER_URL}/api/users/login?depth=10`,
         withCredentials: true,
         data: {
           email,
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<{
       setLoginLoading(true);
       const res = await axios({
         method: "GET",
-        url: `${EXTERNAL_SERVER_URL}/api/users/me?depth=5`,
+        url: `${EXTERNAL_SERVER_URL}/api/users/me?depth=10`,
         withCredentials: true,
       });
 

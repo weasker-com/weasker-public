@@ -22,6 +22,7 @@ import { VscSaveAs } from "react-icons/vsc";
 import { BiMessageSquareError } from "react-icons/bi";
 import { GrLanguage } from "react-icons/gr";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { SlClock } from "react-icons/sl";
 
 export const badgeIcon = (size: number) => <PiShieldCheckLight size={size} />;
 export const interviewIcon = (size: number) => (
@@ -94,4 +95,8 @@ export const infoIcon = (size: number, className?: string) => (
 
 export const availableAtIcon = (size: number, className?: string) => (
   <GrLanguage size={size} className={`${className}`} />
+);
+
+export const pendingIcon = (size: number, className?: string) => (
+  <SlClock size={size} className={`${className}`} />
 );

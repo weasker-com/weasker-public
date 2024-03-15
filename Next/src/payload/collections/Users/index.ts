@@ -156,6 +156,17 @@ const Users: CollectionConfig = {
         readOnly: true,
       },
     },
+    {
+      name: "userApplications",
+      label: "User applications",
+      type: "relationship",
+      relationTo: "applications",
+      hasMany: true,
+      admin: {
+        readOnly: true,
+        description: "List of all the user's application to join badges",
+      },
+    },
     seo,
   ],
 };

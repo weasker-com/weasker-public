@@ -41,6 +41,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
     (item) => item.question.seo.slug == params.question
   )[0]?.question;
 
+  console.log("relevantQuestion", relevantQuestion);
+
   if (!relevantQuestion) {
     notFound();
   }

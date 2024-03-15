@@ -7,11 +7,16 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Modal from "../../../../components/ui/Modal";
 import getArticle from "@/helpers/getArticle";
-import { badgeIcon, badgersIcon, shareIcon } from "@/utils/defaultIcons";
+import {
+  badgeIcon,
+  badgersIcon,
+  pendingIcon,
+  shareIcon,
+} from "@/utils/defaultIcons";
 import { WhiteBox } from "../../../../components/ui/boxes";
 import { BigButton, GentleButton } from "../../../../components/ui/buttons";
 import BadgeApplyComp from "../../../../components/elements/BadgeApplyComp";
-import { Badge, Media, User } from "@/payload/payload-types";
+import { Application, Badge, Media, User } from "@/payload/payload-types";
 import { InterviewsTab } from "./InterviewsTab";
 import { BadgersTab } from "./BadgersTab";
 import ContactComp from "@/components/elements/ContactComp";
@@ -32,6 +37,8 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [userHasBadge, setUserHasBadge] = useState(false);
+  const [userHasPendingApplication, setUserHasPendingApplication] =
+    useState(false);
   const [userContact, setUserContact] = useState<User | null>(null);
   const singularNameArticle = getArticle(badge.singularName);
 
@@ -44,6 +51,22 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
       })
     ) {
       setUserHasBadge(true);
+    }
+  }, [user, badge.id]);
+
+  useEffect(() => {
+    if (
+      user &&
+      badge.id &&
+      user.userApplications.some((item) => {
+        const application = item as Application;
+        return (
+          (application.badge as Badge).id == badge.id &&
+          application.status == "pending"
+        );
+      })
+    ) {
+      setUserHasPendingApplication(true);
     }
   }, [user, badge.id]);
 
@@ -74,22 +97,28 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
     setUserContact(null);
   };
 
-  const ctaButton = (
-    <BigButton
-      disabled={userHasBadge}
-      className="bg-tl-dark-blue"
-      text={
-        userHasBadge ? (
-          <>Approved {badgeIcon(20)}</>
-        ) : (
-          <>Apply for badge {badgersIcon(20)}</>
-        )
-      }
-      onClick={() => {
-        handleModalOpen({ slug: "apply" });
-      }}
-    />
-  );
+  const getCtaButton = () => {
+    if (userHasBadge) {
+      return <BigButton disabled={true} text={<>Approved {badgeIcon(20)}</>} />;
+    } else if (userHasPendingApplication) {
+      return (
+        <BigButton disabled={true} text={<>Pending {pendingIcon(20)}</>} />
+      );
+    } else {
+      return (
+        <BigButton
+          disabled={userHasBadge || userHasPendingApplication}
+          className="bg-tl-dark-blue"
+          text={<>Apply for badge {badgersIcon(20)}</>}
+          onClick={() => {
+            handleModalOpen({ slug: "apply" });
+          }}
+        />
+      );
+    }
+  };
+
+  const ctaButtonNew = getCtaButton();
 
   return (
     <div className="max-h-min">
@@ -97,7 +126,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
         title={badge.singularName}
         preTitle={"Badge"}
         image={(badge.seo.image as Media).filename}
-        cta={ctaButton}
+        cta={ctaButtonNew}
         about={badge.seo.excerpt}
       />
       {(activeTab == "interviews" || activeTab == null) && (

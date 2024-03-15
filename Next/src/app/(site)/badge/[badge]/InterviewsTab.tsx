@@ -43,12 +43,38 @@ export const InterviewsTab = ({
           const editInterviewUrl = `/interview/${params.badge}/edit/${interview.seo.slug}`;
           const userTookInterview = user
             ? user?.userInterviews?.some((item) => {
-                return (
-                  ((item as UsersInterview).interview as Interview).id ==
-                  interview.id
-                );
+                ((item as UsersInterview).interview as Interview).id ==
+                  interview.id;
               })
             : false;
+
+          const getInterviewActionButton = () => {
+            if (user && userTookInterview) {
+              return (
+                <InternalLink
+                  href={editInterviewUrl}
+                  newTab={true}
+                  element={<GentleButton text="Edit interview" />}
+                />
+              );
+            } else if (user && userHasBadge && !userTookInterview) {
+              return (
+                <InternalLink
+                  href={editInterviewUrl}
+                  newTab={true}
+                  element={<GentleButton text="Take interview" />}
+                />
+              );
+            } else
+              return (
+                <InternalLink
+                  href={editInterviewUrl}
+                  element={
+                    <GentleButton disabled={true} text="Take interview" />
+                  }
+                />
+              );
+          };
 
           return (
             <WideBox className="p-5" key={index}>
@@ -69,29 +95,7 @@ export const InterviewsTab = ({
                   text="Show questions"
                   onClick={() => setShowQuestions(!showQuestions)}
                 />
-                {user && userTookInterview && (
-                  <InternalLink
-                    href={editInterviewUrl}
-                    newTab={true}
-                    element={<GentleButton text="Edit interview" />}
-                  />
-                )}
-
-                {user && userHasBadge && !userTookInterview && (
-                  <InternalLink
-                    href={editInterviewUrl}
-                    newTab={true}
-                    element={<GentleButton text="Take interview" />}
-                  />
-                )}
-                {(!user || !userHasBadge) && (
-                  <GentleButton
-                    onClick={() => {
-                      handleModalOpen("takeInterview");
-                    }}
-                    text="Take interview"
-                  />
-                )}
+                {getInterviewActionButton()}
                 <InternalLink
                   element={<GentleButton text="View" />}
                   href={`/interview/${params.badge}/all/${interview.seo.slug}`}

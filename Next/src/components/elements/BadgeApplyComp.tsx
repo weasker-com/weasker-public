@@ -7,8 +7,8 @@ import { BigButton } from "../ui/buttons";
 import { useEffect, useState } from "react";
 import { create } from "@/utils/restReq";
 import { isValidUrl } from "../../helpers/validateUrl";
-import { Badge, Media } from "@/payload/payload-types";
-import { successIcon } from "@/utils/defaultIcons";
+import { Application, Badge, Media } from "@/payload/payload-types";
+import { pendingIcon, successIcon } from "@/utils/defaultIcons";
 import { InternalLink } from "../links/InternalLink";
 import { defaultImages } from "@/utils/defaultImages";
 import AuthComp from "../AuthComp";
@@ -28,6 +28,8 @@ const BadgeApplyComp = ({
 }: BadgeApplyCompProps) => {
   const { user } = useAuth();
   const [userHasBadge, setUserHasBadge] = useState(false);
+  const [userHasPendingApplication, setUserHasPendingApplication] =
+    useState(false);
   const [linkOne, setLinkOne] = useState<string | null>(null);
   const [linkTwo, setLinkTwo] = useState<string | null>(null);
   const [linkThree, setLinkThree] = useState<string | null>(null);
@@ -54,6 +56,22 @@ const BadgeApplyComp = ({
       setUserHasBadge(true);
     }
   }, [user, badge.seo.slug]);
+
+  useEffect(() => {
+    if (
+      user &&
+      badge.id &&
+      user.userApplications.some((item) => {
+        const application = item as Application;
+        return (
+          (application.badge as Badge).id == badge.id &&
+          application.status == "pending"
+        );
+      })
+    ) {
+      setUserHasPendingApplication(true);
+    }
+  }, [user, badge.id]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [about, setAbout] = useState("");
@@ -160,6 +178,17 @@ const BadgeApplyComp = ({
               }
             />
           )}
+        </div>
+      </WhiteBox>
+    );
+  }
+
+  if (userHasPendingApplication) {
+    return (
+      <WhiteBox>
+        <div className="flex flex-col centerAbsolute gap-5 w-full">
+          {pendingIcon(50, "text-emerald-500")}
+          <span className="text-xl font-bold w-full">Application pending</span>
         </div>
       </WhiteBox>
     );

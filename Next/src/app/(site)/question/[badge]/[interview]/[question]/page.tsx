@@ -95,7 +95,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           answer {
             updatedAt
             questionSlug
-            questionId
+        
             images {
               image {
                 id
@@ -282,7 +282,7 @@ async function getData(badgeParam: string, interviewParam: string) {
           answer {
             updatedAt
             questionSlug
-            questionId
+        
             images {
               image {
                 id
@@ -296,7 +296,6 @@ async function getData(badgeParam: string, interviewParam: string) {
       }
     }
   }
-  
     `;
 
   const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
@@ -315,7 +314,12 @@ async function getData(badgeParam: string, interviewParam: string) {
 }
 
 export default async function Question({ params }: Props) {
+  console.log("params.badge", params.badge);
+  console.log("params.interview", params.interview);
+
   const data = await getData(params.badge, params.interview);
+
+  console.log("data", data);
 
   if (!data) {
     notFound();

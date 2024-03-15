@@ -4,6 +4,7 @@ import { CollectionConfig } from "payload/types";
 import { validateUrlField } from "./hooks/validateUrlField";
 import { emailAfterCreate } from "./hooks/emailAfterCreate";
 import { actionAfterStatusChange } from "./hooks/actionAfterStatusChange";
+import { updateUserAfterCreate } from "./hooks/updateUserAfterCreate";
 
 export const Applications: CollectionConfig = {
   slug: "applications",
@@ -14,7 +15,11 @@ export const Applications: CollectionConfig = {
     update: isAdmin,
   },
   hooks: {
-    afterChange: [emailAfterCreate, actionAfterStatusChange],
+    afterChange: [
+      emailAfterCreate,
+      updateUserAfterCreate,
+      actionAfterStatusChange,
+    ],
   },
   fields: [
     {
