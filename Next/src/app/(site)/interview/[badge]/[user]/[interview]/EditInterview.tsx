@@ -121,36 +121,8 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
 
   useEffect(() => {
     const isAllSaved = isEqual(answers, savedAnswers);
-    console.log("answers", answers);
-    console.log("savedAnswers", savedAnswers);
+
     setAllSaved(isAllSaved);
-
-    const getDifferences = (array1, array2) => {
-      const differences = [];
-
-      array1.forEach((item1) => {
-        const item2 = array2.find(
-          (item) => item.answer.questionSlug === item1.answer.questionSlug
-        );
-
-        if (!item2 || !isEqual(item1.answer.images, item2.answer.images)) {
-          differences.push({ [item1.answer.questionSlug]: "images" });
-        }
-
-        if (!item2 || item1.answer.textAnswer !== item2.answer.textAnswer) {
-          differences.push({ [item1.answer.questionSlug]: "textAnswer" });
-        }
-
-        if (!item2 || item1.answer.video !== item2.answer.video) {
-          differences.push({ [item1.answer.questionSlug]: "video" });
-        }
-      });
-
-      return differences;
-    };
-
-    const differencesArray = getDifferences(answers, savedAnswers);
-    console.log("differencesArray", differencesArray);
   }, [answers, savedAnswers]);
 
   const handleDismissErrorMessage = (questionSlug, type) => {
@@ -709,7 +681,17 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
         image={
           (user.seo.image as Media)?.filename || defaultImages.defaultUserImage
         }
-        about={relevantBadge?.bio || user.seo.excerpt || ""}
+        about={
+          <div className="flex flex-col gap-2">
+            <div>
+              {" "}
+              {interview.seo.excerpt ||
+                relevantBadge?.bio ||
+                user.seo.excerpt ||
+                ""}
+            </div>
+          </div>
+        }
         cta={ctaButton}
       />
       <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">

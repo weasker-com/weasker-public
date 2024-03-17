@@ -36,7 +36,7 @@ async function getData() {
         }
       }
     }
-    Interviews(limit: 1000000) {
+    Interviews(where: { id: { not_equals: "65f6cf1f935129013b4e4c7f" } }, limit: 1000000) {
       docs {
         seo {
           slug
@@ -59,7 +59,7 @@ async function getData() {
         }
       }
     }
-    Users(limit: 1000000) {
+    Users(where: { roles: { equals: endUser } },limit: 1000000) {
       docs {
         seo {
           slug
@@ -67,7 +67,7 @@ async function getData() {
         updatedAt
       }
     }
-    Badges(limit: 1000000) {
+    Badges(where: { id: { not_equals: "65f6cb63935129013b4e491a" } },limit: 1000000) {
       docs {
         seo {
           slug

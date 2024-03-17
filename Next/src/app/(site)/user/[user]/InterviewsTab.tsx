@@ -39,7 +39,7 @@ export const InterviewsTab = ({
                 <InternalLink
                   href={`/interview/${
                     (userInterview.badge as Badge).seo.slug
-                  }/${user.userName}/${interview.seo.slug}`}
+                  }/${user.seo.slug}/${interview.seo.slug}`}
                   element={
                     <ImageAndText
                       preTitle={`Interview with ${user.userName}`}

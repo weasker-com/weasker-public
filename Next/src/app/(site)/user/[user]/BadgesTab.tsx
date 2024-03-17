@@ -35,7 +35,10 @@ export const BadgesTab = ({
                     <ImageAndText
                       preTitle={<span>Badge</span>}
                       title={<h2>{badge.singularName}</h2>}
-                      image={(badge.seo.image as Media).filename}
+                      image={
+                        (badge.seo.image as Media).filename ||
+                        defaultImages.defaultBadgeImage
+                      }
                       defaultImage={defaultImages.defaultBadgeImage}
                       imageClassName="w-24 h-24"
                       about={badge.seo.excerpt}

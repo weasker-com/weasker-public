@@ -2,20 +2,23 @@ import { availableAtIcon, externalLinkIcon } from "@/utils/defaultIcons";
 import { WhiteBox } from "../ui/boxes";
 import ExternalLink from "../links/ExternalLink";
 import { parse } from "tldts";
+import { Media, User } from "@/payload/payload-types";
+import { CldImage } from "next-cloudinary";
 
 interface LinkObject {
   [key: string]: string | null;
 }
 
 interface ContactCompProps {
+  user?: User;
   userName: string;
   links: LinkObject;
 }
 
-const ContactComp = ({ userName, links }: ContactCompProps) => {
+const ContactComp = ({ userName, links, user }: ContactCompProps) => {
   const linkComponents = Object.entries(links)
     // eslint-disable-next-line
-    .filter(([_, url]) => url !== null)
+    .filter(([_, url]) => url !== null && url !== "")
     .map(([key, url], index) => (
       <li key={index}>
         <ExternalLink
@@ -32,19 +35,40 @@ const ContactComp = ({ userName, links }: ContactCompProps) => {
       </li>
     ));
 
+  const userHasLinks = Object.values(links).some(
+    (item) => item !== null && item !== ""
+  );
+
+  console.log("user", user);
+
   return (
     <WhiteBox>
       <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-2">
-          <h1 className="flex flex-row gap-3 items-center text-lg font-extrabold text-tl-dark-blue">
-            {availableAtIcon(40)} {userName} Available at
-          </h1>
-          <span className="text-xs font-light text-weasker-grey">
-            By clicking on our links and making a purchase, you might be
-            supporting us through a commission at no extra cost to you.
-          </span>
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-row gap-2 items-center text-lg font-semibold">
+            {user && user.seo?.image ? (
+              <CldImage
+                width={100}
+                height={100}
+                src={((user as User).seo.image as Media).filename}
+                alt={user.userName}
+                className="w-[40px] h-[40px] cover rounded-full border-2"
+              />
+            ) : (
+              availableAtIcon(40)
+            )}{" "}
+            {userName} &#8226; Available at
+          </div>
         </div>
-        <ul className="flex flex-col flex-wrap gap-3">{linkComponents}</ul>
+        {userHasLinks ? (
+          <ul className="flex flex-col flex-wrap gap-3">{linkComponents}</ul>
+        ) : (
+          "User didn't add any links."
+        )}
+        <span className="text-xs font-light text-weasker-grey">
+          By clicking on our links and making a purchase, you might be
+          supporting us through a commission at no extra cost to you.
+        </span>
       </div>
     </WhiteBox>
   );

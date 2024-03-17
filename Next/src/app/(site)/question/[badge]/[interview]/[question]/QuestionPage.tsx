@@ -24,6 +24,7 @@ import {
 import Answer from "@/components/Answer";
 import { ImageAndText } from "@/components/elements/ImageAndText";
 import { formatDistanceToNow } from "date-fns";
+import ContactComp from "@/components/elements/ContactComp";
 const { convert } = require("html-to-text");
 
 interface QuestionPageProps {
@@ -34,14 +35,13 @@ interface QuestionPageProps {
 const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const interviews = data.data.UsersInterviews.docs;
   const interview = interviews[0].interview as Interview;
   const badge = data.data.UsersInterviews.docs[0].badge as Badge;
   const relevantQuestion = interview.questions.filter(
     (item) => item.question.seo.slug == params.question
   )[0]?.question;
-
-  console.log("relevantQuestion", relevantQuestion);
 
   if (!relevantQuestion) {
     notFound();
@@ -50,14 +50,24 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
   const questionImage =
     (relevantQuestion.seo?.image as Media)?.filename || null;
 
-  const relevantAnswers = interviews.flatMap((item) => {
-    return {
-      user: item.user as User,
-      answer: item.answers.filter((item) => {
+  const relevantAnswers = interviews
+    .flatMap((item) => {
+      const relevantAnswer = item.answers.filter((item) => {
         return item.answer.questionSlug == params.question;
-      })[0],
-    };
-  });
+      })[0];
+
+      if (relevantAnswer) {
+        return {
+          user: item.user as User,
+          answer: relevantAnswer,
+        };
+      }
+    })
+    .filter((item) => item);
+
+  const [contactUser, setContactUser] = useState<User>(
+    (relevantAnswers[0]?.user as User) || null
+  );
 
   if (relevantAnswers.length < 1) {
     return (
@@ -133,50 +143,53 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
         }
         about={relevantQuestion.longQuestion}
       />
-      <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2">
+      <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
         <div className="lg:w-[70%] flex flex-col gap-2">
           {relevantAnswers.map((item, index) => {
             return (
               <WideBox className="p-5" key={index} id={item.user.seo.slug}>
-                <ImageAndText
-                  title={
-                    <InternalLink
-                      className="hover:underline max-w-max"
-                      href={`/user/${item.user.seo.slug}`}
-                      element={
-                        <h2 className="text-base font-normal">
-                          {item.user.displayName || item.user.userName}
-                        </h2>
-                      }
-                    />
-                  }
-                  about={
-                    <span className="text-xs">
+                <div className="flex flex-col gap-5 w-full">
+                  <ImageAndText
+                    title={
                       <InternalLink
-                        className="hover:underline"
-                        href={`/badge/${params.badge}`}
-                        element={badge.singularName}
-                      />{" "}
-                      &#8226;{" "}
-                      {formatDistanceToNow(item.answer.answer.updatedAt, {
-                        addSuffix: true,
-                      })}{" "}
-                      &#8226;{" "}
-                      <span
-                        className="hover:cursor-pointer hover:underline text-tl-light-blue"
-                        onClick={() => {
-                          setActiveModal("contact"), setModalIsOpen(true);
-                        }}
-                      >
-                        Available at
+                        className="hover:underline max-w-max"
+                        href={`/user/${item.user.seo.slug}`}
+                        element={
+                          <h2 className="text-base font-normal">
+                            {item.user.displayName || item.user.userName}
+                          </h2>
+                        }
+                      />
+                    }
+                    about={
+                      <span className="text-xs">
+                        <InternalLink
+                          className="hover:underline"
+                          href={`/badge/${params.badge}`}
+                          element={badge.singularName}
+                        />{" "}
+                        &#8226;{" "}
+                        {formatDistanceToNow(item.answer.answer.updatedAt, {
+                          addSuffix: true,
+                        })}{" "}
+                        &#8226;{" "}
+                        <span
+                          className="hover:cursor-pointer hover:underline text-tl-light-blue"
+                          onClick={() => {
+                            setContactUser(item.user);
+                            setActiveModal("contact"), setModalIsOpen(true);
+                          }}
+                        >
+                          Available at
+                        </span>
                       </span>
-                    </span>
-                  }
-                  image={(item.user.seo.image as Media)?.filename}
-                  defaultImage={defaultImages.defaultUserImage}
-                  imageClassName="w-11 h-11"
-                />
-                <Answer answer={item.answer.answer} />
+                    }
+                    image={(item.user.seo.image as Media)?.filename}
+                    defaultImage={defaultImages.defaultUserImage}
+                    imageClassName="w-11 h-11"
+                  />
+                  <Answer answer={item.answer.answer} />
+                </div>
               </WideBox>
             );
           })}
@@ -220,6 +233,19 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
             </div>
           </WideBox>
         </div>
+        {modalIsOpen && activeModal == "contact" && (
+          <Modal onclick={handleModalClose}>
+            <ContactComp
+              user={contactUser}
+              userName={contactUser.displayName || contactUser.userName}
+              links={
+                contactUser.userBadges.filter((userBadge) => {
+                  return (userBadge.badge as Badge).seo.slug == badge.seo.slug;
+                })[0].links
+              }
+            />
+          </Modal>
+        )}
         {modalIsOpen && activeModal == "share" && (
           <Modal onclick={handleModalClose}>
             <WhiteBox>

@@ -9,7 +9,7 @@ type HeroProps = {
   image: string | null;
   alt?: string;
   cta?: ReactNode;
-  about?: string;
+  about?: string | React.JSX.Element;
 };
 
 const Hero = ({ title, preTitle, image, alt, cta, about }: HeroProps) => {
@@ -29,10 +29,10 @@ const Hero = ({ title, preTitle, image, alt, cta, about }: HeroProps) => {
   }, []);
 
   return (
-    <div className="h-max sm:mx-0 sm:py-10 bg-white my-2 rounded rounded-t-lg shadow w-full max-w-[1000px] group">
-      <div className="flex flex-col items-center lg:flex-row gap-2 sm:gap-5 items-start sm:ml-2 lg:mx-auto max-w-[1000px] w-full mr-auto p-5 sm:p-0 sm:px-5 rounded rounded-t-lg bg-white">
+    <div className="h-max sm:mx-0 sm:py-10 bg-white my-2 rounded rounded-t-lg shadow max-w-[1000px] group w-full">
+      <div className="flex flex-col items-center lg:flex-row gap-2 sm:gap-5 items-start sm:ml-2 lg:mx-auto max-w-[1000px]  mr-auto p-5 sm:p-0 sm:px-5 rounded rounded-t-lg bg-white w-full">
         <div
-          className={`flex flex-row gap-2 sm:gap-5 items-center sm:max-w-[70%] `}
+          className={`flex flex-row gap-2 sm:gap-5 items-center sm:max-w-[70%]`}
         >
           <CldImage
             src={image || defaultImages.weaskerLogo}
@@ -55,7 +55,9 @@ const Hero = ({ title, preTitle, image, alt, cta, about }: HeroProps) => {
                 {title}
               </span>
               {!isMobile && about && (
-                <span className="text-sm text-left font-normal">{about}</span>
+                <span className="text-sm text-left font-normal w-full">
+                  {about}
+                </span>
               )}
             </h1>
           </div>

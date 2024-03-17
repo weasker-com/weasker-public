@@ -12,15 +12,11 @@ export const updateUserAfterCreate: AfterChangeHook = async ({
 
       const userId = doc.user?.id ? doc.user?.id : doc.user;
 
-      console.log("userId", userId);
-
       const user = await payload.findByID({
         collection: "users",
         id: userId,
         depth: 2,
       });
-
-      console.log("user", user);
 
       const userApplicationsIds =
         user?.userApplications && user?.userApplications.length > 0
@@ -28,11 +24,6 @@ export const updateUserAfterCreate: AfterChangeHook = async ({
               return (item as Application).id;
             })
           : [];
-
-      console.log("userApplicationsIds", userApplicationsIds);
-
-      console.log("doc", doc);
-      console.log("doc.id", doc.id);
 
       const updateApplications = [...userApplicationsIds, doc.id];
 

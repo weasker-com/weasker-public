@@ -123,7 +123,11 @@ const ClientPage: React.FC<ClientPageProps> = ({ params, data }) => {
       )}
       {modalIsOpen && activeModal == "contact" && (
         <Modal onclick={handleModalClose}>
-          <ContactComp userName={user.displayName || userName} links={links} />
+          <ContactComp
+            user={user}
+            userName={user.displayName || userName}
+            links={links}
+          />
         </Modal>
       )}
       {modalIsOpen && activeModal == "share" && (

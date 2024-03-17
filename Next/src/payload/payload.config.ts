@@ -27,6 +27,12 @@ export default buildConfig({
     UsersInterviews,
   ],
   serverURL: process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL,
+  rateLimit: {
+    window: 90000,
+    max: 500,
+  },
+
+  maxDepth: 10,
   admin: {
     css: path.resolve(__dirname, "./stylesheet.css"),
     user: Users.slug,

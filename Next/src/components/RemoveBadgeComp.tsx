@@ -26,7 +26,7 @@ export const RemoveBadgeComp: React.FC<RemoveBadgeCompProps> = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  console.log("user", user);
+
   useEffect(() => {
     setCheckMarkIsChecked(false);
   }, []);

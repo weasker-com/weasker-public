@@ -21,8 +21,6 @@ export const updateInterviewUsers: AfterChangeHook = async ({
         return item.id;
       });
 
-      console.log("updateInterviewUsersIds", updateInterviewUsersIds);
-
       const updateInterview = await payload.update({
         collection: "interviews",
         id: interviewId,

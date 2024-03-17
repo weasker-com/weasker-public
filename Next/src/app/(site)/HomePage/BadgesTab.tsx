@@ -23,6 +23,12 @@ export const BadgesTab = ({
   activeTab,
   handleModalOpen,
 }: BadgesTabProps) => {
+  const relevantBadges = data.filter(
+    (item) => item?.interviews?.length > 0 && item?.users.length > 0
+  );
+
+  console.log("relevantBadges", relevantBadges);
+
   return (
     <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full mt-2">
       <div className="lg:w-[70%] flex flex-col w-full gap-2">
@@ -31,7 +37,7 @@ export const BadgesTab = ({
         </WideBox>
         <WideBox className="p-5 flex flex-row">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
-            {data.map((item, index) => {
+            {relevantBadges.map((item, index) => {
               return (
                 <InternalLink
                   className="w-full"

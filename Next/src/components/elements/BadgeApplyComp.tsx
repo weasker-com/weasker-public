@@ -61,7 +61,7 @@ const BadgeApplyComp = ({
     if (
       user &&
       badge.id &&
-      user.userApplications.some((item) => {
+      user.userApplications?.some((item) => {
         const application = item as Application;
         return (
           (application.badge as Badge).id == badge.id &&
@@ -219,7 +219,7 @@ const BadgeApplyComp = ({
               width={60}
               height={60}
               src={
-                (badge.seo.image as Media).filename ||
+                (badge.seo?.image as Media)?.filename ||
                 defaultImages.defaultBadgeImage
               }
               alt={badge.singularName}

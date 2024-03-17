@@ -106,7 +106,7 @@ async function getData() {
         }
       }
     }
-    Interviews {
+    Interviews(where: { id: { not_equals: "65f6cf1f935129013b4e4c7f" } },limit: 50) {
       docs {
         userInterviews{id answersAmount}
         name
@@ -140,7 +140,7 @@ async function getData() {
         }
       }
     }
-    Badges(limit: 50) {
+    Badges(where: { id: { not_equals: "65f6cb63935129013b4e491a" } },limit: 50) {
       limit
       docs {
         users{id}

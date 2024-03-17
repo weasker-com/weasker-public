@@ -215,7 +215,10 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                         <InternalLink
                           href={`/interview/${params.badge}/all/${params.interview}#${question.question.seo.slug}`}
                           element={
-                            <GentleButton text="View more answers to this question" />
+                            <GentleButton
+                              className="text-xs"
+                              text="View more answers to this question"
+                            />
                           }
                         />
                       </div>
@@ -357,6 +360,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
       {modalIsOpen && activeModal == "contact" && (
         <Modal onclick={handleModalClose}>
           <ContactComp
+            user={interviewUser}
             userName={interviewUser.displayName || interviewUser.userName}
             links={relevantUserBadge.links}
           />

@@ -14,6 +14,7 @@ import {
   shareIcon,
   usersIcon,
 } from "@/utils/defaultIcons";
+import { defaultImages } from "@/utils/defaultImages";
 
 interface BadgesTabProps {
   handleTabSelect: any;
@@ -54,7 +55,8 @@ export const InterviewsTab = ({
                 <WideBox className="transition-shadow ease-in-out duration-300 p-5 hover:shadow-tl-dark-blue">
                   <div className="w-full">
                     <ImageAndText
-                      image={(interview.seo.image as Media).filename}
+                      image={(interview.seo.image as Media)?.filename}
+                      defaultImage={defaultImages.defaultInterviewImage}
                       imageClassName="w-24 h-24"
                       preTitle={<h2 className="">{interview.name}</h2>}
                       title={

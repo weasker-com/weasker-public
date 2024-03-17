@@ -44,8 +44,6 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
         })
       : [];
 
-  console.log("userPendingBadges", userPendingBadges);
-
   const handleModalOpen = (slug: string) => {
     setModalIsOpen(true);
     setActiveModal(slug);

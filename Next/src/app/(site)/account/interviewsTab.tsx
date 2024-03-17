@@ -35,8 +35,6 @@ export const InterviewsTab = ({
     return (interview as UsersInterview).id;
   });
 
-  console.log("answeredInterviewsIds", answeredInterviewsIds);
-
   const availableInterviews = user.userBadges.flatMap((userBadge) => {
     return (userBadge.badge as Badge).interviews.map((interview) => {
       return { badge: userBadge.badge, interview: interview };
@@ -50,9 +48,6 @@ export const InterviewsTab = ({
       }
     );
   });
-
-  console.log("availableInterviews", availableInterviews);
-  console.log("availableInteviewsNotTaken", availableInterviewsNotTaken);
 
   return (
     <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] w-full">
@@ -115,6 +110,9 @@ export const InterviewsTab = ({
               <ul className="flex flex-col gap-5 w-full">
                 {availableInterviewsNotTaken.map((item, index) => {
                   const interview = item.interview as Interview;
+                  const interviewHasAnswers =
+                    interview.userInterviews?.length > 0;
+                  console.log("interviewHasAnswers", interviewHasAnswers);
                   const badge = item.badge as Badge;
                   const article = getArticle(
                     (interview.badge as Badge).singularName
@@ -123,7 +121,10 @@ export const InterviewsTab = ({
                     <li key={index}>
                       <div key={index} className="flex flex-col gap-3">
                         <ImageAndText
-                          image={(badge.seo.image as Media).filename}
+                          image={
+                            (badge.seo?.image as Media)?.filename ||
+                            defaultImages.defaultBadgeImage
+                          }
                           defaultImage={defaultImages.defaultInterviewImage}
                           imageClassName="w-24 h-24"
                           preTitle={`As ${article} ${badge.singularName}`}
@@ -135,11 +136,13 @@ export const InterviewsTab = ({
                             href={`/interview/${badge.seo.slug}/edit/${interview.seo.slug}`}
                             element={<GentleButton text="Take interview" />}
                           />
-                          <InternalLink
-                            newTab={true}
-                            element={<GentleButton text="View" />}
-                            href={`/interview/${badge.seo.slug}/all/${interview.seo.slug}`}
-                          />
+                          {interviewHasAnswers && (
+                            <InternalLink
+                              newTab={true}
+                              element={<GentleButton text="View" />}
+                              href={`/interview/${badge.seo.slug}/all/${interview.seo.slug}`}
+                            />
+                          )}
                         </div>
                       </div>
                     </li>

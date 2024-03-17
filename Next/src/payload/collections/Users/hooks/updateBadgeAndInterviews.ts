@@ -46,8 +46,6 @@ export const updateBadgeAndInterviews: AfterDeleteHook = async ({ doc }) => {
       },
     });
 
-    console.log("deleteInterviews", deleteInterviews);
-
     if (deleteInterviews) {
       console.log("success deleting user interviews");
     }

@@ -29,11 +29,11 @@ const Answer: React.FC<AnswerProps> = ({ answer }) => {
     <div className="flex flex-col gap-3 max-w-[800px] sm:px-5">
       {answer.video && (
         <CldVideoPlayer
-          key={answer.questionId}
+          key={answer.questionSlug}
           width="1920"
           height="1080"
           src={(answer.video as Media).filename}
-          id={answer.questionId}
+          id={answer.questionSlug}
         />
       )}
       {answer.textAnswer && (

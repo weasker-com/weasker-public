@@ -4,7 +4,6 @@ import { SelectInput, useField } from "payload/components/forms";
 
 export const CustomSelectComponent: React.FC<{ path: string; data }> = ({
   path,
-  data,
 }) => {
   const { value, setValue } = useField<string>({ path });
   const [options, setOptions] = React.useState([]);
@@ -13,8 +12,7 @@ export const CustomSelectComponent: React.FC<{ path: string; data }> = ({
     const fetchOptions = async () => {
       try {
         // const payload = await getPayloadClient();
-        console.log("component data", data);
-        console.log("component path", path);
+
         setOptions([{ label: `test`, value: "test" }]);
       } catch (error) {
         console.error("Error fetching data:", error);

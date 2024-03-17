@@ -20,6 +20,8 @@ const Users: CollectionConfig = {
       generateEmailSubject: () => "Reset your Weasker password",
       generateEmailHTML: generateForgotPasswordEmail,
     },
+    maxLoginAttempts: 6,
+    lockTime: 60 * 60 * 24,
   },
   hooks: {
     beforeValidate: [validatePassword, validateUserName],
@@ -74,6 +76,10 @@ const Users: CollectionConfig = {
         {
           label: "End user",
           value: "endUser",
+        },
+        {
+          label: "QA user",
+          value: "qa",
         },
       ],
     },

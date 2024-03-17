@@ -20,6 +20,7 @@ import { Application, Badge, Media, User } from "@/payload/payload-types";
 import { InterviewsTab } from "./InterviewsTab";
 import { BadgersTab } from "./BadgersTab";
 import ContactComp from "@/components/elements/ContactComp";
+import { defaultImages } from "@/utils/defaultImages";
 
 interface ClientPageProps {
   data: { data: { Badges: { docs: Badge[] } } };
@@ -58,7 +59,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
     if (
       user &&
       badge.id &&
-      user.userApplications.some((item) => {
+      user.userApplications?.some((item) => {
         const application = item as Application;
         return (
           (application.badge as Badge).id == badge.id &&
@@ -125,7 +126,10 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
       <Hero
         title={badge.singularName}
         preTitle={"Badge"}
-        image={(badge.seo.image as Media).filename}
+        image={
+          (badge?.seo?.image as Media)?.filename ||
+          defaultImages.defaultBadgeImage
+        }
         cta={ctaButtonNew}
         about={badge.seo.excerpt}
       />
@@ -178,6 +182,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
       {modalIsOpen && activeModal == "contact" && (
         <Modal onclick={handleModalClose}>
           <ContactComp
+            user={userContact}
             userName={userContact.displayName || userContact.userName}
             links={
               userContact.userBadges.filter((userBadge) => {

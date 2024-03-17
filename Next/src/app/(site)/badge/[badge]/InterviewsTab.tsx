@@ -12,6 +12,7 @@ import {
   UsersInterview,
 } from "@/payload/payload-types";
 import { badgeIcon, interviewIcon, shareIcon } from "@/utils/defaultIcons";
+import { defaultImages } from "@/utils/defaultImages";
 import { useState } from "react";
 
 interface InterviewsTabProps {
@@ -37,7 +38,7 @@ export const InterviewsTab = ({
 
   return (
     <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full">
-      <div className="lg:w-[70%] flex flex-col gap-2">
+      <div className="lg:w-[70%] flex flex-col gap-2 w-full">
         {data.interviews.map((item, index) => {
           const interview = item as Interview;
           const editInterviewUrl = `/interview/${params.badge}/edit/${interview.seo.slug}`;
@@ -47,6 +48,9 @@ export const InterviewsTab = ({
                   interview.id;
               })
             : false;
+
+          const interviewHasAnswers = interview.userInterviews?.length > 0;
+          console.log("interviewHasAnswers", interviewHasAnswers);
 
           const getInterviewActionButton = () => {
             if (user && userTookInterview) {
@@ -77,7 +81,7 @@ export const InterviewsTab = ({
           };
 
           return (
-            <WideBox className="p-5" key={index}>
+            <WideBox className="p-5 w-full" key={index}>
               <InternalLink
                 href={`/interview/${params.badge}/all/${interview.seo.slug}`}
                 className="hover: border-tl-light-blue"
@@ -85,7 +89,8 @@ export const InterviewsTab = ({
                   <ImageAndText
                     preTitle="Interview"
                     title={<h2>{interview.name}</h2>}
-                    image={(interview.seo.image as Media).filename}
+                    image={(interview.seo.image as Media)?.filename}
+                    defaultImage={defaultImages.defaultInterviewImage}
                     imageClassName="w-24 h-24"
                   />
                 }
@@ -96,8 +101,11 @@ export const InterviewsTab = ({
                   onClick={() => setShowQuestions(!showQuestions)}
                 />
                 {getInterviewActionButton()}
+
                 <InternalLink
-                  element={<GentleButton text="View" />}
+                  element={
+                    <GentleButton disabled={!interviewHasAnswers} text="View" />
+                  }
                   href={`/interview/${params.badge}/all/${interview.seo.slug}`}
                 />
               </div>
@@ -106,7 +114,7 @@ export const InterviewsTab = ({
                   <span className="font-bold">Interview questions</span>
                   <ul className="flex flex-col gap-2 text-weasker-grey text-sm">
                     {interview.questions.map((item, index) => {
-                      return (
+                      return interviewHasAnswers ? (
                         <InternalLink
                           key={index}
                           newTab={true}
@@ -117,6 +125,10 @@ export const InterviewsTab = ({
                             </li>
                           }
                         />
+                      ) : (
+                        <li className="">
+                          {`${index + 1}. ${item.question.shortQuestion}`}
+                        </li>
                       );
                     })}
                   </ul>

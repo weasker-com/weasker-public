@@ -169,7 +169,10 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
             />
           </>
         }
-        image={(badge.seo.image as Media).filename}
+        image={
+          (badge.seo?.image as Media).filename ||
+          defaultImages.defaultBadgeImage
+        }
         cta={ctaButton}
       />
       <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full">
@@ -446,6 +449,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
       {modalIsOpen && activeModal == "contact" && (
         <Modal onclick={handleModalClose}>
           <ContactComp
+            user={contactUser}
             userName={contactUser.displayName || contactUser.userName}
             links={
               contactUser.userBadges.filter((userBadge) => {

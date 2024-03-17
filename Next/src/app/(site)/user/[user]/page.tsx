@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         displayName
         id
         seo {
+          slug
           title
           description
           excerpt
@@ -48,7 +49,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
               }
             }
           }
-          
         }
         userInterviews{
           interview{
@@ -146,6 +146,7 @@ async function getData(userParam: string) {
         displayName
         id
         seo {
+          slug
           title
           description
           excerpt

@@ -41,7 +41,7 @@ export const BadgersTab = ({
             return (
               <>
                 <WideBox className="p-5" key={index}>
-                  <div>
+                  <div className="w-full">
                     <InternalLink
                       href={`/user/${user.seo.slug}`}
                       className="hover: border-tl-light-blue"
