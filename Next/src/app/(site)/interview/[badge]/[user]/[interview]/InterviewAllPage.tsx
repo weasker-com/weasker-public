@@ -13,16 +13,14 @@ import {
   User,
   UsersInterview,
 } from "@/payload/payload-types";
-import { ImageAndText } from "@/components/elements/ImageAndText";
 import { BigButton, GentleButton } from "@/components/ui/buttons";
-import { formatDistanceToNow } from "date-fns";
-import { leftArrowIcon, rightArrowIcon, shareIcon } from "@/utils/defaultIcons";
-import Answer from "@/components/Answer";
+import { shareIcon } from "@/utils/defaultIcons";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import ContactComp from "@/components/elements/ContactComp";
 import { FAQPage, WithContext } from "schema-dts";
 import BadgeApplyComp from "@/components/elements/BadgeApplyComp";
 import { defaultImages } from "@/utils/defaultImages";
+import InterviewAnswer from "../../../../../../components/InterviewAnswer";
 
 interface InterviewAllPageProps {
   data: { data: { UsersInterviews: { docs: UsersInterview[] } } };
@@ -199,11 +197,6 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                   answer?.answer?.textAnswer?.length > 0
               );
 
-            const currentAnswer =
-              relevantAnswers.filter(
-                (answer) => answer.user.seo.slug === currentUser.seo.slug
-              )[0] || relevantAnswers[0];
-
             const goToPrevUser = () => {
               const currentIndex = relevantAnswers.findIndex(
                 (item) => item.user.seo.slug === currentUser.seo.slug
@@ -226,107 +219,23 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
             };
 
             return (
-              <WideBox
+              <InterviewAnswer
                 key={index}
-                className="p-5"
-                id={question.question.seo.slug}
-              >
-                <div className="flex flex-col gap-5 w-full">
-                  <div>
-                    <ImageAndText
-                      number={index + 1}
-                      title={<h2>{question.question.shortQuestion}</h2>}
-                    />
-                  </div>
-                  {relevantAnswers.length > 1 && (
-                    <div className="relative flex items-center w-full">
-                      <div onClick={goToPrevUser}>{leftArrowIcon(20)}</div>
-                      <div className="flex overflow-x-scroll scrollbar-hide w-full no-scrollbar">
-                        <div className="flex space-x-2">
-                          {relevantAnswers.map((item, index) => (
-                            <div
-                              key={index}
-                              onClick={() => setCurrentUser(item.user)}
-                              className="flex-shrink-0"
-                            >
-                              <ImageAndText
-                                imageClassName="w-11 h-11 rounded-full"
-                                selected={
-                                  item.user.seo.slug === currentUser.seo.slug
-                                }
-                                image={(item.user.seo.image as Media)?.filename}
-                                defaultImage={defaultImages.defaultUserImage}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div
-                        className="hover:cursor-pointer"
-                        onClick={goToNextUser}
-                      >
-                        {rightArrowIcon(20)}
-                      </div>
-                    </div>
-                  )}
-
-                  {currentAnswer && (
-                    <>
-                      <div>
-                        <ImageAndText
-                          image={
-                            (currentAnswer.user.seo.image as Media)?.filename
-                          }
-                          defaultImage={defaultImages.defaultUserImage}
-                          imageClassName="w-11 h-11"
-                          preTitle={
-                            <InternalLink
-                              className="hover:underline max-w-max"
-                              href={`/user/${currentAnswer.user.seo.slug}`}
-                              element={
-                                <span>
-                                  {currentUser.displayName ||
-                                    currentAnswer.user.userName}
-                                </span>
-                              }
-                            />
-                          }
-                          title={
-                            <span className="text-xs">
-                              <InternalLink
-                                className="hover:underline"
-                                href={`/badge/${data.params.badge}`}
-                                element={badge.singularName}
-                              />{" "}
-                              &#8226;{" "}
-                              {formatDistanceToNow(
-                                currentAnswer.answer.updatedAt,
-                                {
-                                  addSuffix: true,
-                                }
-                              )}{" "}
-                              &#8226;{" "}
-                              <span
-                                className="hover:cursor-pointer hover:underline text-tl-light-blue"
-                                onClick={() => {
-                                  setContactUser(currentAnswer.user);
-                                  setActiveModal("contact"),
-                                    setModalIsOpen(true);
-                                }}
-                              >
-                                Available at
-                              </span>
-                            </span>
-                          }
-                        />
-                      </div>
-                      <div>
-                        <Answer answer={currentAnswer.answer} />
-                      </div>
-                    </>
-                  )}
-                </div>
-              </WideBox>
+                badgeSlug={data.params.badge}
+                badgeName={badge.singularName}
+                questionNumber={index + 1}
+                question={question}
+                relevantAnswers={relevantAnswers}
+                onGoToNextUser={goToNextUser}
+                onGoToPrevUser={goToPrevUser}
+                onChangeUser={setCurrentUser}
+                currentUser={currentUser}
+                onContactUser={(user: User) => {
+                  setContactUser(user);
+                  setActiveModal("contact");
+                  setModalIsOpen(true);
+                }}
+              />
             );
           })}
         </div>
