@@ -50,7 +50,6 @@ export const InterviewsTab = ({
             : false;
 
           const interviewHasAnswers = interview.userInterviews?.length > 0;
-          console.log("interviewHasAnswers", interviewHasAnswers);
 
           const getInterviewActionButton = () => {
             if (user && userTookInterview) {
@@ -165,7 +164,7 @@ export const InterviewsTab = ({
               className={`border border-tl-dark-blue`}
               text={<>Share {shareIcon(20)}</>}
               onClick={() => {
-                handleModalOpen("share");
+                handleModalOpen({ slug: "share" });
               }}
             />
           </div>

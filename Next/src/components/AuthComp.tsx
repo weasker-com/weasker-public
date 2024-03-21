@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import LoginComp from "./LoginComp";
 import RegisterComp from "./RegisterComp";
 import ForgotPasswordComp from "./ForgotPasswordComp";
 
 interface AuthCompProps {
   location: "modal" | "page";
+  setAuthCompOpen: Dispatch<SetStateAction<boolean>>;
   title?: string;
 }
 
-const AuthComp: React.FC<AuthCompProps> = ({ location }) => {
+const AuthComp: React.FC<AuthCompProps> = ({ location, setAuthCompOpen }) => {
   const [logInModalIsOpen, setLogInModalIsOpen] = useState(true);
   const [signUpModalIsOpen, setSignUpModalIsOpen] = useState(false);
   const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] =
@@ -23,6 +24,7 @@ const AuthComp: React.FC<AuthCompProps> = ({ location }) => {
           setLogInModalIsOpen={setLogInModalIsOpen}
           setSignUpModalIsOpen={setSignUpModalIsOpen}
           setForgotPasswordModalIsOpen={setForgotPasswordModalIsOpen}
+          setAuthCompOpen={setAuthCompOpen}
         />
       )}
       {signUpModalIsOpen && (
@@ -30,6 +32,7 @@ const AuthComp: React.FC<AuthCompProps> = ({ location }) => {
           location={location}
           setLogInModalIsOpen={setLogInModalIsOpen}
           setSignUpModalIsOpen={setSignUpModalIsOpen}
+          setAuthCompOpen={setAuthCompOpen}
         />
       )}
       {forgotPasswordModalIsOpen && (

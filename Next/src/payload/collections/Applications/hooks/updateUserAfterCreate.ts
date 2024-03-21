@@ -27,8 +27,6 @@ export const updateUserAfterCreate: AfterChangeHook = async ({
 
       const updateApplications = [...userApplicationsIds, doc.id];
 
-      console.log("updateApplications", updateApplications);
-
       const userApplication = await payload.update({
         collection: "users",
         id: userId,
@@ -41,8 +39,6 @@ export const updateUserAfterCreate: AfterChangeHook = async ({
           "Success updating user applications after creating application"
         );
       }
-
-      console.log("userApplication", userApplication);
     } catch (error) {
       console.log(
         "Failed updating user applications after creating application",

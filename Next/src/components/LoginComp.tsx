@@ -11,6 +11,7 @@ interface LoginCompProps {
   setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setSignUpModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setForgotPasswordModalIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setAuthCompOpen?: Dispatch<SetStateAction<boolean>>;
   pageOrModal: "modal" | "page";
   title?: string;
 }
@@ -19,6 +20,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
   setLogInModalIsOpen,
   setSignUpModalIsOpen,
   setForgotPasswordModalIsOpen,
+  setAuthCompOpen,
   pageOrModal,
   title,
 }) => {
@@ -48,6 +50,7 @@ const LoginComp: React.FC<LoginCompProps> = ({
     const res = await login(email, password);
     if (res) {
       setLogInModalIsOpen && setLogInModalIsOpen(false);
+      setAuthCompOpen && setAuthCompOpen(false);
       if (pageOrModal == "page") {
         destAfterLogin
           ? location.replace(destAfterLogin)

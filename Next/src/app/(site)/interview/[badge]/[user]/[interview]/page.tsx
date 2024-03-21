@@ -559,6 +559,7 @@ async function getDataEditInterview({ params, user }: EditInterviewProps) {
       method: "POST",
       collection: "UsersInterviews",
       mustHave: ["UsersInterviews"],
+      tags: ["getDataEditInterview"],
     });
 
   if (!data) {

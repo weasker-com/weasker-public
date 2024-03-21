@@ -1,6 +1,6 @@
 "use server";
-import { revalidatePath } from "next/cache";
-const revalidateByServerAction = async (path) => {
+import { revalidatePath, revalidateTag } from "next/cache";
+export const revalidateByServerAction = async (path) => {
   try {
     if (path) {
       revalidatePath(path);
@@ -11,4 +11,11 @@ const revalidateByServerAction = async (path) => {
     console.error("revalidateByServerAction=> ", error);
   }
 };
-export default revalidateByServerAction;
+
+export const revalidateTagByServerAction = async (tag: string) => {
+  try {
+    revalidateTag(tag);
+  } catch (error) {
+    console.error("revalidateTagByServerAction=> ", error);
+  }
+};

@@ -34,7 +34,7 @@ export const Badges: CollectionConfig = {
       relationTo: "users",
       hasMany: true,
       admin: {
-        // readOnly: true,
+        readOnly: true,
       },
     },
     {
@@ -44,7 +44,7 @@ export const Badges: CollectionConfig = {
       relationTo: "interviews",
       hasMany: true,
       admin: {
-        // readOnly: true,
+        readOnly: true,
       },
     },
     {

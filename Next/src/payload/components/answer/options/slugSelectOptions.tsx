@@ -22,7 +22,6 @@ export const slugSelectOptions = async (data) => {
       return [];
     }
   } else {
-    console.log("data", data);
     return [];
   }
 };

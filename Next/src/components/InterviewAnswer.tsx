@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import {
   Interview,
   Media,
@@ -59,7 +59,6 @@ const InterviewAnswer = ({
   onGoToNextUser,
   onContactUser,
 }: InterviewAnswerProps) => {
-  // Keep a ref to the container so we can measure its position on the page
   const containerRef = useRef<HTMLDivElement>(null);
   const lastScrollPositionRef = useRef<number | undefined>(undefined);
   const lastContainerPositionRef = useRef<number | undefined>(undefined);
@@ -70,9 +69,6 @@ const InterviewAnswer = ({
       (answer) => answer.user.seo.slug === currentUser.seo.slug
     )[0] || relevantAnswers[0];
 
-  // Every time before we change the user, we want to save the scroll position
-  // before doing so, so that we can account for the layout shift that happens
-  // after all InterviewAnswers rerender
   const savelastScrollPosition = useCallback(() => {
     lastScrollPositionRef.current = document.documentElement.scrollTop;
     lastContainerPositionRef.current = getElementOffset(
@@ -93,7 +89,6 @@ const InterviewAnswer = ({
       return;
     }
 
-    // If the user changed than 300ms ago, we don't want to adjust the scroll position
     if (Date.now() - lastScrollPositionSavedAt > 300) {
       return;
     }
@@ -135,7 +130,7 @@ const InterviewAnswer = ({
                     className="flex-shrink-0"
                   >
                     <ImageAndText
-                      imageClassName="w-11 h-11 rounded-full"
+                      imageClassName="w-11 h-11 rounded-full m-1"
                       selected={item.user.seo.slug === currentUser.seo.slug}
                       image={(item.user.seo.image as Media)?.filename}
                       defaultImage={defaultImages.defaultUserImage}
@@ -182,10 +177,10 @@ const InterviewAnswer = ({
                       element={badgeName}
                     />{" "}
                     &#8226;{" "}
-                    {formatDistanceToNow(currentAnswer.answer.updatedAt, {
-                      addSuffix: true,
+                    {formatDistanceToNowStrict(currentAnswer.answer.updatedAt, {
+                      addSuffix: false,
                     })}{" "}
-                    &#8226;{" "}
+                    ago &#8226;{" "}
                     <span
                       className="hover:cursor-pointer hover:underline text-tl-light-blue"
                       onClick={() => {

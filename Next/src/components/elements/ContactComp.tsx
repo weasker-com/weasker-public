@@ -39,8 +39,6 @@ const ContactComp = ({ userName, links, user }: ContactCompProps) => {
     (item) => item !== null && item !== ""
   );
 
-  console.log("user", user);
-
   return (
     <WhiteBox>
       <div className="flex flex-col gap-5">

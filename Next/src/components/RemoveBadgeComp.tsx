@@ -5,9 +5,7 @@ import { BigButton } from "./ui/buttons";
 import { WhiteBox } from "./ui/boxes";
 import { useAuth } from "../providers/Auth/Auth";
 import { successIcon } from "../utils/defaultIcons";
-// import { deleteById } from "@/utils/restReq";
-// import { UsersInterview } from "@/payload/payload-types";
-import revalidateByServerAction from "@/utils/revalidate";
+import { revalidateByServerAction } from "@/utils/revalidate";
 import { usePathname, useRouter } from "next/navigation";
 
 interface RemoveBadgeCompProps {
@@ -44,15 +42,6 @@ export const RemoveBadgeComp: React.FC<RemoveBadgeCompProps> = ({
         }));
 
       const res = await updateUser(user, { userBadges: updatedUserBadges });
-
-      // await Promise.all(
-      //   user.userInterviews.map((item) =>
-      //     deleteById({
-      //       collection: "users-interviews",
-      //       id: (item as UsersInterview).id,
-      //     })
-      //   )
-      // );
 
       if (res) {
         revalidateByServerAction(pathname);

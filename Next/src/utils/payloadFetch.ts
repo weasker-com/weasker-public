@@ -30,7 +30,6 @@ interface PayLoadFetchInterface {
     | "Users"
     | "UsersInterviews";
   mustHave?: string[];
-  revalidate?: number;
 }
 
 export async function fetchData<T>({
@@ -38,7 +37,6 @@ export async function fetchData<T>({
   method,
   collection,
   mustHave,
-  revalidate,
 }: PayLoadFetchInterface): Promise<T | null> {
   const headers = {
     "Content-Type": "application/json",
@@ -51,9 +49,7 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
-        next: revalidate
-          ? { revalidate: revalidate, tags: ["revalidate"] }
-          : { revalidate: 3600 * 12, tags: ["revalidate"] },
+        cache: "no-store",
       }
     )
       .then(checkStatus)

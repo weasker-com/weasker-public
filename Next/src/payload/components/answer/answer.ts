@@ -1,17 +1,14 @@
 import type { Field } from "payload/types";
-// import { updateAnswerDate } from "./hooks/updateAnswerDate";
+import { updateAnswerDate } from "./hooks/updateAnswerDate";
+import { userInterviewQuestionSelect } from "./fields/userInterviewQuestionSelect/field";
 
 export const answer: Field = {
   name: "answer",
   label: "Answer",
   type: "group",
-  // hooks: { beforeChange: [updateAnswerDate] },
+  hooks: { beforeChange: [updateAnswerDate] },
   fields: [
-    {
-      name: "questionSlug",
-      label: "Question Slug",
-      type: "text",
-    },
+    userInterviewQuestionSelect,
     {
       name: "textAnswer",
       label: "Text Answer",

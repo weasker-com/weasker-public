@@ -99,7 +99,7 @@ export const actionAfterStatusChange: AfterChangeHook = async ({
           });
         }
       } catch (error) {
-        console.error("Failed to send application approval email", error);
+        console.error("Failed to send application approval email test", error);
       }
     }
   }

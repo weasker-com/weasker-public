@@ -1,6 +1,6 @@
 import type { AfterChangeHook } from "payload/dist/collections/config/types";
 import { getPayloadClient } from "../../../payload-client";
-import { difference } from "lodash";
+import _, { difference } from "lodash";
 
 export const handleBadgeRemoval: AfterChangeHook = async ({
   operation,
@@ -8,16 +8,17 @@ export const handleBadgeRemoval: AfterChangeHook = async ({
   previousDoc,
 }) => {
   if (operation === "update") {
-    if (previousDoc.userBadges.length > doc.userBadges.length) {
+    const prevUserBadges = previousDoc.userBadges.map((item) => {
+      return item.badge;
+    });
+
+    const currentUserBadges = doc.userBadges.map((item) => {
+      return item.badge?.id ? item.badge?.id : item.badge;
+    });
+
+    const removedBadges = _.difference(prevUserBadges, currentUserBadges);
+    if (removedBadges.length > 0) {
       try {
-        const prevUserBadges = previousDoc.userBadges.map((item) => {
-          return item.badge;
-        });
-
-        const currentUserBadges = doc.userBadges.map((item) => {
-          return item.badge?.id ? item.badge?.id : item.badge;
-        });
-
         const removedBadge = difference(prevUserBadges, currentUserBadges)[0];
 
         const payload = await getPayloadClient();
@@ -62,7 +63,7 @@ export const handleBadgeRemoval: AfterChangeHook = async ({
         });
 
         if (updateBadgeUsers) {
-          console.log("Success updating badge users", updateBadgeUsers);
+          console.log("Success updating badge users");
         }
       } catch (error) {
         console.log("Failed to delete user interviews or badge users", error);

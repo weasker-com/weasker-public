@@ -11,6 +11,7 @@ import { validateUrl } from "./hooks/validateUrl";
 import { handleBadgeRemoval } from "./hooks/handleBadgeRemoval";
 import { updateBadgeAndInterviews } from "./hooks/updateBadgeAndInterviews";
 import { updateBadgeUsers } from "./hooks/updateBadgeUsers";
+import { countBy } from "lodash";
 
 const Users: CollectionConfig = {
   slug: "users",
@@ -96,6 +97,23 @@ const Users: CollectionConfig = {
           type: "relationship",
           relationTo: "badges",
           required: true,
+          validate: (value, { data }) => {
+            if (!value) return `Must have a value`;
+            const chosenBadges = data?.userBadges
+              ? data.userBadges
+                  .map((item) => {
+                    return item.badge?.id ? item.badge.id : item.badge;
+                  })
+                  .filter((item) => {
+                    return item !== undefined;
+                  })
+              : [];
+
+            const counts = countBy(chosenBadges);
+
+            if (counts[value] > 1)
+              return `The badge "${value}" was already chosen once.`;
+          },
         },
         {
           name: "bio",

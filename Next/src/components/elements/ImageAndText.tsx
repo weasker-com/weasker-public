@@ -61,7 +61,7 @@ export const ImageAndText: React.FC<ImageAndTextProps> = ({
             height={400}
             crop="fill"
             className={`rounded-full border-[2px] border-tl-dark-blue group-hover:border-tl-light-blue transition-border ease-in-out duration-300  ${imageClassName} ${
-              selected && "border-tl-light-blue"
+              selected && "ring-offset-2 ring-2 ring-offset-tl-light-blue"
             }`}
           />
         )}

@@ -27,8 +27,6 @@ export const BadgesTab = ({
     (item) => item?.interviews?.length > 0 && item?.users.length > 0
   );
 
-  console.log("relevantBadges", relevantBadges);
-
   return (
     <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full mt-2">
       <div className="lg:w-[70%] flex flex-col w-full gap-2">

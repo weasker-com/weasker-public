@@ -166,7 +166,7 @@ const Navbar = () => {
       </div>
       {authCompOpen && (
         <Modal onclick={() => setAuthCompOpen(false)}>
-          <AuthComp location={"modal"} />
+          <AuthComp location={"modal"} setAuthCompOpen={setAuthCompOpen} />
         </Modal>
       )}
     </div>

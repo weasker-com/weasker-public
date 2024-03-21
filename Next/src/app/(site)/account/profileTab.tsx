@@ -16,8 +16,8 @@ import { GentleButton } from "@/components/ui/buttons";
 import { badgeIcon, interviewIcon, profileIcon } from "@/utils/defaultIcons";
 import { WideBox } from "@/components/ui/boxes";
 import { TextAreaInput, TextInput } from "@/components/ui/inputs";
-import revalidateByServerAction from "@/utils/revalidate";
-import { useRouter } from "next/navigation";
+import { revalidateByServerAction } from "@/utils/revalidate";
+import { usePathname, useRouter } from "next/navigation";
 
 interface ProfileTabProps {
   handleTabSelect: any;
@@ -35,6 +35,7 @@ export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
     uploadImageError,
   } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [displayName, setDisplayName] = useState(user.displayName || "");
   const [displayNameSaved, setDisplayNameSaved] = useState(false);
   const [about, setAbout] = useState(user.seo.excerpt || "");
@@ -120,7 +121,7 @@ export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
       updateUser(user, { seo: { image: image.id } });
       setImageButtonsShowing(false);
       setImageIsSaved(true);
-      revalidateByServerAction("/");
+      revalidateByServerAction(pathname);
       router.refresh();
       setTimeout(() => {
         setImageIsSaved(false);

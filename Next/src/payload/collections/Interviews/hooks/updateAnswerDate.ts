@@ -7,13 +7,11 @@ export const updateAnswerDate: CollectionBeforeChangeHook = ({
   data,
 }) => {
   if (operation == "update") {
-    // Loop through all the questions in the new data
     data.questions.forEach((question) => {
-      // For each question, get the original question
       const originalQuestion = originalDoc.questions.find(
         (q) => q.id === question.id
       );
-      // If there is no original question, then this is a new question, so we don't need to do anything
+
       if (!originalQuestion) {
         return;
       }
@@ -22,12 +20,10 @@ export const updateAnswerDate: CollectionBeforeChangeHook = ({
           (a) => a.id === answer.id
         );
 
-        // If there is no original answer, then this is a new answer, so we don't need to do anything
         if (!originalAnswer) {
           return;
         }
 
-        // If the answer has changed, then update the updatedAt field. Use isEqual to deeply compare the two objects
         if (!isEqual(originalAnswer.answer, answer.answer)) {
           answer.answer.updatedAt = new Date();
         }

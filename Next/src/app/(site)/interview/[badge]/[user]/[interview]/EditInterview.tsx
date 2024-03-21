@@ -29,8 +29,8 @@ import Image from "next/image";
 import { deleteById, updateById, uploadImage, create } from "@/utils/restReq";
 import Hero from "@/components/Hero";
 import NoAuth from "@/components/NoAuth";
-import { usePathname, useRouter } from "next/navigation";
-import revalidateByServerAction from "@/utils/revalidate";
+import { usePathname } from "next/navigation";
+import { revalidateByServerAction } from "@/utils/revalidate";
 import { defaultImages } from "@/utils/defaultImages";
 
 interface EditInterviewProps {
@@ -70,7 +70,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
       }[]
     | null
   >([]);
-  const router = useRouter();
+
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState<boolean | ReactNode>(false);
   const userInterview = data.data.UsersInterviews.docs[0];
@@ -627,8 +627,6 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
     setNewImageObjects([]);
 
     revalidateByServerAction(pathname);
-    router.push(`${pathname}/?reload=1`);
-    router.refresh();
 
     setTimeout(() => {
       setSuccess(false);

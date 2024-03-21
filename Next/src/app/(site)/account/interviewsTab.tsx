@@ -112,7 +112,7 @@ export const InterviewsTab = ({
                   const interview = item.interview as Interview;
                   const interviewHasAnswers =
                     interview.userInterviews?.length > 0;
-                  console.log("interviewHasAnswers", interviewHasAnswers);
+
                   const badge = item.badge as Badge;
                   const article = getArticle(
                     (interview.badge as Badge).singularName
