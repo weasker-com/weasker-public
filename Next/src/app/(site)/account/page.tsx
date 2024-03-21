@@ -1,4 +1,5 @@
-import ClientPage from "@/app/(site)/account/ClientPage";
+import ClientPage from "./ClientPage";
+
 export default async function Account() {
   return <ClientPage />;
 }

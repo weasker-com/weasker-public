@@ -2,8 +2,8 @@ let email;
 
 if (process.env.NODE_ENV === "production") {
   email = {
-    fromName: "Payload",
-    fromAddress: "info@payloadcms.com",
+    fromName: "Weasker",
+    fromAddress: "contact@weasker.com",
     transportOptions: {},
   };
 } else {
