@@ -1,6 +1,13 @@
 "use client";
 import type { User } from "../../payload/payload-types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { AuthContext, ErrorResponse } from "./types";
 import axios from "axios";
 
@@ -31,65 +38,72 @@ export const AuthProvider: React.FC<{
   const [forgotPasswordError, setForgotPasswordError] =
     useState<any>(undefined);
 
-  async function login(email: string, password: string): Promise<any> {
+  const login = useCallback(
+    async (email: string, password: string): Promise<any> => {
+      try {
+        setLoginLoading(true);
+        const res = await axios({
+          method: "POST",
+          url: `${EXTERNAL_SERVER_URL}/api/users/login`,
+          withCredentials: true,
+          data: {
+            email,
+            password,
+          },
+        });
+
+        if (res.data.user) {
+          setLoginLoading(false);
+          const loginUser = res.data.user;
+          setUser(loginUser);
+          return loginUser;
+        }
+      } catch (error) {
+        setLoginLoading(false);
+        setLoginError(error);
+      }
+    },
+    []
+  );
+
+  const register = useCallback(
+    async (
+      email: string,
+      password: string,
+      userName: string
+    ): Promise<User | ErrorResponse> => {
+      try {
+        setRegisterLoading(true);
+        setRegisterError(undefined);
+        const res = await axios({
+          method: "POST",
+          url: `${EXTERNAL_SERVER_URL}/api/users/`,
+          withCredentials: true,
+          data: {
+            email,
+            password,
+            userName,
+            seo: { slug: userName },
+          },
+        });
+
+        if (res.data.doc) {
+          setRegisterLoading(false);
+          const registeredUser: User = res.data.doc;
+          setUser(registeredUser);
+          return registeredUser;
+        }
+      } catch (error) {
+        setRegisterLoading(false);
+        setRegisterError(error);
+      }
+    },
+    []
+  );
+
+  const refreshAuthentication = useCallback(async () => {
     try {
       setLoginLoading(true);
-      const res = await axios({
-        method: "POST",
-        url: `${EXTERNAL_SERVER_URL}/api/users/login?depth=2`,
-        withCredentials: true,
-        data: {
-          email,
-          password,
-        },
-      });
-
-      if (res.data.user) {
-        setLoginLoading(false);
-        const loginUser = res.data.user;
-        setUser(loginUser);
-        return loginUser;
-      }
-    } catch (error) {
-      setLoginLoading(false);
-      setLoginError(error);
-    }
-  }
-
-  async function register(
-    email: string,
-    password: string,
-    userName: string
-  ): Promise<User | ErrorResponse> {
-    try {
-      setRegisterLoading(true);
-      setRegisterError(undefined);
-      const res = await axios({
-        method: "POST",
-        url: `${EXTERNAL_SERVER_URL}/api/users/`,
-        withCredentials: true,
-        data: {
-          email,
-          password,
-          userName,
-          seo: { slug: userName },
-        },
-      });
-
-      if (res.data.doc) {
-        setRegisterLoading(false);
-        const registeredUser: User = res.data.doc;
-        setUser(registeredUser);
-        return registeredUser;
-      }
-    } catch (error) {
-      setRegisterLoading(false);
-      setRegisterError(error);
-    }
-  }
-
-  async function refreshAuthentication() {
-    try {
       const res = await axios({
         method: "GET",
         url: `${EXTERNAL_SERVER_URL}/api/users/me`,
@@ -97,60 +111,67 @@ export const AuthProvider: React.FC<{
       });
 
       if (res.data?.user) {
+        setLoginLoading(false);
         setUser(res.data.user);
         localStorage.setItem("user", JSON.stringify(res.data.user));
       } else {
+        setLoginLoading(false);
         setUser(null);
         localStorage.removeItem("user");
       }
     } catch (error) {
       console.error("Failed to refresh authentication:", error);
     }
-  }
+  }, []);
 
   useEffect(() => {
     refreshAuthentication();
-  }, []);
+  }, [refreshAuthentication]);
 
-  async function logout() {
+  const logout = useCallback(async () => {
     try {
       setLogOutLoading(true);
       await axios({
         method: "POST",
         url: `${EXTERNAL_SERVER_URL}/api/users/logout`,
         withCredentials: true,
-        data: user,
+        data: user.id,
       });
       setUser(null);
       setLogOutLoading(false);
+      refreshAuthentication();
+      location.reload();
     } catch (error) {
       setLogoutError(error);
       setLogOutLoading(false);
     }
-  }
+  }, [refreshAuthentication, user?.id]);
 
-  async function updateUser(user: User, data: any): Promise<any> {
-    try {
-      setUpdateUserLoading(true);
-      const res = await axios({
-        method: "PATCH",
-        url: `${EXTERNAL_SERVER_URL}/api/users/${user.id}`,
-        withCredentials: true,
-        data,
-      });
+  const updateUser = useCallback(
+    async (user: User, data: any): Promise<any> => {
+      try {
+        setUpdateUserLoading(true);
+        const res = await axios({
+          method: "PATCH",
+          url: `${EXTERNAL_SERVER_URL}/api/users/${user.id}`,
+          withCredentials: true,
+          data,
+        });
 
-      if (res.data.doc) {
+        if (res.data.doc) {
+          setUpdateUserLoading(false);
+          const updatedPassword = res.data.doc;
+          return updatedPassword;
+        }
+      } catch (error) {
         setUpdateUserLoading(false);
-        const updatedPassword = res.data.doc;
-        return updatedPassword;
+        setUpdateUserError(error);
       }
-    } catch (error) {
-      setUpdateUserLoading(false);
-      setUpdateUserError(error);
-    }
-  }
+    },
+    []
+  );
 
-  async function uploadImage(body: any): Promise<any> {
+  const uploadImage = useCallback(async (body: any): Promise<any> => {
     try {
       setUploadImageLoading(true);
       const res = await axios({
@@ -170,9 +191,9 @@ export const AuthProvider: React.FC<{
       setUploadImageLoading(false);
       setUploadImageError(error);
     }
-  }
+  }, []);
 
-  async function deleteUser(user: User): Promise<any> {
+  const deleteUser = useCallback(async (user: User): Promise<any> => {
     try {
       setDeleteUserLoading(true);
       const res = await axios({
@@ -190,32 +211,35 @@ export const AuthProvider: React.FC<{
       setDeleteUserLoading(false);
       setDeleteUserError(error);
     }
-  }
+  }, []);
 
-  async function resetPassword(token: String, password: String): Promise<any> {
-    try {
-      setResetPasswordLoading(true);
-      const res = await axios({
-        method: "POST",
-        url: `${EXTERNAL_SERVER_URL}/api/users/reset-password`,
-        withCredentials: true,
-        data: {
-          token,
-          password,
-        },
-      });
+  const resetPassword = useCallback(
+    async (token: String, password: String): Promise<any> => {
+      try {
+        setResetPasswordLoading(true);
+        const res = await axios({
+          method: "POST",
+          url: `${EXTERNAL_SERVER_URL}/api/users/reset-password`,
+          withCredentials: true,
+          data: {
+            token,
+            password,
+          },
+        });
 
-      if (res) {
+        if (res) {
+          setResetPasswordLoading(false);
+          return res;
+        }
+      } catch (error) {
         setResetPasswordLoading(false);
-        return res;
+        setResetPasswordError(error);
       }
-    } catch (error) {
-      setResetPasswordLoading(false);
-      setResetPasswordError(error);
-    }
-  }
+    },
+    []
+  );
 
-  async function forgotPassword(email: String): Promise<any> {
+  const forgotPassword = useCallback(async (email: String): Promise<any> => {
     try {
       setForgotPasswordLoading(true);
       const res = await axios({
@@ -235,43 +259,69 @@ export const AuthProvider: React.FC<{
       setForgotPasswordLoading(false);
       setForgotPasswordError(error);
     }
-  }
+  }, []);
 
-  return (
-    <Context.Provider
-      value={{
-        user,
-        setUser,
-        logout,
-        login,
-        register,
-        refreshAuthentication,
-        updateUser,
-        uploadImage,
-        deleteUser,
-        resetPassword,
-        forgotPassword,
-        loginLoading,
-        loginError,
-        registerLoading,
-        registerError,
-        logoutError,
-        logOutLoading,
-        updateUserLoading,
-        updateUserError,
-        uploadImageLoading,
-        uploadImageError,
-        deleteUserLoading,
-        deleteUserError,
-        resetPasswordLoading,
-        resetPasswordError,
-        forgotPasswordLoading,
-        forgotPasswordError,
-      }}
-    >
-      {children}
-    </Context.Provider>
+  const contextValue = useMemo(
+    () => ({
+      user,
+      setUser,
+      logout,
+      login,
+      register,
+      refreshAuthentication,
+      updateUser,
+      uploadImage,
+      deleteUser,
+      resetPassword,
+      forgotPassword,
+      loginLoading,
+      loginError,
+      registerLoading,
+      registerError,
+      logoutError,
+      logOutLoading,
+      updateUserLoading,
+      updateUserError,
+      uploadImageLoading,
+      uploadImageError,
+      deleteUserLoading,
+      deleteUserError,
+      resetPasswordLoading,
+      resetPasswordError,
+      forgotPasswordLoading,
+      forgotPasswordError,
+    }),
+    [
+      user,
+      loginLoading,
+      loginError,
+      registerLoading,
+      registerError,
+      logoutError,
+      logOutLoading,
+      updateUserLoading,
+      updateUserError,
+      uploadImageLoading,
+      uploadImageError,
+      deleteUserLoading,
+      deleteUserError,
+      resetPasswordLoading,
+      resetPasswordError,
+      logout,
+      forgotPasswordLoading,
+      forgotPasswordError,
+      deleteUser,
+      forgotPassword,
+      login,
+      refreshAuthentication,
+      register,
+      resetPassword,
+      updateUser,
+      uploadImage,
+    ]
   );
+
+  return <Context.Provider value={contextValue}>{children}</Context.Provider>;
 };
 
 type UseAuth = () => AuthContext;

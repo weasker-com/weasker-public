@@ -22,7 +22,13 @@ const checkStatus = (response: Response) => {
 interface PayLoadFetchInterface {
   query: string;
   method: "POST" | "GET" | "READ";
-  collection: "Pages" | "Badges" | "Interviews" | "Questions" | "Users";
+  collection:
+    | "Pages"
+    | "Badges"
+    | "Interviews"
+    | "Questions"
+    | "Users"
+    | "UsersInterviews";
   mustHave?: string[];
 }
 
@@ -43,7 +49,7 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
-        next: { revalidate: 3600 * 12 },
+        cache: "no-store",
       }
     )
       .then(checkStatus)

@@ -1,5 +1,6 @@
 import path from "path";
 import type { CollectionConfig } from "payload/types";
+import { validateFileSize } from "./hooks/validateFileSize";
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -17,6 +18,14 @@ export const Media: CollectionConfig = {
       name: "alt",
       type: "text",
       required: false,
+    },
+    {
+      name: "filesize",
+      label: "File size",
+      type: "number",
+      hooks: {
+        beforeValidate: [validateFileSize],
+      },
     },
   ],
 };

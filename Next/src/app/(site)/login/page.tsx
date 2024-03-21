@@ -24,7 +24,7 @@ export default function Login() {
             className="hidden sm:block h-screen w-full max-w-[150px] cover"
           />
 
-          <LoginComp location={"page"} />
+          <LoginComp pageOrModal={"page"} />
         </div>
       ) : (
         <div className="flex flex-col items-center gap-5 py-5 px-10 bg-white mt-10 text-base w-4/5">

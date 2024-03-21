@@ -52,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-pt-[30px] sm:scroll-pt-[60px]">
+    <html lang="en" className="">
       <head>
         <PlausibleProvider
           domain={process.env.SITE_NAKED_URL}

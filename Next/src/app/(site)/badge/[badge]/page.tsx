@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
-import { badgePageRes, badgeSeoRes } from "../../../../../types/Responses";
 import { defaultImages } from "@/utils/defaultImages";
 import { notFound } from "next/navigation";
-import BadgePage from "@/components/pages/BadgePage";
+import ClientPage from "./ClientPage";
+import { Badge as BadgeType, Media } from "@/payload/payload-types";
 
 type Props = {
   params: { badge: string };
@@ -14,56 +14,102 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const query = ` {
     Badges(where: { seo__slug: { equals: "${params.badge}"} }) {
       docs {
+        id
         singularName
         pluralName
         seo {
-          title
-          description
+          slug
+          excerpt
           image {
             url
             filename
           }
-          keywords {
-            keyword
+          excerpt
+        }
+        users {
+          id
+          userName
+          userBadges {
+            bio
+            badge {
+              seo {
+                slug
+              }
+            }
+            links {
+              linkOne
+              linkTwo
+              linkThree
+              linkFour
+              linkFive
+            }
+          }
+          seo {
+            slug
+            image {
+              url
+              filename
+            }
+          }
+        }
+        interviews {
+          id
+          name
+          seo {
+            slug
+            image {
+              url
+              filename
+            }
+          }
+          questions {
+            question {
+
+              shortQuestion
+              mediumQuestion
+              longQuestion
+         
+              seo {
+                slug
+                image {
+                  url
+                  filename
+                }
+              }
+            }
           }
         }
       }
     }
-    BadgeUsers(slug: "${params.badge}") {
-      docs {
-        id
-      }
-    }
   }
-  
   `;
 
-  const data: badgeSeoRes | null = await fetchData({
-    query,
-    method: "POST",
-    collection: "Badges",
-    mustHave: ["Badges"],
-  });
+  const data: { data: { Badges: { docs: BadgeType[] } } } | null =
+    await fetchData({
+      query,
+      method: "POST",
+      collection: "Badges",
+      mustHave: ["Badges"],
+    });
 
   if (!data) {
     return {};
   }
 
-  const seoMeta = data.data.Badges.docs[0];
-  const singularName = seoMeta.singularName;
-  const pluralName = seoMeta.pluralName;
-  const usersAmount = data.data.BadgeUsers.docs.length;
-  const image = seoMeta.seo.image?.url || defaultImages.weaskerLogoUrl;
-  const seoTitle = seoMeta.seo.title;
-  const seoDescription = seoMeta.seo.description;
+  const badge = data.data.Badges.docs[0];
 
-  const metaTitle = capitalize(
-    seoTitle ? seoTitle : `We interviewed the ${usersAmount} best ${pluralName}`
-  );
+  const singularName = badge.singularName;
+  const pluralName = badge.pluralName;
+  const usersAmount = badge.users.length;
+  const image = (badge.seo.image as Media)?.url || defaultImages.weaskerLogoUrl;
+  const seoTitle = badge.seo.title;
+  const seoDescription = badge.seo.description;
+
+  const metaTitle = capitalize(seoTitle ? seoTitle : `${pluralName} Badge`);
 
   const metaDescription = seoDescription
     ? seoDescription
-    : `We interviewed ${usersAmount} of the best ${pluralName}, read what each ${singularName} had to say.`;
+    : `This badge is awarded to verified ${pluralName}. Click here to read our interviews with ${usersAmount} ${pluralName}`;
 
   const ogImage = `${process.env.SITE_URL}/api/og?img=${image}&preTitle=weasker.com&title=${singularName} badge`;
 
@@ -96,46 +142,68 @@ async function getData(badgeParam: string) {
   const query = ` {
     Badges(where: { seo__slug: { equals: "${badgeParam}"} }) {
       docs {
+        id
         singularName
         pluralName
         seo {
+          slug
           excerpt
           image {
             url
             filename
           }
+          excerpt
         }
-      }
-    }
-    BadgeUsers(slug: "${badgeParam}") {
-      docs {
-        userName
-        userBadges{
-          bio
-          services{name url}
-          badge{seo{slug}}
-        }
-        seo {
-          slug
-          image {
-            url
-            filename
+        users {
+          id
+          userName
+          userBadges {
+            bio
+            badge {
+              seo {
+                slug
+              }
+            }
+            links {
+              linkOne
+              linkTwo
+              linkThree
+              linkFour
+              linkFive
+            }
+          }
+          seo {
+            slug
+            image {
+              url
+              filename
+            }
           }
         }
-      }
-    }
-    BadgeQuestions(slug: "${badgeParam}"){
-      docs{
-        name
-        seo{slug image{url filename}}
-        questions{
-          question{
-            answers{user{userName}}
-            shortQuestion
-            mediumQuestion
-            longQuestion
-            index
-            seo{slug image{url filename}}
+        interviews {
+          id
+          name
+          seo {
+            slug
+            image {
+              url
+              filename
+            }
+          }
+          questions {
+            question {
+              shortQuestion
+              mediumQuestion
+              longQuestion
+         
+              seo {
+                slug
+                image {
+                  url
+                  filename
+                }
+              }
+            }
           }
         }
       }
@@ -143,12 +211,13 @@ async function getData(badgeParam: string) {
   }
   `;
 
-  const data: badgePageRes | null = await fetchData({
-    query,
-    method: "POST",
-    collection: "Badges",
-    mustHave: ["Badges"],
-  });
+  const data: { data: { Badges: { docs: BadgeType[] } } } | null =
+    await fetchData({
+      query,
+      method: "POST",
+      collection: "Badges",
+      mustHave: ["Badges"],
+    });
 
   if (!data) {
     return null;
@@ -164,5 +233,5 @@ export default async function Badge({ params }: Props) {
     notFound();
   }
 
-  return <BadgePage data={data} params={params} />;
+  return <ClientPage data={data} params={params} />;
 }
