@@ -1,5 +1,7 @@
 import { CollectionConfig } from "payload/types";
 import { seo } from "../../components/seo/index";
+import { isAdmin } from "../../access/isAdmin";
+
 import {
   HTMLConverterFeature,
   lexicalEditor,
@@ -14,6 +16,9 @@ export const Pages: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: isAdmin,
+    delete: isAdmin,
+    update: isAdmin,
   },
   fields: [
     {

@@ -1,15 +1,11 @@
 "use client";
-
-import { usePathname } from "next/navigation";
+import React from "react";
 
 interface ExternalLinkProps {
   element: string | React.ReactElement;
   href: string;
   className?: string;
-  eventName: "ClickUserService" | "ClickImage";
-  target: string;
   style?: "blue" | "inherit";
-  locationOnPage: string;
 }
 
 const ExternalLink: React.FC<ExternalLinkProps> = ({
@@ -18,7 +14,6 @@ const ExternalLink: React.FC<ExternalLinkProps> = ({
   href,
   className,
 }) => {
-  const pathname = usePathname();
   return (
     <a
       target="_blank"

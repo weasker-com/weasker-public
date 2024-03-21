@@ -4,8 +4,15 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/api/og/*"],
-      disallow: "/studio",
+      allow: ["/", "/api/og/*", "/interview/*/*/*"],
+      disallow: [
+        "/admin",
+        "/account",
+        "/interview/*/edit/*",
+        "/badge/qa",
+        "/interview/qa/*",
+        "/question/qa/*",
+      ],
     },
     sitemap:
       `${process.env.SITE_URL}/sitemap.xml` ||

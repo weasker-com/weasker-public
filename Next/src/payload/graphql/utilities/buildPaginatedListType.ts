@@ -1,5 +1,3 @@
-// graphql/utilities/buildPaginatedListType.ts
-
 import {
   GraphQLBoolean,
   GraphQLInt,

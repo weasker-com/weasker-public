@@ -1,33 +1,19 @@
 import type { Field } from "payload/types";
-import {
-  HTMLConverterFeature,
-  lexicalEditor,
-  lexicalHTML,
-} from "@payloadcms/richtext-lexical";
-
-let changeHappened = false;
+import { updateAnswerDate } from "./hooks/updateAnswerDate";
+import { userInterviewQuestionSelect } from "./fields/userInterviewQuestionSelect/field";
 
 export const answer: Field = {
   name: "answer",
   label: "Answer",
   type: "group",
+  hooks: { beforeChange: [updateAnswerDate] },
   fields: [
+    userInterviewQuestionSelect,
     {
-      name: "richText",
-      label: "Text answer",
-      type: "richText",
-      required: false,
-
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          HTMLConverterFeature({}),
-        ],
-      }),
+      name: "textAnswer",
+      label: "Text Answer",
+      type: "textarea",
     },
-    lexicalHTML("richText", {
-      name: "richText_html",
-    }),
     {
       name: "images",
       label: "Images",
@@ -54,6 +40,7 @@ export const answer: Field = {
       name: "updatedAt",
       label: "Updated at",
       type: "date",
+      defaultValue: () => new Date(),
       admin: {
         readOnly: true,
         date: {

@@ -1,0 +1,13 @@
+diff --git a/node_modules/@payloadcms/db-mongodb/dist/index.js b/node_modules/@payloadcms/db-mongodb/dist/index.js
+index 7599738..41a021d 100644
+--- a/node_modules/@payloadcms/db-mongodb/dist/index.js
++++ b/node_modules/@payloadcms/db-mongodb/dist/index.js
+@@ -61,7 +61,7 @@ function mongooseAdapter({ autoPluralization = true, connectOptions, disableInde
+             url,
+             versions: {},
+             // DatabaseAdapter
+-            beginTransaction: transactionOptions ? _beginTransaction.beginTransaction : undefined,
++            beginTransaction: undefined,
+             commitTransaction: _commitTransaction.commitTransaction,
+             connect: _connect.connect,
+             create: _create.create,
