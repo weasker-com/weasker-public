@@ -8,16 +8,33 @@ import Users from "./collections/Users/index";
 import { Pages } from "./collections/Pages/index";
 import { Media } from "./collections/Media/index";
 import { Badges } from "./collections/Badges/index";
+import { Applications } from "./collections/Applications/index";
 import { Interviews } from "./collections/Interviews/index";
 import { customGraphQLQueries } from "./graphql/queries";
 import cloudinaryPlugin from "payload-cloudinary-plugin/dist/plugins";
+import UsersInterviews from "./collections/UsersInterviews";
 
 const mockModulePath = path.resolve(__dirname, "./emptyModule.js");
 
 export default buildConfig({
-  collections: [Users, Pages, Media, Badges, Interviews],
+  collections: [
+    Users,
+    Pages,
+    Media,
+    Badges,
+    Interviews,
+    Applications,
+    UsersInterviews,
+  ],
   serverURL: process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL,
+  rateLimit: {
+    window: 90000,
+    max: 500,
+  },
+
+  maxDepth: 10,
   admin: {
+    css: path.resolve(__dirname, "./stylesheet.css"),
     user: Users.slug,
     bundler: webpackBundler(),
     webpack: (config) => ({

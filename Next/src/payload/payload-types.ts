@@ -13,6 +13,8 @@ export interface Config {
     media: Media;
     badges: Badge;
     interviews: Interview;
+    applications: Application;
+    'users-interviews': UsersInterview;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -26,17 +28,19 @@ export interface User {
   userBadges?:
     | {
         badge: string | Badge;
-        bio: string;
-        services?:
-          | {
-              name: string;
-              url: string;
-              id?: string | null;
-            }[]
-          | null;
+        bio?: string | null;
+        links?: {
+          linkOne?: string | null;
+          linkTwo?: string | null;
+          linkThree?: string | null;
+          linkFour?: string | null;
+          linkFive?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
+  userInterviews?: (string | UsersInterview)[] | null;
+  userApplications?: (string | Application)[] | null;
   seo: Seo;
   updatedAt: string;
   createdAt: string;
@@ -53,22 +57,61 @@ export interface Badge {
   id: string;
   singularName: string;
   pluralName: string;
+  users?: (string | User)[] | null;
+  interviews?: (string | Interview)[] | null;
+  terms: string;
   seo: Seo;
   updatedAt: string;
   createdAt: string;
 }
-export interface Seo {
-  slug: string;
-  title?: string | null;
-  description?: string | null;
-  excerpt?: string | null;
-  image?: string | Media | null;
-  keywords?:
+export interface Interview {
+  id: string;
+  name: string;
+  badge: string | Badge;
+  userInterviews?: (string | UsersInterview)[] | null;
+  questions: {
+    question: {
+      shortQuestion: string;
+      mediumQuestion: string;
+      longQuestion: string;
+      seo: Seo;
+    };
+    id?: string | null;
+  }[];
+  seo: Seo;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface UsersInterview {
+  id: string;
+  badge: string | Badge;
+  interview: string | Interview;
+  user: string | User;
+  badgeSlug?: string | null;
+  interviewSlug?: string | null;
+  userSlug?: string | null;
+  answersAmount?: number | null;
+  answers?:
     | {
-        keyword?: string | null;
+        answer?: {
+          questionSlug?: string | null;
+          textAnswer?: string | null;
+          images?:
+            | {
+                image?: string | Media | null;
+                id?: string | null;
+              }[]
+            | null;
+          video?: string | Media | null;
+          updatedAt?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
+  documentTitle?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 export interface Media {
   id: string;
@@ -89,6 +132,33 @@ export interface Media {
   width?: number | null;
   height?: number | null;
 }
+export interface Seo {
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  excerpt?: string | null;
+  image?: string | Media | null;
+  keywords?:
+    | {
+        keyword?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+}
+export interface Application {
+  id: string;
+  badge: string | Badge;
+  user: string | User;
+  about: string;
+  links?: {
+    linkOne?: string | null;
+    linkTwo?: string | null;
+    linkThree?: string | null;
+  };
+  status?: ('pending' | 'approved' | 'denied') | null;
+  updatedAt: string;
+  createdAt: string;
+}
 export interface Page {
   id: string;
   name: string;
@@ -108,56 +178,6 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   richText_html?: string | null;
-  seo: Seo;
-  updatedAt: string;
-  createdAt: string;
-}
-export interface Interview {
-  id: string;
-  name: string;
-  badge: string | Badge;
-  questions: {
-    question: {
-      index: number;
-      shortQuestion: string;
-      mediumQuestion: string;
-      longQuestion: string;
-      seo: Seo;
-      answers?:
-        | {
-            user: string | User;
-            answer?: {
-              richText?: {
-                root: {
-                  children: {
-                    type: string;
-                    version: number;
-                    [k: string]: unknown;
-                  }[];
-                  direction: ('ltr' | 'rtl') | null;
-                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                  indent: number;
-                  type: string;
-                  version: number;
-                };
-                [k: string]: unknown;
-              } | null;
-              richText_html?: string | null;
-              images?:
-                | {
-                    image?: string | Media | null;
-                    id?: string | null;
-                  }[]
-                | null;
-              video?: string | Media | null;
-              updatedAt?: string | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
-    };
-    id?: string | null;
-  }[];
   seo: Seo;
   updatedAt: string;
   createdAt: string;

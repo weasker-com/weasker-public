@@ -20,15 +20,40 @@ main a {
   transition: color 0.3s ease;
 }
 
-/* main a:hover {
-  color: #0d55a1;
+text a {
+  color: #007bff;
+}
 
-} */
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+text a:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
 
 main h1 {
   @apply text-xl;
   @apply sm:text-5xl;
   @apply font-bold;
+}
+
+text ul {
+  list-style-type: square;
+  gap: 5px;
+}
+
+text li {
+  margin: 5px 0;
 }
 
 main h2 {
@@ -45,12 +70,16 @@ main h3 {
 
 main p {
   &:not(:last-child) {
-    @apply mb-3;
+    @apply mb-5;
   }
 }
 
 text h2 {
-  @apply mb-3;
+  @apply mb-3 mt-8 text-xl;
+}
+
+text ul {
+  @apply mb-5;
 }
 
 text p {
@@ -59,4 +88,11 @@ text p {
 
 .smallCaps {
   font-variant: small-caps;
+}
+
+.page {
+}
+
+.centerAbsolute {
+  @apply text-center content-center items-center justify-center;
 }

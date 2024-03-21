@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   const preTitle = searchParams.get("preTitle");
 
   const notWebpImg = img ? replaceWebpWithPng(img) : null;
-  const notWebpsmallImg = smallImg ? replaceWebpWithPng(smallImg) : null;
+  const notWebpSmallImg = smallImg ? replaceWebpWithPng(smallImg) : null;
 
   return new ImageResponse(
     (
@@ -53,13 +53,13 @@ export async function GET(request: Request) {
               gap: "20px",
             }}
           >
-            {notWebpsmallImg && (
+            {notWebpSmallImg && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 alt=""
                 width="200"
                 height="200"
-                src={notWebpsmallImg}
+                src={notWebpSmallImg}
                 style={{
                   borderRadius: 128,
                 }}

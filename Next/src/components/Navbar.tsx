@@ -2,19 +2,21 @@
 import { useEffect, useRef, useState } from "react";
 import { InternalLink } from "./links/InternalLink";
 import { usePathname } from "next/navigation";
-import Modal from "./Modal";
-import LoginComp from "./LoginComp";
+import Modal from "./ui/Modal";
 import { useAuth } from "../providers/Auth/Auth";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { CldImage } from "next-cloudinary";
 import { defaultImages } from "@/utils/defaultImages";
 import { Media } from "@/payload/payload-types";
 import { PiSignIn } from "react-icons/pi";
-import { PiSignOut } from "react-icons/pi";
-import { PiUserCircle } from "react-icons/pi";
-import RegisterComp from "./RegisterComp";
-import ForgotPasswordComp from "./ForgotPasswordComp";
 import Loading from "@/app/(site)/loading";
+import {
+  badgeIcon,
+  interviewIcon,
+  logoutIcon,
+  profileIcon,
+} from "@/utils/defaultIcons";
+import AuthComp from "./AuthComp";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -22,20 +24,17 @@ const Navbar = () => {
   const menuRef = useRef(null);
   const { user, loginLoading, logOutLoading, registerLoading } = useAuth();
   const { logout } = useAuth();
-  const [logInModalIsOpen, setLogInModalIsOpen] = useState(false);
-  const [signUpModalIsOpen, setSignUpModalIsOpen] = useState(false);
-  const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] =
-    useState(false);
+  const [authCompOpen, setAuthCompOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSignInClick = () => {
-    setLogInModalIsOpen(true);
+    setAuthCompOpen(true);
   };
 
   useEffect(() => {
     setShowDropdown(false);
     // eslint-disable-next-line
-  }, [!user, ref]);
+  }, [!user, ref, pathname]);
 
   useEffect(() => {
     const handleOutSideClick = (event) => {
@@ -52,21 +51,19 @@ const Navbar = () => {
   }, [ref, menuRef]);
 
   const handleLogOutClick = async () => {
+    setShowDropdown(false);
     await logout();
   };
 
   return (
-    <div className="h-max border-b border-zinc-100 bg-white">
-      <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3 z-10">
+    <div className="h-max border-b border-zinc-100 bg-white rounded rounded-t-lg">
+      <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3 z-20">
         <div className="flex flex-row gap-5 justify-between items-center my-auto py-1 ">
           <div className="flex flex-col items-center">
             <InternalLink
               element={<>Weasker</>}
               className="text-4xl leading-none font-extrabold smallCaps text-tl-dark-blue"
               href="/"
-              eventName="ClickInnerPage"
-              target="HP"
-              locationOnPage="Navbar"
             />
             <span className="text-xs text-tl-dark-blue pb-1">
               Interviewing Experts
@@ -79,7 +76,7 @@ const Navbar = () => {
               <div>
                 <div
                   ref={menuRef}
-                  className="flex flex-row items-center justify-between hover:cursor-pointer hover:text-tl-light-blue border p-2 min-w-28 sm:min-w-40 w-full rounded-t"
+                  className="flex flex-row items-center justify-between hover:cursor-pointer hover:text-tl-light-blue border p-2 min-w-28 sm:min-w-40 w-full rounded rounded-t-lg"
                 >
                   {loginLoading || logOutLoading || registerLoading ? (
                     <Loading />
@@ -113,7 +110,8 @@ const Navbar = () => {
               </div>
             ) : (
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   handleSignInClick();
                 }}
               >
@@ -133,54 +131,42 @@ const Navbar = () => {
         </div>
         {showDropdown && (
           <div
-            className="absolute right-0 bg-white border rounded w-28 sm:w-40 p-3 mt-2"
+            className="absolute right-0 bg-white border rounded rounded-t-lg w-28 sm:w-40 p-3 mt-2"
             ref={ref}
           >
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-2 text-xs sm:text-base">
               <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
-                <PiUserCircle />
-                <InternalLink element={"Account"} href={"/account"} />
+                {profileIcon(20)}
+                <InternalLink element={"Profile"} href={"/account"} />
               </li>
+              <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
+                {badgeIcon(20)}
+                <InternalLink element={"Badges"} href={"/account?tab=badges"} />
+              </li>
+              <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
+                {interviewIcon(20)}
+                <InternalLink
+                  element={"Interviews"}
+                  href={"/account?tab=interviews"}
+                />
+              </li>
+              <hr />
               <li
                 className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue"
                 onClick={() => {
                   handleLogOutClick();
                 }}
               >
-                <PiSignOut />
+                {logoutIcon(20)}
                 Logout
               </li>
             </ul>
           </div>
         )}
       </div>
-      {logInModalIsOpen && (
-        <Modal onclick={() => setLogInModalIsOpen(false)}>
-          <LoginComp
-            location={"modal"}
-            setLogInModalIsOpen={setLogInModalIsOpen}
-            setSignUpModalIsOpen={setSignUpModalIsOpen}
-            setForgotPasswordModalIsOpen={setForgotPasswordModalIsOpen}
-          />
-        </Modal>
-      )}
-      {signUpModalIsOpen && (
-        <Modal onclick={() => setSignUpModalIsOpen(false)}>
-          <RegisterComp
-            location={"modal"}
-            setLogInModalIsOpen={setLogInModalIsOpen}
-            setSignUpModalIsOpen={setSignUpModalIsOpen}
-          />
-        </Modal>
-      )}
-      {forgotPasswordModalIsOpen && (
-        <Modal onclick={() => setForgotPasswordModalIsOpen(false)}>
-          <ForgotPasswordComp
-            location={"modal"}
-            setLogInModalIsOpen={setLogInModalIsOpen}
-            setSignUpModalIsOpen={setSignUpModalIsOpen}
-            setForgotPasswordModalIsOpen={setForgotPasswordModalIsOpen}
-          />
+      {authCompOpen && (
+        <Modal onclick={() => setAuthCompOpen(false)}>
+          <AuthComp location={"modal"} setAuthCompOpen={setAuthCompOpen} />
         </Modal>
       )}
     </div>

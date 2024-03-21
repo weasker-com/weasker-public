@@ -14,13 +14,13 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        "tl-dark-blue": "#253c4c",
-        "tl-light-blue": "#007BFF",
         "weasker-black": "#0C0117",
         "weasker-grey": "#757575",
         "weasker-light-grey": "#D9D9D9",
         "weasker-green-gradient":
           "linear-gradient(90deg, #00453E 0%, rgba(25, 88, 81, 0.75) 99.44%)",
+        "tl-dark-blue": "#253c4c",
+        "tl-light-blue": "#007BFF",
       },
     },
     fontSize: {

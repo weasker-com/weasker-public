@@ -37,7 +37,6 @@ const DeleteAccountComp: React.FC<ChangePasswordCompProps> = () => {
     if (loginUser) {
       const deletedAccount = await deleteUser(user);
       if (deletedAccount) {
-        console.log(deletedAccount);
         setUser(null);
         setSuccess(true);
         setTimeout(() => {

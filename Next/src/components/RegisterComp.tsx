@@ -16,12 +16,14 @@ import { FaCheckCircle } from "react-icons/fa";
 interface RegisterCompProps {
   setLogInModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   setSignUpModalIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setAuthCompOpen?: Dispatch<SetStateAction<boolean>>;
   location: "modal" | "page";
 }
 
 const RegisterComp: React.FC<RegisterCompProps> = ({
   setLogInModalIsOpen,
   setSignUpModalIsOpen,
+  setAuthCompOpen,
   location,
 }) => {
   const router = useRouter();
@@ -75,8 +77,12 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
       setTimeout(() => {
         setSuccess(false);
         setSignUpModalIsOpen(false);
+        setLogInModalIsOpen(false);
+        setAuthCompOpen && setAuthCompOpen(false);
       }, 3000);
-      router.push("/account");
+      if (location == "modal") {
+        router.push("/account");
+      }
     }
   }
 
@@ -157,7 +163,7 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
           our&nbsp;
           {
             <InternalLink
-              href="/"
+              href="/user-agreement"
               element="User Agreement"
               className="underline"
             />
@@ -165,7 +171,7 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
           &nbsp;and&nbsp;
           {
             <InternalLink
-              href="/"
+              href="/privacy-policy"
               element="Privacy Policy"
               className="underline"
             />

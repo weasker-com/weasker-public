@@ -1,110 +1,177 @@
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
-import {
-  questionPageRes,
-  questionSeoRes,
-} from "../../../../../../../types/Responses";
 import { fetchData } from "@/utils/payloadFetch";
-import { defaultImages } from "@/utils/defaultImages";
 import { notFound } from "next/navigation";
-import QuestionPage from "@/components/pages/QuestionPage";
+import QuestionPage from "@/app/(site)/question/[badge]/[interview]/[question]/QuestionPage";
+import {
+  Interview,
+  Media,
+  User,
+  UsersInterview,
+} from "@/payload/payload-types";
+import { defaultImages } from "@/utils/defaultImages";
 
 type Props = {
   params: { badge: string; interview: string; question: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const query = `
-  {
-    BadgeInterview(badgeSlug:"${params.badge}" interviewSlug:"${params.interview}")  {
+  const query = `{
+    UsersInterviews(
+      where: {
+        AND: [
+          {
+            interviewSlug: {equals:"${params.interview}"},
+          },
+          {
+            badgeSlug: {equals:"${params.badge}"},
+          },
+        ],
+      }
+    ) {
       docs {
-        name
-        seo{image{url filename}}
-        badge {
-          singularName
-          pluralName
-          seo {
-            image {
-              url
+          id
+        interview{
+          id
+          name 
+           seo {
+              slug
+              image {
+                filename
+                url
+              }
+            }
+          questions{
+            question{
+               shortQuestion
+                mediumQuestion
+                longQuestion
+                seo {
+                  slug
+                  image{url filename}
+                }
             }
           }
         }
-        seo {
-          image {
-            url
+         badge {
+              singularName
+              pluralName
+              seo {
+                slug
+                image {
+                  filename
+                  url
+                }
+              }
+            }
+        user {
+          id
+          userName
+          seo {
+            slug
+            image {
+              filename
+              url
+            }
           }
-        }
-        questions {
-          question {
-            shortQuestion
-            longQuestion
-            answers{user{userName seo{slug}}}
-            seo {
-              title
-              description
-              slug
-              image {
-                url
+          userBadges {
+            links {
+              linkOne
+              linkTwo
+              linkThree
+              linkFour
+              linkFive
+            }
+            bio
+            badge {
+              singularName
+              seo {
+                slug
               }
             }
           }
         }
+        answers {
+          answer {
+            updatedAt
+            questionSlug
+            images {
+              image {
+                id
+                filename
+                url
+              }
+            }
+            textAnswer
+            video{id filename url}
+          }
+        }
       }
     }
-    }
-  `;
+  }
+  
+    `;
 
-  const data: questionSeoRes | null = await fetchData({
-    query,
-    method: "POST",
-    collection: "Questions",
-    mustHave: ["BadgeInterview"],
-  });
+  const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
+    await fetchData({
+      query,
+      method: "POST",
+      collection: "UsersInterviews",
+      mustHave: ["UsersInterviews"],
+    });
 
   if (!data) {
     return {};
   }
 
-  const relevantQuestion = data.data.BadgeInterview.docs[0].questions.filter(
-    (item) => item.question.seo.slug == params.question
-  )[0];
+  const relevantQuestion = (
+    data.data.UsersInterviews.docs[0].interview as Interview
+  ).questions.filter((item) => {
+    return item.question.seo.slug == params.question;
+  })[0].question;
+
+  const interview = data.data.UsersInterviews.docs[0].interview as Interview;
+
+  const answers = data.data.UsersInterviews.docs.filter((item) => {
+    return item.answers.some((item) => {
+      return item.answer.questionSlug == params.question;
+    });
+  });
 
   if (!relevantQuestion) {
     return {};
   }
 
-  const seoTitle = relevantQuestion.question.seo.title;
-  const seoDescription = relevantQuestion.question.seo.description;
-  const interviewImageUrl = data.data.BadgeInterview.docs[0].seo.image?.url;
-  const answersAmount = relevantQuestion.question.answers.length;
-  const badgePluralName = data.data.BadgeInterview.docs[0].badge.pluralName;
-  const shortQuestion = relevantQuestion.question.shortQuestion;
-  const longQuestion = relevantQuestion.question.longQuestion;
-  const questionImage =
-    relevantQuestion.question.seo.image?.url ||
-    interviewImageUrl ||
-    defaultImages.weaskerLogoUrl;
-  const users = relevantQuestion.question.answers.map((item) => {
-    const name = item.user.userName;
-    const slug = item.user.seo.slug;
+  const metaTitle =
+    answers.length > 1
+      ? capitalize(
+          relevantQuestion.seo.title
+            ? relevantQuestion.seo.title
+            : `${relevantQuestion.mediumQuestion} | ${answers.length} Answers`
+        )
+      : capitalize(
+          relevantQuestion.seo.title
+            ? relevantQuestion.seo.title
+            : `${relevantQuestion.mediumQuestion}`
+        );
+
+  const metaDescription = relevantQuestion.seo.description
+    ? relevantQuestion.seo.description
+    : `${relevantQuestion.longQuestion}`;
+
+  const ogImage = `${process.env.SITE_URL}/api/og?img=${
+    (relevantQuestion.seo?.image as Media)?.url ||
+    (interview.seo.image as Media).url ||
+    defaultImages.defaultQuestionImage
+  }&title=${metaTitle}`;
+
+  const authors = answers.map((item) => {
+    const user = item.user as User;
+
     return {
-      name,
-      slug,
+      name: user.displayName || user.userName,
+      url: `https://www.weasker/user/${item.userSlug}`,
     };
-  });
-
-  const metaTitle = capitalize(
-    seoTitle
-      ? seoTitle
-      : `${answersAmount} ${badgePluralName}: ${shortQuestion}`
-  );
-
-  const metaDescription = seoDescription ? seoDescription : `${longQuestion}`;
-
-  const ogImage = `${process.env.SITE_URL}/api/og?img=${questionImage}&preTitle=question for ${badgePluralName}&title=${shortQuestion}`;
-
-  const authors = users.map((item) => {
-    return { name: item.name, url: `https://www.weasker/user/${item.slug}` };
   });
 
   return {
@@ -136,22 +203,56 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function getData(badgeParam: string, interviewParam: string) {
   const query = `{
-      BadgeInterview(
-        badgeSlug: "${badgeParam}"
-        interviewSlug: "${interviewParam}"
-      ) {
-        docs {
-          name
-          badge {
-            singularName
-            pluralName
-            seo {
+    UsersInterviews(
+      where: {
+        AND: [
+          {
+            interviewSlug: {equals:"${interviewParam}"},
+          },
+          {
+            badgeSlug: {equals:"${badgeParam}"},
+          },
+        ],
+      }
+    ) {
+      docs {
+          id
+        interview{
+          id
+          name 
+           seo {
+              slug
               image {
                 filename
                 url
               }
             }
+          questions{
+            question{
+               shortQuestion
+                mediumQuestion
+                longQuestion
+                seo {
+                  slug
+                  image{url filename}
+                }
+            }
           }
+        }
+         badge {
+              singularName
+              pluralName
+              seo {
+                slug
+                image {
+                  filename
+                  url
+                }
+              }
+            }
+        user {
+          id
+          userName
           seo {
             slug
             image {
@@ -159,56 +260,49 @@ async function getData(badgeParam: string, interviewParam: string) {
               url
             }
           }
-          questions {
-            question {
-              index
-              shortQuestion
-              mediumQuestion
-              longQuestion
-              seo {
-                slug
-                image{url filename}
-              }
-              answers {
-                user {
-                  userName
-                  seo {
-                    slug
-                    image{url filename}
-                  }
-                  userBadges{badge{seo{slug}}  services{name url}}
-                }
-                answer {
-                  updatedAt
-                  richText_html
-                  images {
-                    image {
-                      filename
-                      url
-                    }
-                  }
-                  video {
-                    filename
-                    url
-                  }
-                }
-              }
+          userBadges {
+            links {
+              linkOne
+              linkTwo
+              linkThree
+              linkFour
+              linkFive
+            }
+            bio
+            badge {
+              singularName
               seo {
                 slug
               }
             }
           }
         }
+        answers {
+          answer {
+            updatedAt
+            questionSlug
+            images {
+              image {
+                id
+                filename
+              }
+            }
+            textAnswer
+            video{id filename}
+          }
+        }
       }
     }
+  }
     `;
 
-  const data: questionPageRes | null = await fetchData({
-    query,
-    method: "POST",
-    collection: "Interviews",
-    mustHave: ["BadgeInterview"],
-  });
+  const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
+    await fetchData({
+      query,
+      method: "POST",
+      collection: "Interviews",
+      mustHave: ["UsersInterviews"],
+    });
 
   if (!data) {
     return null;

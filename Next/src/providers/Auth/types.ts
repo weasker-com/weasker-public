@@ -28,20 +28,20 @@ export interface AuthContext {
   deleteUser: (user: User) => Promise<any>;
   resetPassword: (token: string, password: string) => Promise<any>;
   forgotPassword: (email: string) => Promise<User>;
-  loginLoading: Boolean;
+  loginLoading: boolean;
   loginError: any;
-  registerLoading: Boolean;
+  registerLoading: boolean;
   registerError: any;
   logoutError: any;
-  logOutLoading: Boolean;
-  updateUserLoading: Boolean;
+  logOutLoading: boolean;
+  updateUserLoading: boolean;
   updateUserError: any;
-  uploadImageLoading: Boolean;
+  uploadImageLoading: boolean;
   uploadImageError: any;
-  deleteUserLoading: Boolean;
+  deleteUserLoading: boolean;
   deleteUserError: any;
-  resetPasswordLoading: Boolean;
+  resetPasswordLoading: boolean;
   resetPasswordError: any;
-  forgotPasswordLoading: Boolean;
+  forgotPasswordLoading: boolean;
   forgotPasswordError: any;
 }
