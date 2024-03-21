@@ -2,15 +2,15 @@ let email;
 
 if (process.env.NODE_ENV === "production") {
   email = {
-    transportOptions: {
-      host: "smtp.example.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "username",
-        pass: "password",
-      },
-    },
+    // transportOptions: {
+    //   host: "smtp.gmail.com",
+    //   port: 587,
+    //   secure: false,
+    //   auth: {
+    //     user: "username",
+    //     pass: "password",
+    //   },
+    // },
     fromName: "Weasker",
     fromAddress: "contact@weasker.com",
   };
