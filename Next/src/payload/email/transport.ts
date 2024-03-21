@@ -2,9 +2,17 @@ let email;
 
 if (process.env.NODE_ENV === "production") {
   email = {
-    fromName: "Payload",
+    fromName: "Weasker",
     fromAddress: "info@payloadcms.com",
-    transportOptions: {},
+    transportOptions: {
+      host: "smtp.example.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: "username",
+        pass: "password",
+      },
+    },
   };
 } else {
   email = {
