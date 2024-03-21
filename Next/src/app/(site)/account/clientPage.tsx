@@ -12,9 +12,9 @@ import {
   interviewIcon,
   profileIcon,
 } from "@/utils/defaultIcons";
-import { ProfileTab } from "@/app/(site)/account/ProfileTab";
-import { BadgesTab } from "@/app/(site)/account/BadgesTab";
-import { InterviewsTab } from "@/app/(site)/account/InterviewsTab";
+import { ProfileTab } from "./profileTab";
+import { BadgesTab } from "./badgesTab";
+import { InterviewsTab } from "./interviewsTab";
 import { InternalLink } from "@/components/links/InternalLink";
 import { BigButton, GentleButton } from "@/components/ui/buttons";
 import NoAuth from "@/components/NoAuth";
