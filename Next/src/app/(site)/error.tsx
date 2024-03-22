@@ -24,11 +24,8 @@ export default function Error({
         </button>
         <InternalLink
           element="Home"
-          target="Home"
           href={"/"}
           className="border shadow p-2 rounded"
-          eventName="ClickInnerPage"
-          locationOnPage="main"
         />
       </div>
     </div>
