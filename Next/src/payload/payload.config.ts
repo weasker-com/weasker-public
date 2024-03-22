@@ -10,7 +10,6 @@ import { Media } from "./collections/Media/index";
 import { Badges } from "./collections/Badges/index";
 import { Applications } from "./collections/Applications/index";
 import { Interviews } from "./collections/Interviews/index";
-import { customGraphQLQueries } from "./graphql/queries";
 import cloudinaryPlugin from "payload-cloudinary-plugin/dist/plugins";
 import UsersInterviews from "./collections/UsersInterviews";
 
@@ -72,7 +71,6 @@ export default buildConfig({
   },
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
-    queries: customGraphQLQueries,
   },
   plugins: [payloadCloud(), cloudinaryPlugin()],
   db: mongooseAdapter({
