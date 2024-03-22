@@ -20,11 +20,8 @@ export default function NotFound({
       <div className="flex flex-row gap-5">
         <InternalLink
           element="Home"
-          target="Home"
           href={"/"}
           className="border shadow p-2 rounded"
-          eventName="ClickInnerPage"
-          locationOnPage="main"
         />
       </div>
     </div>
