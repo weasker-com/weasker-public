@@ -7,7 +7,7 @@ import ForgotPasswordComp from "./ForgotPasswordComp";
 
 interface AuthCompProps {
   location: "modal" | "page";
-  setAuthCompOpen: Dispatch<SetStateAction<boolean>>;
+  setAuthCompOpen?: Dispatch<SetStateAction<boolean>>;
   title?: string;
 }
 
