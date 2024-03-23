@@ -20,6 +20,7 @@ type changeFrequency =
   | "never";
 
 async function getData() {
+  "use server";
   const query = `
   {
     UsersInterviews(limit: 1000000) {
