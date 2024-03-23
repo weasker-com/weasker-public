@@ -9,7 +9,7 @@ import { updateUserAfterCreate } from "./hooks/updateUserAfterCreate";
 export const Applications: CollectionConfig = {
   slug: "applications",
   access: {
-    read: isAdmin,
+    read: isUser,
     create: isUser,
     delete: isAdmin,
     update: isAdmin,
