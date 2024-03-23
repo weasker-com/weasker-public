@@ -99,6 +99,7 @@ async function getData() {
     query,
     method: "POST",
     collection: "Interviews",
+    cache: true,
   });
 
   if (!data) {
