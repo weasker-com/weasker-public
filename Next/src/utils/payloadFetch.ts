@@ -30,6 +30,7 @@ interface PayLoadFetchInterface {
     | "Users"
     | "UsersInterviews";
   mustHave?: string[];
+  cache?: boolean;
 }
 
 export async function fetchData<T>({
@@ -37,6 +38,7 @@ export async function fetchData<T>({
   method,
   collection,
   mustHave,
+  cache,
 }: PayLoadFetchInterface): Promise<T | null> {
   const headers = {
     "Content-Type": "application/json",
@@ -49,7 +51,7 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
-        cache: "no-store",
+        cache: cache ? "default" : "no-store",
       }
     )
       .then(checkStatus)
