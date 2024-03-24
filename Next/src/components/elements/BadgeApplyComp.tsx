@@ -64,7 +64,7 @@ const BadgeApplyComp = ({
       user.userApplications?.some((item) => {
         const application = item as Application;
         return (
-          (application.badge as Badge).id == badge.id &&
+          (application?.badge as Badge).id == badge.id &&
           application.status == "pending"
         );
       })

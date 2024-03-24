@@ -113,6 +113,7 @@ export const InterviewsTab = ({
                   <span className="font-bold">Interview questions</span>
                   <ul className="flex flex-col gap-2 text-weasker-grey text-sm">
                     {interview.questions.map((item, index) => {
+                      console.log("interviewHasAnswers", interviewHasAnswers);
                       return interviewHasAnswers ? (
                         <InternalLink
                           key={index}
@@ -125,7 +126,7 @@ export const InterviewsTab = ({
                           }
                         />
                       ) : (
-                        <li className="">
+                        <li key={index}>
                           {`${index + 1}. ${item.question.shortQuestion}`}
                         </li>
                       );
