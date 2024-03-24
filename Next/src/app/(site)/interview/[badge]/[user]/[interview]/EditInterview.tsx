@@ -23,7 +23,7 @@ import {
 import { BigButton, GentleButton } from "@/components/ui/buttons";
 import { InternalLink } from "@/components/links/InternalLink";
 import Modal from "@/components/ui/Modal";
-import { CldImage, CldVideoPlayer } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 import "next-cloudinary/dist/cld-video-player.css";
 import Image from "next/image";
 import { deleteById, updateById, uploadImage, create } from "@/utils/restReq";
@@ -798,20 +798,32 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
                                   "bg-white rounded-full border"
                                 )}
                               </div>
-                              <div className="flex flex-col gap-2 p-2 border rounded rounded-t-lg ">
-                                <CldVideoPlayer
-                                  id={questionSlug}
-                                  width="1920"
-                                  height="1080"
-                                  src={(relevantAnswer.video as Media).filename}
-                                />
-                                <GentleButton
-                                  onClick={handleRemovePublishedVideo(
-                                    questionSlug
-                                  )}
-                                  text={"Remove video"}
-                                />
-                              </div>
+                              {(relevantAnswer.video as Media).url && (
+                                <div className="flex flex-col gap-2 p-2 border rounded rounded-t-lg ">
+                                  <video
+                                    width="1920"
+                                    height="1080"
+                                    controls
+                                    className="rounded rounded-t-lg"
+                                  >
+                                    <source
+                                      src={(relevantAnswer.video as Media).url}
+                                    />
+                                  </video>
+                                  {/* <CldVideoPlayer
+                                    id={questionSlug}
+                                    width="1920"
+                                    height="1080"
+                                    src={(relevantAnswer.video as Media).url}
+                                  /> */}
+                                  <GentleButton
+                                    onClick={handleRemovePublishedVideo(
+                                      questionSlug
+                                    )}
+                                    text={"Remove video"}
+                                  />
+                                </div>
+                              )}
                             </>
                           ) : videoUploadedToClient ? (
                             <div className="flex flex-col gap-2 p-2 border rounded rounded-t-lg">
