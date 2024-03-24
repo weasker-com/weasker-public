@@ -8,9 +8,13 @@ interface CreateProps {
 }
 
 export async function create({ data, collection }: CreateProps) {
+  console.log(
+    "`${process.env.SITE_URL}/api/${collection}`",
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/${collection}`
+  );
   const result = await axios({
     method: "POST",
-    url: `http://localhost:4000/api/${collection}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/${collection}`,
     withCredentials: true,
     data,
   });
@@ -29,7 +33,7 @@ interface UpdateByIdProps {
 export async function updateById({ data, collection, id }: UpdateByIdProps) {
   const result = await axios({
     method: "PATCH",
-    url: `http://localhost:4000/api/${collection}/${id}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/${collection}/${id}`,
     withCredentials: true,
     data,
   });
@@ -47,7 +51,7 @@ interface DeleteByIdProps {
 export async function deleteById({ collection, id }: DeleteByIdProps) {
   const result = await axios({
     method: "DELETE",
-    url: `http://localhost:4000/api/${collection}/${id}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/${collection}/${id}`,
     withCredentials: true,
   });
 
