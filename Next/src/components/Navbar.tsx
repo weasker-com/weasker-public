@@ -54,12 +54,7 @@ const Navbar = () => {
     setShowDropdown(false);
     await logout();
   };
-  console.log(
-    "loginLoading || logOutLoading || registerLoading",
-    loginLoading,
-    logOutLoading,
-    registerLoading
-  );
+
   return (
     <div className="h-max border-b border-zinc-100 bg-white rounded rounded-t-lg">
       <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3 z-20">

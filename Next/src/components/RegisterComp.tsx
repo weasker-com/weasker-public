@@ -76,7 +76,7 @@ const RegisterComp: React.FC<RegisterCompProps> = ({
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
-        setSignUpModalIsOpen(false);
+        setSignUpModalIsOpen && setSignUpModalIsOpen(false);
         setLogInModalIsOpen(false);
         setAuthCompOpen && setAuthCompOpen(false);
       }, 3000);
