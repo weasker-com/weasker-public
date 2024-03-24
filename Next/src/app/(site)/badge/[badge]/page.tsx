@@ -55,6 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         interviews {
           id
           name
+          userInterviews{id}
           seo {
             slug
             image {
@@ -64,11 +65,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           }
           questions {
             question {
-
               shortQuestion
               mediumQuestion
               longQuestion
-         
               seo {
                 slug
                 image {
@@ -183,6 +182,7 @@ async function getData(badgeParam: string) {
         interviews {
           id
           name
+          userInterviews{id}
           seo {
             slug
             image {

@@ -120,6 +120,7 @@ export const AuthProvider: React.FC<{
         localStorage.removeItem("user");
       }
     } catch (error) {
+      setLoginLoading(false);
       console.error("Failed to refresh authentication:", error);
     }
   }, []);
