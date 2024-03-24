@@ -1,7 +1,7 @@
 "use client";
 
 import "next-cloudinary/dist/cld-video-player.css";
-import { CldImage, CldVideoPlayer } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 import React, { useState } from "react";
 import { Media, UsersInterview } from "@/payload/payload-types";
 import Modal from "./ui/Modal";
@@ -27,14 +27,15 @@ const Answer: React.FC<AnswerProps> = ({ answer }) => {
 
   return (
     <div className="flex flex-col gap-3 max-w-[800px] sm:px-5">
-      {answer.video && (
-        <CldVideoPlayer
-          key={answer.questionSlug}
+      {(answer?.video as Media)?.filename && (
+        <video
           width="1920"
           height="1080"
-          src={(answer.video as Media).filename}
-          id={answer.questionSlug}
-        />
+          controls
+          className="rounded rounded-t-lg"
+        >
+          <source src={(answer.video as Media).url} />
+        </video>
       )}
       {answer.textAnswer && (
         <div

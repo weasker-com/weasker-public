@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             }
           }
           textAnswer
-          video{filename}
+          video{filename url}
         }
       }
       }
@@ -331,7 +331,7 @@ async function getDataAllInterviews({ params }: Props) {
             }
           }
           textAnswer
-          video{filename}
+          video{filename url}
         }
       }
       }
@@ -435,7 +435,7 @@ async function getDataSingleInterview({ params }: Props) {
             }
           }
           textAnswer
-          video{filename}
+          video{filename url}
         }
       }
       }
@@ -546,7 +546,7 @@ async function getDataEditInterview({ params, user }: EditInterviewProps) {
             }
           }
           textAnswer
-          video{filename id}
+          video{filename id url}
         }
       }
       }
