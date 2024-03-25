@@ -77,28 +77,28 @@ export const actionAfterStatusChange: AfterChangeHook = async ({
 
           if (updateUserBadges && updateBadgeUsers) {
             await payload.sendEmail({
-              from: "noreply@weasker.com",
+              from: "applications@weasker.com",
               to: userDetails.email,
               subject: `Application approved - ${badgeDetails.singularName}`,
               html: `<h1>Your ${badgeDetails.singularName} badge application is now approved</h1> <p>Hey ${userDetails.userName},</p>
           <p> A community member approved your application, you are now
-          able to take all interviews related to the <a href="https://www.weasker.com/badge/${doc.badge.seo.slug}"> ${doc.badge.singularName} badge</a>.</p>
-          <a href="https://www.weasker.com/badge/${doc.badge.seo.slug}?tab=interviews">
-         Click here to view all interviews for ${doc.badge.pluralName}
+          able to take all interviews related to the <a href="https://www.weasker.com/badge/${badgeDetails.seo.slug}"> ${badgeDetails.singularName} badge</a>.</p>
+          <a href="https://www.weasker.com/badge/${badgeDetails.seo.slug}?tab=interviews">
+         Click here to view all interviews for ${badgeDetails.pluralName}
           </a>
           `,
             });
           }
         } else {
           await payload.sendEmail({
-            from: "noreply@weasker.com",
+            from: "applications@weasker.com",
             to: userDetails.email,
             subject: `Application - ${badgeDetails.singularName}`,
             html: `<h1>Badge Already Awarded: ${badgeDetails.singularName}</h1>
             <p>Dear ${userDetails.userName},</p>
             <p>You've applied for the ${badgeDetails.singularName} badge, but it appears you already possess it. You're all set to participate in related interviews.</p>
-            <a href="https://www.weasker.com/badge/${doc.badge.seo.slug}?tab=interviews">
-            Click here to view all interviews for ${doc.badge.pluralName}
+            <a href="https://www.weasker.com/badge/${badgeDetails.seo.slug}?tab=interviews">
+            Click here to view all interviews for ${badgeDetails.pluralName}
              </a>
             <p>If you did not reapply for the badge, please disregard this email.</p>
             `,
