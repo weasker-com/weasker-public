@@ -144,6 +144,7 @@ async function getData(badgeParam: string) {
         id
         singularName
         pluralName
+        terms
         seo {
           slug
           excerpt

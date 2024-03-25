@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({ children, onclick }) => {
               onclick(event);
             }
           }}
-          className="absolute right-2 top-2 hover:cursor-pointer bg-white rounded-full"
+          className="absolute right-6 top-2 hover:cursor-pointer bg-white rounded-full"
         >
           {closeIcon(20)}
         </div>

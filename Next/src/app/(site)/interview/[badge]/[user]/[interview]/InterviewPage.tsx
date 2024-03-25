@@ -379,7 +379,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
           <BadgeApplyComp
             badge={badge}
             next={"Take interview"}
-            termsText={"These are the terms"}
+            termsText={badge.terms}
           />
         </Modal>
       )}
