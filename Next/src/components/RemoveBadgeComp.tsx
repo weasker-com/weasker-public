@@ -19,7 +19,7 @@ export const RemoveBadgeComp: React.FC<RemoveBadgeCompProps> = ({
 }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, refreshAuthentication } = useAuth();
   const [checkMarkIsChecked, setCheckMarkIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -45,6 +45,7 @@ export const RemoveBadgeComp: React.FC<RemoveBadgeCompProps> = ({
 
       if (res) {
         revalidateByServerAction(pathname);
+        refreshAuthentication();
         router.refresh();
         setLoading(false);
         setSuccess(true);
