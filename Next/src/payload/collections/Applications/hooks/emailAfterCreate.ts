@@ -6,7 +6,7 @@ export const emailAfterCreate: AfterChangeHook = async ({ operation, doc }) => {
     try {
       const payload = await getPayloadClient();
       await payload.sendEmail({
-        from: "noreply@weasker.com",
+        from: "applications@weasker.com",
         to: doc.user.email,
         subject: `Weasker badge application - ${doc.badge.singularName}`,
         html: `<h1>Your ${doc.badge.singularName} badge application is being reviewed</h1> 

@@ -8,10 +8,6 @@ interface CreateProps {
 }
 
 export async function create({ data, collection }: CreateProps) {
-  console.log(
-    "`${process.env.SITE_URL}/api/${collection}`",
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/${collection}`
-  );
   const result = await axios({
     method: "POST",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/${collection}`,
