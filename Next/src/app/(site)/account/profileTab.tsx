@@ -17,7 +17,7 @@ import { badgeIcon, interviewIcon, profileIcon } from "@/utils/defaultIcons";
 import { WideBox } from "@/components/ui/boxes";
 import { TextAreaInput, TextInput } from "@/components/ui/inputs";
 import { revalidateByServerAction } from "@/utils/revalidate";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface ProfileTabProps {
   handleTabSelect: any;
@@ -30,11 +30,11 @@ export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
     setUser,
     updateUser,
     uploadImage,
+    refreshAuthentication,
     updateUserLoading,
     uploadImageLoading,
     uploadImageError,
   } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
   const [displayName, setDisplayName] = useState(user.displayName || "");
   const [displayNameSaved, setDisplayNameSaved] = useState(false);
@@ -121,10 +121,10 @@ export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
       updateUser(user, { seo: { image: image.id } });
       setImageButtonsShowing(false);
       setImageIsSaved(true);
-      revalidateByServerAction(pathname);
-      router.refresh();
       setTimeout(() => {
         setImageIsSaved(false);
+        revalidateByServerAction(pathname);
+        refreshAuthentication();
       }, 3000);
     }
   };
@@ -214,6 +214,7 @@ export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
                         width={200}
                         height={200}
                         src={(user.seo.image as Media).cloudinary.public_id}
+                        crop="fill"
                         alt={user.userName}
                         className="w-[100px] h-[100px] cover rounded-full border-2 border-tl-light-blue"
                       />

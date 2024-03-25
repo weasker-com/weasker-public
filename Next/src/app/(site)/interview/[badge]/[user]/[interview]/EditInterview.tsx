@@ -810,12 +810,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
                                       src={(relevantAnswer.video as Media).url}
                                     />
                                   </video>
-                                  {/* <CldVideoPlayer
-                                    id={questionSlug}
-                                    width="1920"
-                                    height="1080"
-                                    src={(relevantAnswer.video as Media).url}
-                                  /> */}
+
                                   <GentleButton
                                     onClick={handleRemovePublishedVideo(
                                       questionSlug

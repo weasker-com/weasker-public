@@ -3,6 +3,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 export const revalidateByServerAction = async (path) => {
   try {
     if (path) {
+      console.log("trying to revalidate path:", path);
       revalidatePath(path);
     } else {
       revalidatePath("/");
