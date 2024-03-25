@@ -26,7 +26,7 @@ const BadgeApplyComp = ({
   next,
   buttonText,
 }: BadgeApplyCompProps) => {
-  const { user } = useAuth();
+  const { user, refreshAuthentication } = useAuth();
   const [userHasBadge, setUserHasBadge] = useState(false);
   const [userHasPendingApplication, setUserHasPendingApplication] =
     useState(false);
@@ -144,6 +144,7 @@ const BadgeApplyComp = ({
         if (res) {
           setLoading(false);
           setSuccess(true);
+          refreshAuthentication();
         } else {
           setErrorMessage("An error occurred. Please try again.");
         }
