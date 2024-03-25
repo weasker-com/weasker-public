@@ -6,7 +6,7 @@ import Hero from "../../../../components/Hero";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Modal from "../../../../components/ui/Modal";
-import getArticle from "@/helpers/getArticle";
+
 import {
   badgeIcon,
   badgersIcon,
@@ -41,7 +41,6 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
   const [userHasPendingApplication, setUserHasPendingApplication] =
     useState(false);
   const [userContact, setUserContact] = useState<User | null>(null);
-  const singularNameArticle = getArticle(badge.singularName);
 
   useEffect(() => {
     if (
@@ -164,10 +163,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
       )}
       {modalIsOpen && activeModal == "apply" && (
         <Modal onclick={handleModalClose}>
-          <BadgeApplyComp
-            badge={badge}
-            termsText={`To qualify for the badge, share your experience as ${singularNameArticle} ${badge.singularName} and submit at least one link to your services. `}
-          />
+          <BadgeApplyComp badge={badge} termsText={badge.terms} />
         </Modal>
       )}
       {modalIsOpen && activeModal == "takeInterview" && (
@@ -175,7 +171,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
           <BadgeApplyComp
             badge={badge}
             buttonText={"TAKE INTERVIEW NOW"}
-            termsText={`To qualify for the badge, share your experience as ${singularNameArticle} ${badge.singularName} and submit at least one link to your services. `}
+            termsText={badge.terms}
           />
         </Modal>
       )}

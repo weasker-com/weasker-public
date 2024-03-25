@@ -1023,9 +1023,9 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
                 );
               })}
           </div>
-          <div className="fixed flex flex-col items-center bottom-0 left-0 z-10 h-max lg:hidden w-full py-3 px-1 border-t bg-white mt-2">
+          <div className="fixed flex flex-col gap-2 items-center bottom-0 left-0 z-10 h-max lg:hidden w-full py-3 px-1 bg-white mt-2 border-t">
             {notAllSavedTooltip && (
-              <span className="border-t text-tl-light-blue">
+              <span className="text-tl-light-blue">
                 You have unsaved changes
               </span>
             )}
@@ -1085,7 +1085,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
                 {(!allSaved ||
                   newImages.length !== 0 ||
                   newVideos.length !== 0) &&
-                  errorMessages.length == 0 && (
+                  errorMessages.length > 0 && (
                     <div
                       onClick={handleNotAllSavedClick}
                       className="text-tl-light-blue"
@@ -1127,7 +1127,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
             </WideBox>
           )}
           {(!allSaved || newImages.length !== 0 || newVideos.length !== 0) &&
-            errorMessages.length == 0 && (
+            errorMessages.length > 0 && (
               <WideBox className="p-5 justify-center items-center">
                 <div className="flex flex-row items-center gap-2 w-full text-tl-light-blue">
                   {infoIcon(20)}

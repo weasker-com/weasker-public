@@ -280,6 +280,7 @@ async function getDataAllInterviews({ params }: Props) {
           links{linkOne linkTwo linkThree linkFour linkFive}
           bio
           badge {
+            terms
             singularName
             seo{
               slug
@@ -292,6 +293,7 @@ async function getDataAllInterviews({ params }: Props) {
         id
         badge {
           id
+          terms
           singularName
           pluralName
           seo {
@@ -383,6 +385,7 @@ async function getDataSingleInterview({ params }: Props) {
            userBadges {
           links{linkOne linkTwo linkThree linkFour linkFive}
           bio
+          terms
           badge {
             singularName
             seo{
@@ -395,6 +398,7 @@ async function getDataSingleInterview({ params }: Props) {
         name
         id
         badge {
+          terms
           id
           singularName
           pluralName

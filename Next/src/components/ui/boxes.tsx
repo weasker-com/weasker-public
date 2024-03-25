@@ -14,7 +14,7 @@ export const WhiteBox: React.FC<WhiteBoxProps> = ({
   return (
     <div
       id={id || ""}
-      className={`flex flex-col items-start gap-1 bg-white p-10 rounded rounded-t-lg sm:max-w-[500px] min-h-[300px] mx-1 sm:m-0 max-h-screen overflow-y-auto shadow ${className}`}
+      className={`flex flex-col items-start gap-1 bg-white p-10 rounded rounded-t-lg sm:max-w-[500px] min-h-[300px] mx-1 sm:m-0 max-h-[90vh] overflow-y-auto shadow ${className}`}
     >
       {children}
     </div>
