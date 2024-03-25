@@ -12,7 +12,6 @@ interface ImageAndTextProps {
   title?: string | ReactNode;
   about?: string | ReactNode;
   imageClassName?: string;
-
   selected?: boolean;
 }
 

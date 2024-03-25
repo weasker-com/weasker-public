@@ -29,10 +29,11 @@ const Answer: React.FC<AnswerProps> = ({ answer }) => {
     <div className="flex flex-col gap-3 max-w-[800px] sm:px-5">
       {(answer?.video as Media)?.filename && (
         <video
-          width="1920"
-          height="1080"
+          key={(answer.video as Media).url}
+          width="full"
+          height="full"
           controls
-          className="rounded rounded-t-lg"
+          className="rounded rounded-t-lg max-h-[500px] bg-black"
         >
           <source src={(answer.video as Media).url} />
         </video>

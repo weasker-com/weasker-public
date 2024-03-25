@@ -85,6 +85,7 @@ const Navbar = () => {
                       <CldImage
                         width={50}
                         height={50}
+                        crop="fill"
                         src={
                           (user.seo.image as Media)?.cloudinary?.public_id ||
                           defaultImages.defaultUserImage
