@@ -43,6 +43,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
     defaultImages.defaultUserImage;
   const answers = data.data.UsersInterviews.docs[0].answers;
   const badge = interview.badge as Badge;
+
   const questionsWithAnswer = interview.questions.filter((question) =>
     answers.some(
       (answer) =>

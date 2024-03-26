@@ -385,8 +385,8 @@ async function getDataSingleInterview({ params }: Props) {
            userBadges {
           links{linkOne linkTwo linkThree linkFour linkFive}
           bio
-          terms
           badge {
+            terms
             singularName
             seo{
               slug
