@@ -58,7 +58,9 @@ export const InterviewsTab = ({
                       image={(interview.seo.image as Media)?.filename}
                       defaultImage={defaultImages.defaultInterviewImage}
                       imageClassName="w-24 h-24"
-                      preTitle={<h2 className="">{interview.name}</h2>}
+                      preTitle={
+                        <h2 className="capitalize">{interview.name}</h2>
+                      }
                       title={
                         <div className="flex flex-row flex- gap-1 text-sm text-weasker-grey">
                           {`${interview.questions.length} questions, answered by ${interview.userInterviews.length} ${badge.pluralName}`}

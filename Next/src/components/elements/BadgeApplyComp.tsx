@@ -252,6 +252,7 @@ const BadgeApplyComp = ({
               onChange={(e) => handleChangeLinkOne(e)}
               errorMessage={linkOneErrorMessage}
               labelClassName="text-xs"
+              className="lowercase"
             />
             <TextInput
               type={"text"}
@@ -261,6 +262,7 @@ const BadgeApplyComp = ({
               onChange={(e) => handleChangeLinkTwo(e)}
               errorMessage={linkTwoErrorMessage}
               labelClassName="text-xs"
+              className="lowercase"
             />
             <TextInput
               type={"text"}
@@ -270,6 +272,7 @@ const BadgeApplyComp = ({
               onChange={(e) => handleChangeLinkThree(e)}
               errorMessage={linkThreeErrorMessage}
               labelClassName="text-xs"
+              className="lowercase"
             />
             <BigButton
               className={"bg-tl-dark-blue"}

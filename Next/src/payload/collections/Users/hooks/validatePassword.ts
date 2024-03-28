@@ -28,7 +28,7 @@ export const validatePassword: CollectionBeforeValidateHook = ({
     errorMessages.push("Password must have uppercase letters. ");
   }
 
-  const hasSymbols = /[$-/:-?{-~!"^_`[\]]/.test(password);
+  const hasSymbols = /[$-/:-?{-~!"^_`[\]#@%&*()+=.;,<>']/.test(password);
   if (!hasSymbols) {
     errorMessages.push("Password must include at least one symbol. ");
   }

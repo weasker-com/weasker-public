@@ -21,6 +21,19 @@ const cloudinaryConfig = cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+function redirectNonWwwTraffic(req, res, next) {
+  if (
+    /^localhost(:\d+)?$/.test(req.headers.host) ||
+    req.headers.host.slice(0, 4) === "www."
+  ) {
+    return next();
+  }
+  var newHost = "www." + req.headers.host;
+  return res.redirect(301, req.protocol + "://" + newHost + req.originalUrl);
+}
+
+app.set("trust proxy", true);
+app.use(redirectNonWwwTraffic);
 app.use(mediaManagement(cloudinaryConfig));
 
 const setRobotsHeader = (req, res, next) => {
