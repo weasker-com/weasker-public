@@ -254,7 +254,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function getDataAllInterviews({ params }: Props) {
   const query = `{
-    UsersInterviews(where: {
+    UsersInterviews(
+      limit: 100
+      where: {
         AND: [
           {
             badgeSlug: {equals:"${params.badge}"},
