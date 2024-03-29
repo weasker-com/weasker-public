@@ -83,7 +83,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ params, data }) => {
       className="bg-tl-dark-blue"
       text={
         <span className="flex flex-row gap-2 items-center">
-          {availableAtIcon(20)} Available at
+          Available at {availableAtIcon(20)}
         </span>
       }
       onClick={() => {

@@ -40,7 +40,7 @@ export const GentleButton = ({
     <button
       disabled={disabled ? disabled : null}
       onClick={onClick}
-      className={`flex flex-row gap-1 centerAbsolute rounded rounded-t-lg text-tl-dark-blue border text-xs disabled:bg-slate-100 disabled:text-weasker-grey sm:text-sm py-1 px-2 disabled:hover:opacity-100 hover:opacity-70  ${className}`}
+      className={`flex flex-row gap-1 centerAbsolute rounded rounded-t-lg text-tl-dark-blue border text-xs disabled:bg-slate-100 disabled:text-weasker-grey sm:text-sm py-2 px-3 disabled:hover:opacity-100 hover:opacity-70  ${className}`}
     >
       {loading ? (
         <div className="centerAbsolute">

@@ -46,6 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           userName
            seo {
           slug
+          excerpt
           image {
             filename
             url
@@ -143,6 +144,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
 
+  const slugsToKeywords = interview.questions
+    .map((item) => item.question.seo.slug.replace(/-/g, " "))
+    .join(", ");
+
   if (params.user == "all") {
     const metaTitle =
       usersInterviews.length > 1
@@ -151,10 +156,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           )
         : capitalize(`${interview.name}`);
 
-    const metaDescription =
-      usersInterviews.length > 1
-        ? `Click here to see what ${usersInterviews.length} ${badge.pluralName} had to say ${interview.name}`
-        : `Click here to see what ${badge.pluralName} had to say ${interview.name}`;
+    const metaDescription = `${badge.pluralName} ${slugsToKeywords}`;
 
     const authors = usersInterviews.map((item) => {
       return {
@@ -204,12 +206,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     const metaTitle = capitalize(
-      `${user.displayName || user.userName} Interview ${interview.name}`
+      `${user.displayName || user.userName}: ${interview.name}`
     );
 
-    const metaDescription = `Click here to see what ${
-      user.displayName || user.userName
-    } had to say ${interview.name}`;
+    const metaDescription =
+      user.seo.excerpt ||
+      `${badge.singularName} ${
+        user.displayName || user.userName
+      } about ${slugsToKeywords}`;
 
     const authors = usersInterviews.map((item) => {
       return {
@@ -492,6 +496,7 @@ async function getDataEditInterview({ params, user }: EditInterviewProps) {
           userName
            seo {
           slug
+          excerpt
           image {
             filename
             url

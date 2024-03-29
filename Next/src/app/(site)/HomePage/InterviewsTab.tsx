@@ -57,7 +57,7 @@ export const InterviewsTab = ({
                     <ImageAndText
                       image={(interview.seo.image as Media)?.filename}
                       defaultImage={defaultImages.defaultInterviewImage}
-                      imageClassName="w-24 h-24"
+                      imageClassName="w-11 h-11 sm:w-24 sm:h-24"
                       preTitle={
                         <h2 className="capitalize">{interview.name}</h2>
                       }
@@ -75,7 +75,7 @@ export const InterviewsTab = ({
         })}
       </div>
       <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-        <WideBox className="p-5">
+        <WideBox className="p-3 sm:p-5">
           <div className="flex flex-row flex-wrap gap-2">
             <GentleButton
               className={`border border-tl-dark-blue ${

@@ -40,7 +40,7 @@ export const BadgesTab = ({
                         defaultImages.defaultBadgeImage
                       }
                       defaultImage={defaultImages.defaultBadgeImage}
-                      imageClassName="w-24 h-24"
+                      imageClassName="w-11 h-11 sm:w-24 sm:h-24"
                       about={badge.seo.excerpt}
                     />
                   }
@@ -49,13 +49,13 @@ export const BadgesTab = ({
             );
           })
         ) : (
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div>Looks like this user doesn&apos;t have any badges yet</div>
           </WideBox>
         )}
       </div>
       <div className="lg:block hidden w-[30%] text-sm">
-        <WideBox className="p-5">
+        <WideBox className="p-3 sm:p-5">
           <div className="flex flex-row flex-wrap gap-2">
             <GentleButton
               className={`border border-tl-dark-blue ${
