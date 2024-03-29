@@ -71,7 +71,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
 
   if (relevantAnswers.length < 1) {
     return (
-      <WideBox className="p-5">
+      <WideBox className="p-3 sm:p-5">
         <>Looks like this question has no answers yet</>
       </WideBox>
     );
@@ -195,7 +195,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
           })}
         </div>
         <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
               <GentleButton
                 className=" border border-tl-dark-blue"
@@ -255,7 +255,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
         )}
         {modalIsOpen && activeModal == "users" && (
           <Modal onclick={handleModalClose}>
-            <WideBox className="p-5">
+            <WideBox className="p-3 sm:p-5">
               <div className="flex flex-col gap-5">
                 <span className="smallCaps text-base font-bold">
                   Users list
@@ -291,7 +291,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
         )}
         {modalIsOpen && activeModal == "siblingQuestions" && (
           <Modal onclick={handleModalClose}>
-            <WideBox className="p-5">
+            <WideBox className="p-3 sm:p-5">
               <div className="flex flex-col gap-5">
                 <span className="smallCaps text-base font-bold">
                   Sibling questions

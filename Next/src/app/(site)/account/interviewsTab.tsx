@@ -52,7 +52,7 @@ export const InterviewsTab = ({
   return (
     <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] w-full">
       <div className="lg:w-[70%] flex flex-col w-full gap-3">
-        <WideBox className="p-5">
+        <WideBox className="p-3 sm:p-5">
           <div className="flex flex-col gap-5 w-full">
             <h2 className="smallCaps">Your interviews</h2>
             {answeredInterviews.length > 0 ? (
@@ -69,7 +69,7 @@ export const InterviewsTab = ({
                           {(userInterview.interview as Interview).name}
                         </h3>
                       }
-                      imageClassName="w-24 h-24"
+                      imageClassName="w-11 h-11 sm:w-24 sm:h-24"
                     />
                     <div className="flex flex-row flex-wrap gap-2">
                       <InternalLink
@@ -103,7 +103,7 @@ export const InterviewsTab = ({
             )}
           </div>
         </WideBox>
-        <WideBox className="p-5">
+        <WideBox className="p-3 sm:p-5">
           <div className="flex flex-col gap-5 w-full">
             <h2 className="smallCaps">Interviews available to you</h2>
             {availableInterviewsNotTaken.length > 0 ? (
@@ -126,7 +126,7 @@ export const InterviewsTab = ({
                             defaultImages.defaultBadgeImage
                           }
                           defaultImage={defaultImages.defaultInterviewImage}
-                          imageClassName="w-24 h-24"
+                          imageClassName="w-11 h-11 sm:w-24 sm:h-24"
                           preTitle={`As ${article} ${badge.singularName}`}
                           title={<h3 className="text-lg">{interview.name}</h3>}
                         />
@@ -167,7 +167,7 @@ export const InterviewsTab = ({
         </WideBox>
       </div>
       <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-        <WideBox className="p-5">
+        <WideBox className="p-3 sm:p-5">
           <div className="flex flex-row flex-wrap gap-2">
             <GentleButton
               className={`border border-tl-dark-blue ${

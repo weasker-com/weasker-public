@@ -18,11 +18,11 @@ const GenericPage: React.FC<GenericPageProps> = (data) => {
     <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
       <div className="lg:w-[70%] flex flex-col w-full">
         <div className="flex flex-col gap-2 w-full">
-          <WideBox className="p-5 sm:p-10">
+          <WideBox className="p-3 sm:p-5 sm:p-10">
             <div className="text-5xl smallCaps font-black">{title}</div>
             <span className="text-sm">{excerpt && parse(excerpt)}</span>
           </WideBox>
-          <WideBox className="p-5 sm:p-10">
+          <WideBox className="p-3 sm:p-5 sm:p-10">
             <text>{content && parse(content)}</text>
           </WideBox>
         </div>

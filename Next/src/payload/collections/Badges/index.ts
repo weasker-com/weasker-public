@@ -34,7 +34,7 @@ export const Badges: CollectionConfig = {
       relationTo: "users",
       hasMany: true,
       admin: {
-        readOnly: true,
+        readOnly: false,
       },
     },
     {

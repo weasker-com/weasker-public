@@ -109,7 +109,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
       className="bg-tl-dark-blue"
       text={
         <span className="flex flex-row gap-2 items-center">
-          {availableAtIcon(20)} Available at
+          Available at {availableAtIcon(20)}
         </span>
       }
       onClick={() => {
@@ -126,6 +126,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
       />
       <Hero
         title={interview.name}
+        longTitle={true}
         preTitle={
           <>
             Interview with&nbsp;
@@ -153,7 +154,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 return (
                   <WideBox
                     key={index}
-                    className="p-5"
+                    className="p-3 sm:p-5"
                     id={question.question.seo.slug}
                   >
                     <div className="flex flex-col gap-5 w-full">
@@ -218,7 +219,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                           element={
                             <GentleButton
                               className="text-xs"
-                              text="View more answers to this question"
+                              text="View more answers"
                             />
                           }
                         />
@@ -231,7 +232,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
           </div>
         </div>
         <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
               <GentleButton
                 className=" border border-tl-dark-blue"
@@ -246,7 +247,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
               {(!user || !userHasBadge) && (
                 <GentleButton
                   className="border border-tl-dark-blue"
-                  text="Apply to take interview"
+                  text="Apply"
                   onClick={() => handleModalOpen("apply")}
                 />
               )}
@@ -284,11 +285,11 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 href={`/interview/${params.badge}/all/${params.interview}`}
               />
               <InternalLink
-                href={`/badge/${params.badge}`}
+                href={`/badge/${params.badge}?tab=badgers`}
                 element={
                   <GentleButton
-                    className=" border border-tl-dark-blue"
-                    text={`${badge.pluralName} badge`}
+                    className="border border-tl-dark-blue"
+                    text={`More ${badge.pluralName}`}
                   />
                 }
               />
@@ -296,7 +297,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 className=" border border-tl-dark-blue"
                 text={
                   <span className="flex flex-row gap-2 items-center">
-                    {availableAtIcon(20)} Available at
+                    Available at {availableAtIcon(20)}
                   </span>
                 }
                 onClick={() => {
@@ -325,7 +326,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
       </div>
       {modalIsOpen && activeModal == "questions" && (
         <Modal onclick={handleModalClose}>
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div className="flex flex-col gap-5">
               <span className="smallCaps text-base font-bold">
                 Question list
@@ -439,11 +440,11 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 href={`/interview/${params.badge}/all/${params.interview}`}
               />
               <InternalLink
-                href={`/badge/${params.badge}`}
+                href={`/badge/${params.badge}?tab=badgers`}
                 element={
                   <GentleButton
-                    className=" border border-tl-dark-blue"
-                    text={`${badge.pluralName} badge`}
+                    className="border border-tl-dark-blue"
+                    text={`More ${badge.pluralName}`}
                   />
                 }
               />
@@ -451,7 +452,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 className=" border border-tl-dark-blue"
                 text={
                   <span className="flex flex-row gap-2 items-center">
-                    {availableAtIcon(20)} Available at
+                    Available at {availableAtIcon(20)}
                   </span>
                 }
                 onClick={() => {

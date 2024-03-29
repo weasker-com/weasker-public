@@ -104,6 +104,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const metaDescription = seoDescription
     ? seoDescription
+    : user.seo.excerpt
+    ? user.seo.excerpt
     : `${
         user.displayName || userName
       } is a ${badgesSingularNames}. Click here to see their interviews.`;

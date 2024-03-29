@@ -116,7 +116,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
     if (!user || !userHasBadge) {
       return (
         <BigButton
-          text="Apply to take interview"
+          text="Apply for interview"
           className="bg-tl-dark-blue"
           onClick={() => handleModalOpen("apply")}
         />
@@ -156,6 +156,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
       />
       <Hero
         title={interview.name}
+        longTitle={true}
         preTitle={
           <>
             Interview with&nbsp;
@@ -163,9 +164,22 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
               element={badge.pluralName}
               style={"inherit"}
               href={`/badge/${params.badge}`}
-              className="underline"
+              className="underline decoration-1"
             />
           </>
+        }
+        about={
+          <div>
+            We asked {badge.pluralName} about{" "}
+            {questionsWithAnswer.map((item, index) => {
+              return (
+                <span key={index}>
+                  {index > 0 && ", "}
+                  {item.question.seo.slug.replace(/-/g, " ")}
+                </span>
+              );
+            })}
+          </div>
         }
         image={
           (badge.seo?.image as Media).filename ||
@@ -240,7 +254,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
           })}
         </div>
         <div className="hidden lg:flex sticky z-10 top-2 h-max flex-col gap-2  w-[30%]">
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
               <GentleButton
                 onClick={() => handleModalOpen("questions")}
@@ -255,7 +269,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
               {(!user || !userHasBadge) && (
                 <GentleButton
                   className="border border-tl-dark-blue"
-                  text="Apply to take interview"
+                  text="Apply"
                   onClick={() => handleModalOpen("apply")}
                 />
               )}
@@ -284,12 +298,11 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                 />
               )}
               <InternalLink
-                href={`/badge/${data.params.badge}`}
-                newTab={true}
+                href={`/badge/${params.badge}?tab=badgers`}
                 element={
                   <GentleButton
                     className="border border-tl-dark-blue"
-                    text={`${badge.pluralName} badge`}
+                    text={`All ${badge.pluralName}`}
                   />
                 }
               />
@@ -315,7 +328,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
       </div>
       {modalIsOpen && activeModal == "questions" && (
         <Modal onclick={handleModalClose}>
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div className="flex flex-col gap-5">
               <span className="smallCaps text-base font-bold">
                 Question list
@@ -390,7 +403,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
               {(!user || !userHasBadge) && (
                 <GentleButton
                   className="border border-tl-dark-blue"
-                  text="Apply to take interview"
+                  text="Apply"
                   onClick={() => handleModalOpen("apply")}
                 />
               )}
@@ -419,11 +432,11 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                 />
               )}
               <InternalLink
-                href={`/badge/${data.params.badge}`}
+                href={`/badge/${params.badge}?tab=badgers`}
                 element={
                   <GentleButton
                     className="border border-tl-dark-blue"
-                    text={`${badge.pluralName} badge`}
+                    text={`All ${badge.pluralName}`}
                   />
                 }
               />

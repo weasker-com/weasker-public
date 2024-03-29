@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="flex flex-col gap-3 justify-between sm:flex-row max-w-[1000px] sm:mx-auto m-2 sm:my-5 ">
         <div className="flex flex-col items-start sm:gap-5">
           {" "}
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center select-none">
             <InternalLink
               element={<>Weasker</>}
               className="text-4xl leading-none font-extrabold smallCaps text-tl-dark-blue"
@@ -17,7 +17,7 @@ const Footer = () => {
               Interviewing Experts
             </span>
           </div>
-          <div className="text-sm">
+          <div className="text-sm select-none">
             © {currentYear} All rights reserved weasker.com
           </div>
         </div>

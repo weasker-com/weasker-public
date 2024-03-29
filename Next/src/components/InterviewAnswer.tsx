@@ -100,7 +100,7 @@ const InterviewAnswer = ({
   }, [currentUser]);
 
   return (
-    <WideBox className="p-5" id={question.question.seo.slug}>
+    <WideBox className="p-3 sm:p-5" id={question.question.seo.slug}>
       <div ref={containerRef} className="flex flex-col gap-5 w-full">
         <div>
           <ImageAndText

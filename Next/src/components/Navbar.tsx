@@ -59,7 +59,7 @@ const Navbar = () => {
     <div className="h-max border-b border-zinc-100 bg-white rounded rounded-t-lg">
       <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3 z-20">
         <div className="flex flex-row gap-5 justify-between items-center my-auto py-1 ">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center select-none">
             <InternalLink
               element={<>Weasker</>}
               className="text-4xl leading-none font-extrabold smallCaps text-tl-dark-blue"

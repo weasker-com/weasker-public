@@ -665,6 +665,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
     <>
       <Hero
         title={interview.name}
+        longTitle={true}
         preTitle={
           <>
             Editing: Interview with&nbsp;
@@ -1169,7 +1170,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
 
       {modalIsOpen && activeModal == "questions" && (
         <Modal onclick={handleModalClose}>
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <div className="flex flex-col gap-5">
               <span className="smallCaps text-base font-bold">
                 Question list

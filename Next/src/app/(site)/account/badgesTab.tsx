@@ -358,7 +358,7 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
             );
           })
         ) : (
-          <WideBox className="p-5">
+          <WideBox className="p-3 sm:p-5">
             <>Looks like you don&apos;t have any badges yet</>
             <InternalLink
               href={"/?tab=badges"}
@@ -369,7 +369,7 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
         )}
       </div>
       <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-        <WideBox className="p-5">
+        <WideBox className="p-3 sm:p-5">
           <div className="flex flex-row flex-wrap gap-2">
             <GentleButton
               className={`border border-tl-dark-blue ${

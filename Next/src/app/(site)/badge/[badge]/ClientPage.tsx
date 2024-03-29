@@ -109,7 +109,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
         <BigButton
           disabled={userHasBadge || userHasPendingApplication}
           className="bg-tl-dark-blue"
-          text={<>Apply for badge {badgersIcon(20)}</>}
+          text={<>Apply {badgersIcon(20)}</>}
           onClick={() => {
             handleModalOpen({ slug: "apply" });
           }}

@@ -48,14 +48,9 @@ export const seo: Field = {
     {
       name: "keywords",
       label: "SEO Keywords",
-      type: "array",
+      type: "text",
+      hasMany: true,
       required: false,
-      fields: [
-        {
-          name: "keyword",
-          type: "text",
-        },
-      ],
     },
   ],
 };
