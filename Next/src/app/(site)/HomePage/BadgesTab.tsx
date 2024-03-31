@@ -51,7 +51,7 @@ export const BadgesTab = ({
                           <div className="flex flex-row gap-1">
                             {item?.users?.length && item.users?.length > 0 && (
                               <span className="text-sm">
-                                {item.users.length} Badgers
+                                {item.users.length} Experts
                               </span>
                             )}
                             {item.interviews.length > 0 && (
@@ -98,7 +98,7 @@ export const BadgesTab = ({
                 activeTab == "users" &&
                 "border-tl-light-blue text-tl-light-blue"
               }`}
-              text={<>{usersIcon(20)} Badgers</>}
+              text={<>{usersIcon(20)} Experts</>}
               onClick={() => {
                 handleTabSelect("users");
               }}

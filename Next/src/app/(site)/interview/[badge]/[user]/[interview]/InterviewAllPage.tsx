@@ -21,15 +21,22 @@ import { FAQPage, WithContext } from "schema-dts";
 import BadgeApplyComp from "@/components/elements/BadgeApplyComp";
 import { defaultImages } from "@/utils/defaultImages";
 import InterviewAnswer from "../../../../../../components/InterviewAnswer";
+import { ImageAndText } from "@/components/elements/ImageAndText";
 
 interface InterviewAllPageProps {
-  data: { data: { UsersInterviews: { docs: UsersInterview[] } } };
+  data: {
+    data: {
+      Interviews: { docs: Interview[] };
+      UsersInterviews: { docs: UsersInterview[] };
+    };
+  };
   params: { badge: string; user: string; interview: string };
 }
 
 const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
   const { user } = useAuth();
   const params = data.params;
+  const interview = data.data.data.Interviews.docs[0];
   const allInterviews = data.data.data.UsersInterviews.docs;
   const [currentUser, setCurrentUser] = useState<User>(
     (allInterviews[0]?.user as User) || null
@@ -66,17 +73,9 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
     }
   }, [user, params.badge, allInterviews]);
 
-  if (allInterviews.length < 1) {
-    return (
-      <WhiteBox className={"sm:my-10"}>
-        <div className="text-xl">Looks like no one took this interview yet</div>
-      </WhiteBox>
-    );
-  }
-
-  const interview = allInterviews[0]?.interview as Interview;
   const badge = interview.badge as Badge;
   const allAnswers = allInterviews.map((interview) => interview.answers).flat();
+
   const questionsWithAnswer = interview.questions.filter((question) =>
     allAnswers.some(
       (answer) =>
@@ -188,71 +187,95 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
         cta={ctaButton}
       />
       <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full">
-        <div className="lg:w-[70%] flex flex-col w-full gap-3">
-          {questionsWithAnswer.map((question, index) => {
-            const relevantAnswers = allInterviews
-              .map((interview) => {
-                const user = interview.user as User;
-                const answer =
-                  interview.answers.filter(
-                    (interviewAnswer) =>
-                      interviewAnswer.answer.questionSlug ==
-                      question.question.seo.slug
-                  )[0]?.answer || null;
+        {allInterviews.length > 1 ? (
+          <div className="lg:w-[70%] flex flex-col w-full gap-3">
+            {questionsWithAnswer.map((question, index) => {
+              const relevantAnswers = allInterviews
+                .map((interview) => {
+                  const user = interview.user as User;
+                  const answer =
+                    interview.answers.filter(
+                      (interviewAnswer) =>
+                        interviewAnswer.answer.questionSlug ==
+                        question.question.seo.slug
+                    )[0]?.answer || null;
 
-                {
-                  return { user, answer };
-                }
-              })
-              .filter(
-                (answer) =>
-                  answer?.answer?.images.length > 0 ||
-                  answer?.answer?.video ||
-                  answer?.answer?.textAnswer?.length > 0
+                  {
+                    return { user, answer };
+                  }
+                })
+                .filter(
+                  (answer) =>
+                    answer?.answer?.images.length > 0 ||
+                    answer?.answer?.video ||
+                    answer?.answer?.textAnswer?.length > 0
+                );
+
+              const goToPrevUser = () => {
+                const currentIndex = relevantAnswers.findIndex(
+                  (item) => item.user.seo.slug === currentUser.seo.slug
+                );
+                const prevIndex =
+                  (currentIndex - 1 + relevantAnswers.length) %
+                  relevantAnswers.length;
+                const prevUser = relevantAnswers[prevIndex].user;
+
+                setCurrentUser(prevUser);
+              };
+
+              const goToNextUser = () => {
+                const currentIndex = relevantAnswers.findIndex(
+                  (item) => item.user.seo.slug === currentUser.seo.slug
+                );
+                const nextIndex = (currentIndex + 1) % relevantAnswers.length;
+                const nextUser = relevantAnswers[nextIndex].user;
+                setCurrentUser(nextUser);
+              };
+
+              return (
+                <InterviewAnswer
+                  key={index}
+                  badgeSlug={data.params.badge}
+                  badgeName={badge.singularName}
+                  questionNumber={index + 1}
+                  question={question}
+                  relevantAnswers={relevantAnswers}
+                  onGoToNextUser={goToNextUser}
+                  onGoToPrevUser={goToPrevUser}
+                  onChangeUser={setCurrentUser}
+                  currentUser={currentUser}
+                  onContactUser={(user: User) => {
+                    setContactUser(user);
+                    setActiveModal("contact");
+                    setModalIsOpen(true);
+                  }}
+                />
               );
-
-            const goToPrevUser = () => {
-              const currentIndex = relevantAnswers.findIndex(
-                (item) => item.user.seo.slug === currentUser.seo.slug
+            })}
+          </div>
+        ) : (
+          <div className="lg:w-[70%] flex flex-col w-full gap-3">
+            {interview.questions.map((question, index) => {
+              return (
+                <WideBox key={index} className="p-5">
+                  <div>
+                    <ImageAndText
+                      number={index + 1}
+                      title={<h2>{question.question.shortQuestion}</h2>}
+                      about={
+                        <span className="text-sm mt-1">
+                          {question.question.longQuestion}
+                        </span>
+                      }
+                    />
+                  </div>
+                  <div className="p-5">Answers coming soon.</div>
+                </WideBox>
               );
-              const prevIndex =
-                (currentIndex - 1 + relevantAnswers.length) %
-                relevantAnswers.length;
-              const prevUser = relevantAnswers[prevIndex].user;
+            })}
+          </div>
+        )}
 
-              setCurrentUser(prevUser);
-            };
-
-            const goToNextUser = () => {
-              const currentIndex = relevantAnswers.findIndex(
-                (item) => item.user.seo.slug === currentUser.seo.slug
-              );
-              const nextIndex = (currentIndex + 1) % relevantAnswers.length;
-              const nextUser = relevantAnswers[nextIndex].user;
-              setCurrentUser(nextUser);
-            };
-
-            return (
-              <InterviewAnswer
-                key={index}
-                badgeSlug={data.params.badge}
-                badgeName={badge.singularName}
-                questionNumber={index + 1}
-                question={question}
-                relevantAnswers={relevantAnswers}
-                onGoToNextUser={goToNextUser}
-                onGoToPrevUser={goToPrevUser}
-                onChangeUser={setCurrentUser}
-                currentUser={currentUser}
-                onContactUser={(user: User) => {
-                  setContactUser(user);
-                  setActiveModal("contact");
-                  setModalIsOpen(true);
-                }}
-              />
-            );
-          })}
-        </div>
         <div className="hidden lg:flex sticky z-10 top-2 h-max flex-col gap-2  w-[30%]">
           <WideBox className="p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">

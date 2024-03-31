@@ -187,7 +187,7 @@ const InterviewAnswer = ({
                         onContactUser(currentAnswer.user);
                       }}
                     >
-                      Available at
+                      Contact
                     </span>
                   </span>
                 }

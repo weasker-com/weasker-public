@@ -83,7 +83,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ params, data }) => {
       className="bg-tl-dark-blue"
       text={
         <span className="flex flex-row gap-2 items-center">
-          Available at {availableAtIcon(20)}
+          {availableAtIcon(20)} Contact
         </span>
       }
       onClick={() => {
@@ -100,7 +100,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ params, data }) => {
       />
       <Hero
         title={user.displayName || userName}
-        preTitle={"Badger"}
+        preTitle={"Expert"}
         image={pfp || defaultImages.defaultUserImage}
         about={userExcerpt || badges[0]?.bio}
         cta={ctaButton}

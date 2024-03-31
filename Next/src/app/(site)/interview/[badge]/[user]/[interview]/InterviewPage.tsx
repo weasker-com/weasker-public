@@ -109,7 +109,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
       className="bg-tl-dark-blue"
       text={
         <span className="flex flex-row gap-2 items-center">
-          Available at {availableAtIcon(20)}
+          {availableAtIcon(20)} Contact
         </span>
       }
       onClick={() => {
@@ -206,7 +206,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                                     setModalIsOpen(true);
                                 }}
                               >
-                                Available at
+                                Contact
                               </span>
                             </span>
                           }
@@ -297,7 +297,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 className=" border border-tl-dark-blue"
                 text={
                   <span className="flex flex-row gap-2 items-center">
-                    Available at {availableAtIcon(20)}
+                    {availableAtIcon(20)} Contact
                   </span>
                 }
                 onClick={() => {
@@ -452,7 +452,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                 className=" border border-tl-dark-blue"
                 text={
                   <span className="flex flex-row gap-2 items-center">
-                    Available at {availableAtIcon(20)}
+                    {availableAtIcon(20)} Contact
                   </span>
                 }
                 onClick={() => {

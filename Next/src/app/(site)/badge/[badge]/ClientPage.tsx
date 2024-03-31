@@ -208,7 +208,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
               activeTab == "badgers" &&
               "border-tl-light-blue text-tl-light-blue"
             }`}
-            text="Badgers"
+            text="Experts"
           />
           <GentleButton
             onClick={() => handleModalOpen({ slug: "share" })}

@@ -102,7 +102,7 @@ export const InterviewsTab = ({
                 activeTab == "badges" &&
                 "border-tl-light-blue text-tl-light-blue"
               }`}
-              text={<>{usersIcon(20)} Badgers</>}
+              text={<>{usersIcon(20)} Experts</>}
               onClick={() => {
                 handleTabSelect("users");
               }}

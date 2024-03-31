@@ -258,6 +258,52 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function getDataAllInterviews({ params }: Props) {
   const query = `{
+    Interviews
+    (
+      where: { seo__slug: { equals:"${params.interview}" } }
+    ) 
+      {
+      docs {
+          name
+          id
+          badge {
+            id
+            singularName
+            pluralName
+            seo {
+              slug
+              image {
+                filename
+                url
+              }
+            }
+          }
+          seo {
+            slug
+            image {
+              filename
+              url
+            }
+          }
+          questions {
+            question {
+              shortQuestion
+              mediumQuestion
+              longQuestion
+              seo {
+                slug
+                image {
+                  url
+                  filename
+                }
+              }
+              seo {
+                slug
+              }
+            }
+          }
+        }
+    }
     UsersInterviews(
       limit: 100
       where: {
@@ -294,41 +340,6 @@ async function getDataAllInterviews({ params }: Props) {
           }
         }
         }
-        interview{
-        name
-        id
-        badge {
-          id
-          terms
-          singularName
-          pluralName
-          seo {
-            slug
-            image {
-              filename
-              url
-            }
-          }
-        }
-        seo {
-          slug
-          image {
-            filename
-            url
-          }
-        }
-        questions {
-          question {
-            shortQuestion
-            mediumQuestion
-            longQuestion
-            seo{slug image{url filename}}
-            seo {
-              slug
-            }
-          }
-        }
-      }
       answers {
         answer {
           updatedAt
@@ -346,13 +357,17 @@ async function getDataAllInterviews({ params }: Props) {
     }
   }`;
 
-  const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
-    await fetchData({
-      query: query,
-      method: "POST",
-      collection: "UsersInterviews",
-      mustHave: ["UsersInterviews"],
-    });
+  const data: {
+    data: {
+      Interviews: { docs: InterviewType[] };
+      UsersInterviews: { docs: UsersInterview[] };
+    };
+  } | null = await fetchData({
+    query: query,
+    method: "POST",
+    collection: "UsersInterviews",
+    // mustHave: ["Interviews"],
+  });
 
   if (!data) {
     return null;
