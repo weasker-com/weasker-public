@@ -151,9 +151,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (params.user == "all") {
     const metaTitle =
       usersInterviews.length > 1
-        ? capitalize(
-            `${interview.name} | ${usersInterviews?.length} Interviews`
-          )
+        ? capitalize(`${usersInterviews.length} ${interview.name}`)
         : capitalize(`${interview.name}`);
 
     const metaDescription = `${badge.pluralName} ${slugsToKeywords}`;
@@ -206,7 +204,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     const metaTitle = capitalize(
-      `${user.displayName || user.userName}: ${interview.name}`
+      `${badge.singularName} ${user.displayName || user.userName}: ${
+        interview.name
+      }`
     );
 
     const metaDescription =

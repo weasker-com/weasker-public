@@ -127,6 +127,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
       />
       <Hero
         title={relevantQuestion.mediumQuestion}
+        longTitle={true}
         cta={ctaButton}
         preTitle={
           <>
@@ -134,6 +135,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
             <InternalLink
               element={badge.pluralName}
               href={`/badge/${params.badge}`}
+              style="inherit"
+              className="underline"
             />
             &nbsp;
           </>
@@ -150,7 +153,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
               <WideBox className="p-5" key={index} id={item.user.seo.slug}>
                 <div className="flex flex-col gap-5 w-full">
                   <ImageAndText
-                    title={
+                    preTitle={
                       <InternalLink
                         className="hover:underline max-w-max"
                         href={`/user/${item.user.seo.slug}`}
@@ -161,7 +164,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                         }
                       />
                     }
-                    about={
+                    title={
                       <span className="text-xs">
                         <InternalLink
                           className="hover:underline"
@@ -189,6 +192,19 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                     imageClassName="w-11 h-11"
                   />
                   <Answer answer={item.answer.answer} />
+                  <div className="flex flex-row gap-2 sm:px-5">
+                    <InternalLink
+                      href={`/interview/${params.badge}/${item.user.seo.slug}/${params.interview}`}
+                      element={
+                        <GentleButton
+                          className="text-xs"
+                          text={`${
+                            item.user.displayName || item.user.userName
+                          } full interview`}
+                        />
+                      }
+                    />
+                  </div>
                 </div>
               </WideBox>
             );
@@ -200,7 +216,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
               <GentleButton
                 className=" border border-tl-dark-blue"
                 onClick={() => handleModalOpen("users")}
-                text="Users list"
+                text="Answers list"
               />
               <GentleButton
                 onClick={() => handleModalOpen("share")}
@@ -222,11 +238,11 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                 href={`/interview/${params.badge}/all/${params.interview}`}
               />
               <InternalLink
-                href={`/badge/${params.badge}`}
+                href={`/badge/${params.badge}?tab=badgers`}
                 element={
                   <GentleButton
                     className=" border border-tl-dark-blue"
-                    text={`${badge.pluralName} badge`}
+                    text={`All ${badge.pluralName}`}
                   />
                 }
               />
@@ -258,7 +274,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
             <WideBox className="p-3 sm:p-5">
               <div className="flex flex-col gap-5">
                 <span className="smallCaps text-base font-bold">
-                  Users list
+                  Answers list
                 </span>
                 <ul className="flex flex-col gap-3 text-sm">
                   {relevantAnswers.map((item, index) => {
@@ -333,7 +349,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                   <GentleButton
                     className=" border border-tl-dark-blue"
                     onClick={() => handleModalOpen("users")}
-                    text="Users list"
+                    text="Answers list"
                   />
 
                   <GentleButton
@@ -351,11 +367,11 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                     href={`/interview/${params.badge}/all/${params.interview}`}
                   />
                   <InternalLink
-                    href={`/badge/${params.badge}`}
+                    href={`/badge/${params.badge}?tab=badgers`}
                     element={
                       <GentleButton
                         className=" border border-tl-dark-blue"
-                        text={`${badge.pluralName} badge`}
+                        text={`All ${badge.pluralName}`}
                       />
                     }
                   />
