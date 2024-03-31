@@ -75,7 +75,7 @@ export const BadgersTab = ({
                         }
                         text={
                           <span className="flex flex-row gap-2 items-center">
-                            Available at {availableAtIcon(20)}
+                            {availableAtIcon(20)} Contact
                           </span>
                         }
                       />
@@ -109,7 +109,7 @@ export const BadgersTab = ({
                 activeTab == "badgers" &&
                 "border-tl-light-blue text-tl-light-blue"
               }`}
-              text={<>{badgeIcon(20)} Badgers</>}
+              text={<>{badgeIcon(20)} Experts</>}
               onClick={() => {
                 handleTabSelect("badges");
               }}

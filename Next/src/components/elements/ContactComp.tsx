@@ -55,7 +55,7 @@ const ContactComp = ({ userName, links, user }: ContactCompProps) => {
             ) : (
               availableAtIcon(40)
             )}{" "}
-            {userName} &#8226; Available at
+            {userName} &#8226; Contact
           </div>
         </div>
         {userHasLinks ? (

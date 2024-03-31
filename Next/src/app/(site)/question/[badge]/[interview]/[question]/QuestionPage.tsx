@@ -183,7 +183,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                             setActiveModal("contact"), setModalIsOpen(true);
                           }}
                         >
-                          Available at
+                          Contact
                         </span>
                       </span>
                     }

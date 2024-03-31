@@ -125,7 +125,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data }) => {
             className={`border border-tl-dark-blue ${
               activeTab == "users" && "border-tl-light-blue text-tl-light-blue"
             }`}
-            text={<> Badgers {badgersIcon(15)}</>}
+            text={<> Experts {badgersIcon(15)}</>}
           />
           <GentleButton
             onClick={() => handleModalOpen("share")}

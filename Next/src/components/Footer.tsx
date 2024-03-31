@@ -35,7 +35,7 @@ const Footer = () => {
               style="blue-hover"
             />
             <InternalLink
-              element="Badgers"
+              element="Experts"
               href="/?tab=users"
               style="blue-hover"
             />

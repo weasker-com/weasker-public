@@ -28,7 +28,7 @@ export const UsersTab = ({
     <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full mt-2">
       <div className="lg:w-[70%] flex flex-col w-full gap-2">
         <WideBox className="p-5 sm:p-10">
-          <div className="text-5xl smallCaps font-black">Badgers</div>
+          <div className="text-5xl smallCaps font-black">Experts</div>
         </WideBox>
         <WideBox className="p-5 flex flex-row">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
@@ -96,7 +96,7 @@ export const UsersTab = ({
                 activeTab == "users" &&
                 "border-tl-light-blue text-tl-light-blue"
               }`}
-              text={<>{usersIcon(20)} Badgers</>}
+              text={<>{usersIcon(20)} Experts</>}
               onClick={() => {
                 handleTabSelect("badgers");
               }}
