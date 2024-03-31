@@ -170,7 +170,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
         about={
           <div>
             We asked {badge.pluralName} about{" "}
-            {questionsWithAnswer.map((item, index) => {
+            {interview.questions.map((item, index) => {
               return (
                 <span key={index}>
                   {index > 0 && ", "}
