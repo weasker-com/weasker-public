@@ -33,7 +33,9 @@ function redirectNonWwwTraffic(req, res, next) {
 }
 
 app.set("trust proxy", true);
-app.use(redirectNonWwwTraffic);
+if (process.env.NODE_ENV !== "development") {
+  app.use(redirectNonWwwTraffic);
+}
 app.use(mediaManagement(cloudinaryConfig));
 
 const setRobotsHeader = (req, res, next) => {

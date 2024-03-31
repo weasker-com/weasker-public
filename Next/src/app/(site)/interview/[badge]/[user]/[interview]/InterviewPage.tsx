@@ -175,7 +175,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                           image={(interviewUser.seo.image as Media)?.filename}
                           defaultImage={defaultImages.defaultUserImage}
                           imageClassName="w-11 h-11"
-                          title={
+                          preTitle={
                             <InternalLink
                               className="hover:underline max-w-max"
                               href={`/user/${params.user}`}
@@ -187,7 +187,7 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                               }
                             />
                           }
-                          about={
+                          title={
                             <span className="text-xs">
                               <InternalLink
                                 className="hover:underline"
