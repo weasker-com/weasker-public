@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
-import { defaultImages } from "../../../utils/defaultImages";
+import { defaultImages } from "../../../../utils/defaultImages";
 import { notFound } from "next/navigation";
-import GenericPage from "@/app/(site)/[page]/GenericPage";
 import { Media, Page as PageType } from "@/payload/payload-types";
+import HelpPage from "./helpPage";
 
 type Props = {
   params: { page: string };
@@ -12,7 +12,14 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const query = `{
-      Pages(where: { seo__slug: { equals: "${params.page}" } }) {
+      Pages(
+        where: {
+          AND: [
+            { seo__slug: { equals: "${params.page}" } }
+            { category: { equals: help } }
+          ]
+        }
+      ) {
         docs {
           name
           seo {
@@ -22,7 +29,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
               url
               filename
             }
-         
           }
         }
       }
@@ -63,7 +69,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       images: [ogImage],
       type: "website",
-      url: `https://www.weasker.com/${slug}`,
+      url: `https://www.weasker.com/help/${slug}`,
       title: metaTitle,
       description: metaDescription,
       siteName: process.env.SITE_NAME,
@@ -95,7 +101,6 @@ async function getData(
           image {
             url
           }
-         
         }
       }
     }
@@ -120,5 +125,5 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
-  return <GenericPage data={data} params={params} />;
+  return <HelpPage data={data} params={params} />;
 }
