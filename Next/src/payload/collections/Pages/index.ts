@@ -28,6 +28,23 @@ export const Pages: CollectionConfig = {
       required: true,
     },
     {
+      name: "category",
+      label: "Category",
+      type: "select",
+      required: false,
+      defaultValue: ["noCategory"],
+      options: [
+        {
+          label: "Help",
+          value: "help",
+        },
+        {
+          label: "No category",
+          value: "noCategory",
+        },
+      ],
+    },
+    {
       name: "richText",
       label: "Content",
       type: "richText",

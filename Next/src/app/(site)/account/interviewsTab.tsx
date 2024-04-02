@@ -42,11 +42,11 @@ export const InterviewsTab = ({
   });
 
   const availableInterviewsNotTaken = availableInterviews.filter((item) => {
-    return !(item.interview as Interview).userInterviews.some(
-      (userInterview) => {
-        return answeredInterviewsIds.includes(userInterview as string);
-      }
-    );
+    return (item.interview as Interview).userInterviews
+      ? !(item.interview as Interview).userInterviews.some((userInterview) => {
+          return answeredInterviewsIds.includes(userInterview as string);
+        })
+      : [];
   });
 
   return (

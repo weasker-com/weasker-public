@@ -24,7 +24,7 @@ export interface User {
   id: string;
   displayName?: string | null;
   userName: string;
-  roles?: ('admin' | 'editor' | 'endUser')[] | null;
+  roles?: ('admin' | 'editor' | 'endUser' | 'qa')[] | null;
   userBadges?:
     | {
         badge: string | Badge;
@@ -138,12 +138,7 @@ export interface Seo {
   description?: string | null;
   excerpt?: string | null;
   image?: string | Media | null;
-  keywords?:
-    | {
-        keyword?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  keywords?: string[] | null;
 }
 export interface Application {
   id: string;
@@ -162,6 +157,7 @@ export interface Application {
 export interface Page {
   id: string;
   name: string;
+  category: 'help' | 'noCategory';
   richText?: {
     root: {
       children: {

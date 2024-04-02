@@ -74,8 +74,12 @@ main p {
   }
 }
 
-text h2 {
+.text-page h2 {
   @apply mb-3 mt-8 text-xl;
+}
+
+.text-page h2:first-child {
+  @apply mt-0;
 }
 
 text ul {

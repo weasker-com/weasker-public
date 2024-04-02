@@ -52,7 +52,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
   const [userHasBadge, setUserHasBadge] = useState(false);
 
   useEffect(() => {
-    if (user && allInterviews.length > 0) {
+    if (user) {
       if (
         allInterviews.some((item) => {
           return (item.user as User).seo.slug == user.seo.slug;
@@ -120,29 +120,29 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
           onClick={() => handleModalOpen("apply")}
         />
       );
-    } else if (userHasBadge && !userIsInterviewee) {
+    }
+
+    if (!userIsInterviewee) {
       return (
         <InternalLink
           href={`/interview/${params.badge}/edit/${params.interview}`}
           newTab={true}
           element={
-            <BigButton className="bg-tl-dark-blue" text="Take this interview" />
-          }
-        />
-      );
-    } else if (userIsInterviewee) {
-      return (
-        <InternalLink
-          href={`/interview/${params.badge}/edit/${params.interview}`}
-          newTab={true}
-          element={
-            <BigButton className="bg-tl-dark-blue" text="Edit your interview" />
+            <BigButton className="bg-tl-light-blue" text="Take interview" />
           }
         />
       );
     }
 
-    return null;
+    return (
+      <InternalLink
+        href={`/interview/${params.badge}/edit/${params.interview}`}
+        newTab={true}
+        element={
+          <BigButton className="bg-tl-light-blue" text="Edit interview" />
+        }
+      />
+    );
   };
 
   const ctaButton = getCtaButton();
