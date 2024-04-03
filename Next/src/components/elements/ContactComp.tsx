@@ -16,24 +16,36 @@ interface ContactCompProps {
 }
 
 const ContactComp = ({ userName, links, user }: ContactCompProps) => {
+  const domainCounts = {};
+
   const linkComponents = Object.entries(links)
     // eslint-disable-next-line
     .filter(([_, url]) => url !== null && url !== "")
-    .map(([key, url], index) => (
-      <li key={index}>
-        <ExternalLink
-          href={url}
-          key={key}
-          className="plausible-event-name=service-click"
-          element={
-            <div className="flex flex-row items-center content-center gap-2 text-lg text-tl-light-blue hover:underline underline-offset-4 decoration-inherit decoration-2">
-              <div>{parse(url).domainWithoutSuffix}</div>
-              <div>{externalLinkIcon(15)}</div>
-            </div>
-          }
-        />
-      </li>
-    ));
+
+    .map(([key, url], index) => {
+      const domain = parse(url).domainWithoutSuffix;
+
+      domainCounts[domain] = (domainCounts[domain] || 0) + 1;
+
+      const label =
+        domainCounts[domain] > 1 ? `${domain} ${domainCounts[domain]}` : domain;
+
+      return (
+        <li key={index}>
+          <ExternalLink
+            href={url}
+            key={key}
+            className="plausible-event-name=service-click"
+            element={
+              <div className="flex flex-row items-center content-center gap-2 text-lg text-tl-light-blue hover:underline underline-offset-4 decoration-inherit decoration-2">
+                <div>{label}</div>
+                <div>{externalLinkIcon(15)}</div>
+              </div>
+            }
+          />
+        </li>
+      );
+    });
 
   const userHasLinks = Object.values(links).some(
     (item) => item !== null && item !== ""
