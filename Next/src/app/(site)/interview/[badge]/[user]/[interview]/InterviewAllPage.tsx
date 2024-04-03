@@ -187,7 +187,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
         cta={ctaButton}
       />
       <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full">
-        {allInterviews.length > 1 ? (
+        {allInterviews.length > 0 ? (
           <div className="lg:w-[70%] flex flex-col w-full gap-3">
             {questionsWithAnswer.map((question, index) => {
               const relevantAnswers = allInterviews
@@ -257,7 +257,11 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
           <div className="lg:w-[70%] flex flex-col w-full gap-3">
             {interview.questions.map((question, index) => {
               return (
-                <WideBox key={index} className="p-5">
+                <WideBox
+                  key={index}
+                  className="p-5"
+                  id={question.question.seo.slug}
+                >
                   <div>
                     <ImageAndText
                       number={index + 1}
