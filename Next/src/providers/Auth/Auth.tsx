@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{
             email,
             password,
             userName,
-            seo: { slug: userName },
+            seo: { slug: userName.toLowerCase() },
           },
         });
 

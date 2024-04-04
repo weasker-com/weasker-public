@@ -267,6 +267,7 @@ async function getDataAllInterviews({ params }: Props) {
           name
           id
           badge {
+            terms
             id
             singularName
             pluralName
