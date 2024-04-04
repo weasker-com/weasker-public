@@ -87,7 +87,7 @@ export const InterviewsTab = ({
                 element={
                   <ImageAndText
                     preTitle="Interview"
-                    title={<h2>{interview.name}</h2>}
+                    title={<h2 className="capitalize">{interview.name}</h2>}
                     image={(interview.seo.image as Media)?.filename}
                     defaultImage={defaultImages.defaultInterviewImage}
                     imageClassName="w-11 h-11 sm:w-24 sm:h-24"
