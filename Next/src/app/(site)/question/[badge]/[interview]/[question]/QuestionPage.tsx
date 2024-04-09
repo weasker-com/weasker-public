@@ -92,6 +92,12 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
     "@type": "QAPage",
     mainEntity: {
       "@type": "Question",
+      author: {
+        "@type": "Organization",
+        name: "weasker",
+        url: `${process.env.SITE_URL}`,
+      },
+      datePublished: interview.createdAt,
       name: relevantQuestion.mediumQuestion,
       text: relevantQuestion.longQuestion,
       answerCount: relevantAnswers.length,
@@ -102,6 +108,12 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
           url: `https://www.weasker.com/question/${params.badge}/${
             params.interview
           }/${params.question}#${(item.user as User).seo.slug}`,
+          author: {
+            "@type": "Person",
+            name: item.user.displayName || item.user.userName,
+            url: `https://www.weasker.com/user/${item.user.seo.slug}`,
+          },
+          datePublished: item.answer.answer.updatedAt,
         };
       }),
     },

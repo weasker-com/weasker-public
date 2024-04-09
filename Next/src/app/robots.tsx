@@ -4,10 +4,11 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/api/og/*", "/interview/*/*/*"],
+      allow: ["*"],
       disallow: [
-        "/admin",
-        "/account",
+        "/api/og/*",
+        "/admin/*",
+        "/account/*",
         "/interview/*/edit/*",
         "/badge/qa",
         "/interview/qa/*",

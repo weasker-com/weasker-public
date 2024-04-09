@@ -33,12 +33,9 @@ export const profileIcon = (size: number) => (
 );
 
 export const badgersIcon = (size: number) => <LiaUserCheckSolid size={size} />;
-
 export const questionsIcon = (size: number) => <PiQuestionThin size={size} />;
-
 export const usersIcon = (size: number) => <PiUsersThreeLight size={size} />;
 export const shareIcon = (size: number) => <PiShareFatThin size={size} />;
-
 export const contactIcon = (size: number) => (
   <PiChatTeardropTextLight size={size} />
 );

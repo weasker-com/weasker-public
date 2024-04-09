@@ -60,7 +60,7 @@ const Users: CollectionConfig = {
       saveToJWT: true,
       type: "select",
       hasMany: true,
-      defaultValue: ["qa"],
+      defaultValue: ["endUser"],
       access: {
         create: isAdminFieldLevel,
         update: isAdminFieldLevel,

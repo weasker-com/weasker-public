@@ -23,7 +23,7 @@ type changeFrequency =
 async function getData() {
   const query = `
   {
-    UsersInterviews(limit: 1000000) {
+    UsersInterviews(where: { badgeSlug: { not_equals: "qa" } },limit: 1000000) {
       docs {
         userSlug
         interviewSlug
@@ -78,6 +78,7 @@ async function getData() {
     }
     Pages(limit: 1000000) {
       docs {
+        category
         seo {
           slug
         }
@@ -146,19 +147,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     });
 
-  const questions = data.data.Interviews.docs.flatMap((interview) => {
-    return interview.questions.map((question) => {
-      const badgeSlug = (interview.badge as Badge).seo.slug;
-      const interviewUpdatedAt = interview.updatedAt;
-      const interviewSlug = interview.seo.slug;
-      const questionSlug = question.question.seo.slug;
-      return {
-        url: `${WEBSITE_HOST_URL}/question/${badgeSlug}/${interviewSlug}/${questionSlug}`,
-        lastModified: interviewUpdatedAt,
-        changeFrequency: "daily" as changeFrequency,
-      };
+  const questions = data.data.Interviews.docs
+    .filter((interview) => {
+      return interview.userInterviews.length > 0;
+    })
+    .flatMap((interview) => {
+      return interview.questions.map((question) => {
+        const badgeSlug = (interview.badge as Badge).seo.slug;
+        const interviewUpdatedAt = interview.updatedAt;
+        const interviewSlug = interview.seo.slug;
+        const questionSlug = question.question.seo.slug;
+        return {
+          url: `${WEBSITE_HOST_URL}/question/${badgeSlug}/${interviewSlug}/${questionSlug}`,
+          lastModified: interviewUpdatedAt,
+          changeFrequency: "daily" as changeFrequency,
+        };
+      });
     });
-  });
 
   const users = data.data.Users.docs.map((user) => {
     const slug = user.seo.slug;
@@ -183,6 +188,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = data.data.Pages.docs.map((page) => {
     const slug = page.seo.slug;
     const lastModified = page.updatedAt;
+
+    if (page.category && page.category !== "noCategory") {
+      return {
+        url: `${WEBSITE_HOST_URL}/${page.category}/${slug}`,
+        lastModified,
+        changeFrequency: "weekly" as changeFrequency,
+      };
+    }
     return {
       url: slug == "/" ? `${WEBSITE_HOST_URL}` : `${WEBSITE_HOST_URL}/${slug}`,
       lastModified,
