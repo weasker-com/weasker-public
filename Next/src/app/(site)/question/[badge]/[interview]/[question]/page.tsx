@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       docs {
           id
         interview{
+          createdAt
           id
           name 
            seo {
@@ -178,9 +179,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: metaTitle,
     description: metaDescription,
     authors: authors,
-    alternates: {
-      canonical: `https://www.weasker.com/interview/${params.badge}/all/${params.interview}/`,
-    },
     openGraph: {
       images: [ogImage],
       type: "website",

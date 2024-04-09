@@ -22,9 +22,6 @@ const metaDescription =
 export const metadata: Metadata = {
   applicationName: process.env.SITE_NAME,
   authors: { name: process.env.SITE_NAME, url: process.env.SITE_URL },
-  alternates: {
-    canonical: `https://www.weasker.com`,
-  },
   title: metaTitle,
   description: metaDescription,
   openGraph: {

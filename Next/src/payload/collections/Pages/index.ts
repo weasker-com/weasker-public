@@ -32,7 +32,7 @@ export const Pages: CollectionConfig = {
       label: "Category",
       type: "select",
       required: false,
-      defaultValue: ["noCategory"],
+      defaultValue: "noCategory",
       options: [
         {
           label: "Help",
