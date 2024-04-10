@@ -95,7 +95,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
       author: {
         "@type": "Organization",
         name: "weasker",
-        url: `${process.env.SITE_URL}`,
+        url: `https://www.weasker.com`,
       },
       datePublished: interview.createdAt,
       name: relevantQuestion.mediumQuestion,

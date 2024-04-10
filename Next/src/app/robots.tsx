@@ -13,6 +13,9 @@ export default function robots(): MetadataRoute.Robots {
         "/badge/qa",
         "/interview/qa/*",
         "/question/qa/*",
+        "/login*",
+        "/register*",
+        "/reset-password*",
       ],
     },
     sitemap:

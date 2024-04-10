@@ -201,9 +201,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     const metaTitle = capitalize(
-      `${badge.singularName} ${user.displayName || user.userName}: ${
-        interview.name
-      }`
+      `${user.displayName || user.userName}: ${interview.name}`
     );
 
     const metaDescription =
@@ -230,7 +228,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: metaDescription,
       authors: authors,
       alternates: {
-        canonical: `https://www.weasker.com/interview/${slugA}/all/${slugC}/`,
+        canonical: `https://www.weasker.com/interview/${slugA}/all/${slugC}`,
       },
       openGraph: {
         images: [ogImage],

@@ -40,6 +40,7 @@ const Answer: React.FC<AnswerProps> = ({ answer }) => {
       )}
       {answer.textAnswer && (
         <div
+          className="break-words"
           dangerouslySetInnerHTML={{
             __html: answer.textAnswer.replace(/\n/g, "<br>"),
           }}
