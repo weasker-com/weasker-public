@@ -216,6 +216,7 @@ async function getData(badgeParam: string, interviewParam: string) {
       docs {
           id
         interview{
+          createdAt
           id
           name 
            seo {

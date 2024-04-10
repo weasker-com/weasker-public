@@ -99,7 +99,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const userImage = (user.seo.image as Media)?.url;
 
   const metaTitle = capitalize(
-    seoTitle ? seoTitle : `${user.displayName || userName} | Weasker`
+    seoTitle
+      ? seoTitle
+      : `${user.displayName || userName} | ${badgesSingularNames}`
   );
 
   const metaDescription = seoDescription

@@ -104,7 +104,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const seoTitle = badge.seo.title;
   const seoDescription = badge.seo.description;
 
-  const metaTitle = capitalize(seoTitle ? seoTitle : `${pluralName} Badge`);
+  const metaTitle = capitalize(
+    seoTitle ? seoTitle : `${pluralName} Badge | ${usersAmount} Experts`
+  );
 
   const metaDescription = seoDescription
     ? seoDescription
