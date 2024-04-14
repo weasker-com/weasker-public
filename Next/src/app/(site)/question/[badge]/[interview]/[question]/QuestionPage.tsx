@@ -130,7 +130,6 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
       }
     ></InternalLink>
   );
-
   return (
     <>
       <script
