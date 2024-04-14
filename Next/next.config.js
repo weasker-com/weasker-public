@@ -5,6 +5,34 @@ const nextConfig = {
     serverActions: true,
     serverComponentsExternalPackages: ["payload"],
   },
+  async redirects() {
+    return [
+      {
+        source: "/question/valorant-coaches/:slug",
+        destination:
+          "/question/valorant-coaches/hire-freelance-valorant-coach/:slug",
+        permanent: true,
+      },
+      {
+        source: "/question/anime-artists/:slug",
+        destination:
+          "/question/anime-artists/hire-freelance-anime-artist/:slug",
+        permanent: true,
+      },
+      {
+        source: "/question/spanish-tutors/:slug",
+        destination:
+          "/question/spanish-tutors/hire-freelance-spanish-teacher/:slug",
+        permanent: true,
+      },
+      {
+        source: "/question/apex-legends-coaches/:slug",
+        destination:
+          "/question/apex-legends-coaches/freelance-apex-legends-coach/:slug",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
@@ -12,7 +40,6 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
         port: "",
       },
-
       {
         protocol: "http",
         hostname: "localhost",
