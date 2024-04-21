@@ -17,6 +17,55 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const query = `{
+    Interviews(
+      where: {
+        AND: [
+          { seo__slug: {equals:"${params.interview}"} }
+        ]
+      }
+    ) {
+    docs {
+            name
+            id
+            badge {
+              terms
+              id
+              singularName
+              pluralName
+              seo {
+                slug
+                image {
+                  filename
+                  url
+                }
+              }
+            }
+            seo {
+              slug
+              image {
+                filename
+                url
+              }
+            }
+            questions {
+              question {
+                shortQuestion
+                mediumQuestion
+                longQuestion
+                seo {
+                  slug
+                  image {
+                    url
+                    filename
+                  }
+                }
+                seo {
+                  slug
+                }
+              }
+            }
+          }
+    }
     UsersInterviews(
       where: {
         AND: [
@@ -113,25 +162,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
     `;
 
-  const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
-    await fetchData({
-      query,
-      method: "POST",
-      collection: "UsersInterviews",
-      mustHave: ["UsersInterviews"],
-    });
+  const data: {
+    data: {
+      UsersInterviews: { docs: UsersInterview[] };
+      Interviews: { docs: Interview[] };
+    };
+  } | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "UsersInterviews",
+    mustHave: ["Interviews"],
+  });
 
   if (!data) {
     return {};
   }
 
-  const relevantQuestion = (
-    data.data.UsersInterviews.docs[0].interview as Interview
-  ).questions.filter((item) => {
+  const interview = data.data.Interviews.docs[0];
+
+  const relevantQuestion = interview.questions.filter((item) => {
     return item.question.seo.slug == params.question;
   })[0].question;
-
-  const interview = data.data.UsersInterviews.docs[0].interview as Interview;
 
   const answers = data.data.UsersInterviews.docs.filter((item) => {
     return item.answers.some((item) => {
@@ -201,6 +252,55 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function getData(badgeParam: string, interviewParam: string) {
   const query = `{
+    Interviews(
+      where: {
+        AND: [
+          { seo__slug: {equals:"${interviewParam}"} }
+        ]
+      }
+    ) {
+    docs {
+            name
+            id
+            badge {
+              terms
+              id
+              singularName
+              pluralName
+              seo {
+                slug
+                image {
+                  filename
+                  url
+                }
+              }
+            }
+            seo {
+              slug
+              image {
+                filename
+                url
+              }
+            }
+            questions {
+              question {
+                shortQuestion
+                mediumQuestion
+                longQuestion
+                seo {
+                  slug
+                  image {
+                    url
+                    filename
+                  }
+                }
+                seo {
+                  slug
+                }
+              }
+            }
+          }
+    }
     UsersInterviews(
       where: {
         AND: [
@@ -295,13 +395,17 @@ async function getData(badgeParam: string, interviewParam: string) {
   }
     `;
 
-  const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
-    await fetchData({
-      query,
-      method: "POST",
-      collection: "Interviews",
-      mustHave: ["UsersInterviews"],
-    });
+  const data: {
+    data: {
+      UsersInterviews: { docs: UsersInterview[] };
+      Interviews: { docs: Interview[] };
+    };
+  } | null = await fetchData({
+    query,
+    method: "POST",
+    collection: "Interviews",
+    mustHave: ["Interviews"],
+  });
 
   if (!data) {
     return null;
