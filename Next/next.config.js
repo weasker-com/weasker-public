@@ -1,17 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // webpack(config, options) {
-  //   if (options.dev) {
-  //     config.devtool = "eval-source-map"; // Disable source maps in development
-  //   }
-  //   return config;
+  // experimental: {
+  //   webpackBuildWorker: true,
+  //   appDir: true,
+  //   serverActions: true,
+  //   serverComponentsExternalPackages: ["payload"],
   // },
-  experimental: {
-    webpackBuildWorker: true,
-    appDir: true,
-    serverActions: true,
-    serverComponentsExternalPackages: ["payload"],
-  },
   async redirects() {
     return [
       {
