@@ -28,7 +28,12 @@ import ContactComp from "@/components/elements/ContactComp";
 const { convert } = require("html-to-text");
 
 interface QuestionPageProps {
-  data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null;
+  data: {
+    data: {
+      UsersInterviews: { docs: UsersInterview[] };
+      Interviews: { docs: Interview[] };
+    };
+  } | null;
   params: { badge: string; interview: string; question: string };
 }
 
@@ -37,8 +42,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const interviews = data.data.UsersInterviews.docs;
-  const interview = interviews[0].interview as Interview;
-  const badge = data.data.UsersInterviews.docs[0].badge as Badge;
+  const interview = data.data.Interviews.docs[0];
+  const badge = interview.badge as Badge;
   const relevantQuestion = interview.questions.filter(
     (item) => item.question.seo.slug == params.question
   )[0]?.question;
@@ -65,17 +70,35 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
     })
     .filter((item) => item);
 
+  const getAnswerPriority = (entry: {
+    user: User;
+    answer: { answer?: UsersInterview["answers"][number]["answer"] };
+  }) => {
+    const answer = entry.answer.answer;
+
+    if (!answer) {
+      return Infinity;
+    }
+
+    const hasVideo = answer.video != null;
+    const hasImages = answer.images != null && answer.images.length > 0;
+    const textLength = answer.textAnswer?.length ?? 0;
+
+    if (hasVideo && hasImages) return 1;
+    if (hasVideo) return 2;
+    if (hasImages) return 3;
+    return 1000 - textLength;
+  };
+
+  const sortedRelevantAnswers = relevantAnswers.sort((a, b) => {
+    const priorityA = getAnswerPriority(a);
+    const priorityB = getAnswerPriority(b);
+    return priorityA - priorityB;
+  });
+
   const [contactUser, setContactUser] = useState<User>(
     (relevantAnswers[0]?.user as User) || null
   );
-
-  if (relevantAnswers.length < 1) {
-    return (
-      <WideBox className="p-3 sm:p-5">
-        <>Looks like this question has no answers yet</>
-      </WideBox>
-    );
-  }
 
   const handleModalOpen = (slug: string) => {
     setModalIsOpen(true);
@@ -101,7 +124,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
       name: relevantQuestion.mediumQuestion,
       text: relevantQuestion.longQuestion,
       answerCount: relevantAnswers.length,
-      suggestedAnswer: relevantAnswers.map((item) => {
+      suggestedAnswer: sortedRelevantAnswers.map((item) => {
         return {
           "@type": "Answer",
           text: convert(item.answer.answer.textAnswer),
@@ -130,6 +153,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
       }
     ></InternalLink>
   );
+
   return (
     <>
       <script
@@ -159,76 +183,95 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
       />
       <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
         <div className="lg:w-[70%] flex flex-col gap-2">
-          {relevantAnswers.map((item, index) => {
-            return (
-              <WideBox className="p-5" key={index} id={item.user.seo.slug}>
-                <div className="flex flex-col gap-5 w-full">
-                  <ImageAndText
-                    preTitle={
-                      <InternalLink
-                        className="hover:underline max-w-max"
-                        href={`/user/${item.user.seo.slug}`}
-                        element={
-                          <h2 className="text-base font-normal">
-                            {item.user.displayName || item.user.userName}
-                          </h2>
-                        }
-                      />
-                    }
-                    title={
-                      <span className="text-xs">
+          {relevantAnswers && relevantAnswers.length > 0 ? (
+            sortedRelevantAnswers.map((item, index) => {
+              return (
+                <WideBox className="p-5" key={index} id={item.user.seo.slug}>
+                  <div className="flex flex-col gap-5 w-full">
+                    <ImageAndText
+                      preTitle={
                         <InternalLink
-                          className="hover:underline"
-                          href={`/badge/${params.badge}`}
-                          element={badge.singularName}
-                        />{" "}
-                        &#8226;{" "}
-                        {formatDistanceToNow(item.answer.answer.updatedAt, {
-                          addSuffix: true,
-                        })}{" "}
-                        &#8226;{" "}
-                        <span
-                          className="hover:cursor-pointer hover:underline text-tl-light-blue"
-                          onClick={() => {
-                            setContactUser(item.user);
-                            setActiveModal("contact"), setModalIsOpen(true);
-                          }}
-                        >
-                          Contact
-                        </span>
-                      </span>
-                    }
-                    image={(item.user.seo.image as Media)?.filename}
-                    defaultImage={defaultImages.defaultUserImage}
-                    imageClassName="w-11 h-11"
-                  />
-                  <Answer answer={item.answer.answer} />
-                  <div className="flex flex-row gap-2 sm:px-5">
-                    <InternalLink
-                      href={`/interview/${params.badge}/${item.user.seo.slug}/${params.interview}`}
-                      element={
-                        <GentleButton
-                          className="text-xs"
-                          text={`${
-                            item.user.displayName || item.user.userName
-                          } full interview`}
+                          className="hover:underline max-w-max"
+                          href={`/user/${item.user.seo.slug}`}
+                          element={
+                            <h2 className="text-base font-normal">
+                              {item.user.displayName || item.user.userName}
+                            </h2>
+                          }
                         />
                       }
+                      title={
+                        <span className="text-xs">
+                          <InternalLink
+                            className="hover:underline"
+                            href={`/badge/${params.badge}`}
+                            element={badge.singularName}
+                          />{" "}
+                          &#8226;{" "}
+                          {formatDistanceToNow(item.answer.answer.updatedAt, {
+                            addSuffix: true,
+                          })}{" "}
+                          &#8226;{" "}
+                          <span
+                            className="hover:cursor-pointer hover:underline text-tl-light-blue"
+                            onClick={() => {
+                              setContactUser(item.user);
+                              setActiveModal("contact"), setModalIsOpen(true);
+                            }}
+                          >
+                            Contact
+                          </span>
+                        </span>
+                      }
+                      image={(item.user.seo.image as Media)?.filename}
+                      defaultImage={defaultImages.defaultUserImage}
+                      imageClassName="w-11 h-11"
                     />
+                    <Answer answer={item.answer.answer} />
+                    <div className="flex flex-row gap-2 sm:px-5">
+                      <InternalLink
+                        href={`/interview/${params.badge}/${item.user.seo.slug}/${params.interview}`}
+                        element={
+                          <GentleButton
+                            className="text-xs"
+                            text={`${
+                              item.user.displayName || item.user.userName
+                            } full interview`}
+                          />
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
-              </WideBox>
-            );
-          })}
+                </WideBox>
+              );
+            })
+          ) : (
+            <WideBox className="p-3 sm:p-5">
+              <span>
+                Looks like no{" "}
+                <span className="font-semibold lowercase">
+                  {badge.singularName}
+                </span>{" "}
+                answered this questions yet.
+              </span>
+              <InternalLink
+                href={`/interview/${params.badge}/all/${params.interview}`}
+                element={"Apply for this interview"}
+                style="blue"
+              />
+            </WideBox>
+          )}
         </div>
         <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
           <WideBox className="p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
-              <GentleButton
-                className=" border border-tl-dark-blue"
-                onClick={() => handleModalOpen("users")}
-                text="Answers list"
-              />
+              {relevantAnswers && relevantAnswers.length > 0 && (
+                <GentleButton
+                  className=" border border-tl-dark-blue"
+                  onClick={() => handleModalOpen("users")}
+                  text="Answers list"
+                />
+              )}
               <GentleButton
                 onClick={() => handleModalOpen("share")}
                 className=" border border-tl-dark-blue"

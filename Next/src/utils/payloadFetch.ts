@@ -51,7 +51,8 @@ export async function fetchData<T>({
         method,
         headers,
         body: JSON.stringify({ query }),
-        cache: cache ? "default" : "no-store",
+        // cache: cache ? "default" : "no-store",
+        next: { revalidate: cache ? 60 * 60 * 24 : 0 },
       }
     )
       .then(checkStatus)

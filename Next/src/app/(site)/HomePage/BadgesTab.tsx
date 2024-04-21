@@ -23,9 +23,7 @@ export const BadgesTab = ({
   activeTab,
   handleModalOpen,
 }: BadgesTabProps) => {
-  const relevantBadges = data.filter(
-    (item) => item?.interviews?.length > 0 && item?.users.length > 0
-  );
+  const curatedBadges = data.sort((a, b) => b.users.length - a.users.length);
 
   return (
     <div className="flex flex-col lg:flex-row gap-3 max-w-[1000px] w-full mt-2">
@@ -35,7 +33,7 @@ export const BadgesTab = ({
         </WideBox>
         <WideBox className="p-5 flex flex-row">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
-            {relevantBadges.map((item, index) => {
+            {curatedBadges.map((item, index) => {
               return (
                 <InternalLink
                   className="w-full"
@@ -49,14 +47,9 @@ export const BadgesTab = ({
                         preTitle={<h2>{item.pluralName}</h2>}
                         title={
                           <div className="flex flex-row gap-1">
-                            {item?.users?.length && item.users?.length > 0 && (
+                            {item?.users?.length > 0 && (
                               <span className="text-sm">
                                 {item.users.length} Experts
-                              </span>
-                            )}
-                            {item.interviews.length > 0 && (
-                              <span className="text-sm">
-                                , {item.interviews.length} interviews
                               </span>
                             )}
                           </div>

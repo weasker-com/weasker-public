@@ -211,6 +211,33 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                     answer?.answer?.textAnswer?.length > 0
                 );
 
+              const getAnswerPriority = (entry: {
+                user: User;
+                answer?: UsersInterview["answers"][number]["answer"];
+              }) => {
+                const answer = entry.answer;
+
+                if (!answer) {
+                  return Infinity;
+                }
+
+                const hasVideo = answer.video != null;
+                const hasImages =
+                  answer.images != null && answer.images.length > 0;
+                const textLength = answer.textAnswer?.length ?? 0;
+
+                if (hasVideo && hasImages) return 1;
+                if (hasVideo) return 2;
+                if (hasImages) return 3;
+                return 1000 - textLength;
+              };
+
+              const sortedRelevantAnswers = relevantAnswers.sort((a, b) => {
+                const priorityA = getAnswerPriority(a);
+                const priorityB = getAnswerPriority(b);
+                return priorityA - priorityB;
+              });
+
               const goToPrevUser = () => {
                 const currentIndex = relevantAnswers.findIndex(
                   (item) => item.user.seo.slug === currentUser.seo.slug
@@ -239,7 +266,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                   badgeName={badge.singularName}
                   questionNumber={index + 1}
                   question={question}
-                  relevantAnswers={relevantAnswers}
+                  relevantAnswers={sortedRelevantAnswers}
                   onGoToNextUser={goToNextUser}
                   onGoToPrevUser={goToPrevUser}
                   onChangeUser={setCurrentUser}
