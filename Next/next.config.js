@@ -1,11 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // experimental: {
-  //   webpackBuildWorker: true,
-  //   appDir: true,
-  //   serverActions: true,
-  //   serverComponentsExternalPackages: ["payload"],
-  // },
   async redirects() {
     return [
       {
@@ -34,7 +28,7 @@ const nextConfig = {
       },
     ];
   },
-  // productionBrowserSourceMaps: true,
+
   images: {
     remotePatterns: [
       {
