@@ -59,7 +59,7 @@ export const InterviewsTab = ({
                       defaultImage={defaultImages.defaultInterviewImage}
                       imageClassName="w-24 h-24"
                       preTitle={
-                        <h2 className="lg:text-xl capitalize">
+                        <h2 className="lg:text-lg capitalize">
                           {interview.userInterviews.length} {interview.name}
                         </h2>
                       }

@@ -1,6 +1,6 @@
 //example: www.weasker.com/api/og?img=${image}&preTitle=${process.env.SITE_NAME}&title=${pageName}
 
-import { ImageResponse } from "next/server";
+import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
