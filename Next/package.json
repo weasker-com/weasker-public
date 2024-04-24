@@ -58,7 +58,6 @@
 		"typescript": "5.2.2"
 	},
 	"devDependencies": {
-		"@swc/core": "^1.3.102",
 		"copyfiles": "^2.4.1",
 		"cross-env": "^7.0.3",
 		"eslint": "8.56.0",
