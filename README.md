@@ -12,8 +12,8 @@ If you want to follow my process of building Weasker you can visit my personal w
 
 
 **Tech Stack:**
-Next.js
-Payload.cms
+- Next.js
+- Payload.cms
 Typescript
 Talwind
 axios
