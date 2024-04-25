@@ -1,4 +1,5 @@
-**Personal note:**
+*![omri-favicon](https://github.com/weasker-com/weasker-public/assets/76939362/5d8c00e5-c4b1-4373-82d0-934008a64be1)
+*Personal note:**
 This public repository is a copy of the private production repository for Weasker.com—a platform dedicated to interviewing groups of experts and brands and comparing their responses.
 
 Weasker is a burgeoning project, and I've decided to share its code with the world. By doing so, I hope to engage others in the project and demonstrate my development approach.
