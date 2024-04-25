@@ -1,14 +1,12 @@
 **Personal note:**
 
-This public repopsityory is a copy of the private production repository of weasker.com - A platform for interviwing groups of experts and brands and comparing their answers! 
+This public repository is a copy of the private production repository for Weasker.com—a platform dedicated to interviewing groups of experts and brands and comparing their responses.
 
-Weasker is a project taking its first steps and Iv'e decided to share its code with the world. 
+Weasker is a burgeoning project, and I've decided to share its code with the world. By doing so, I hope to engage others in the project and demonstrate my development approach.
 
-That way I hope to get others involved with the project and also show how I do things. 
+As a relatively new web developer, I acknowledge that the code may not be perfect, but I am committed to learning and improving it as I progress.
 
-I'm a rather new web-dev so the code is mostly not perfect, but I am doing my best to learn and improve it as I move forward. 
-
-If you want to follow my process of building Weasker you can visit my personal website at: www.omribarmats.com 
+If you're interested in following my journey with Weasker, visit my personal website at www.omribarmats.com.
 
 
 **Tech Stack:**
