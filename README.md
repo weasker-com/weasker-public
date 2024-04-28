@@ -1,6 +1,7 @@
 ![omri-favicon-small](https://github.com/weasker-com/weasker-public/assets/76939362/d4fbfc28-22e9-4712-99bd-f100793203b6)
  
 **Personal note:**
+
 This public repository is a copy of the private production repository for Weasker.com—a platform dedicated to interviewing groups of experts and brands and comparing their responses.
 
 Weasker is a new project, and I've decided to share its code with the world. By doing so, I hope to engage others in the project and demonstrate my development approach.
@@ -21,15 +22,19 @@ If you're interested in following my journey with Weasker, visit my personal web
 - Plausible analytics
 
 **Project Status**
+
 Weasker officially launched on March 26 and since then I've been focusing on creating more interviews and improving SEO
 
 **Vision**
+
 My vision is that users on Weasker will create interviews and also help moderate and approve fellow experts. I think the options for interviews are endless. 
 
 **Funding**
+
 I'm looking to find the right organization or indevidual who sees the potential I see in Weasker and that will be whilling to make it happen together. 
 
 **Licence**
+
 Read Only License 1.0
 
 YOU CAN:
