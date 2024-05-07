@@ -237,7 +237,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
         i.type === "video/x-msvideo" ||
         i.type === "video/3gpp";
 
-      const isFileSizeValid = i.size <= 500000000;
+      const isFileSizeValid = i.size <= 100000000;
 
       if (isSupportedFileType && isFileSizeValid) {
         const videoURL = URL.createObjectURL(i);
@@ -251,7 +251,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
         }
         if (!isFileSizeValid) {
           errorMessage =
-            "File size exceeds the 500 MB limit. Please upload a smaller video.";
+            "File size exceeds the 100 MB limit. Please upload a smaller video.";
         }
 
         setErrorMessages([
@@ -864,7 +864,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
                                         Supported file format: MP4, MPEG,
                                         QuickTime, AVI (X-MSVIDEO), or 3GPP
                                       </div>
-                                      <div>Maximum file size: 500 MB</div>
+                                      <div>Maximum file size: 100 MB</div>
                                     </div>
                                   </div>
                                 </div>

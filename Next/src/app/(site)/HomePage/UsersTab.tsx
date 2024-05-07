@@ -98,7 +98,7 @@ export const UsersTab = ({
               }`}
               text={<>{usersIcon(20)} Experts</>}
               onClick={() => {
-                handleTabSelect("badgers");
+                handleTabSelect("users");
               }}
             />
             <GentleButton

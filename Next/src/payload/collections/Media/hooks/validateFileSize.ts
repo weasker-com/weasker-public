@@ -3,7 +3,7 @@ import { FieldHook } from "payload/types";
 
 export const validateFileSize: FieldHook = ({ value, field, siblingData }) => {
   const maxImageSize = 2 * 1024 * 1024;
-  const maxVideoSize = 500 * 1024 * 1024;
+  const maxVideoSize = 100 * 1024 * 1024;
 
   let maximumSize;
   if (siblingData.mimeType.includes("image")) {
