@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },) {
       docs {
         id
+        answersAmount
         userSlug
         user{
           id
@@ -151,10 +152,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (params.user == "all") {
     const metaTitle =
       usersInterviews.length > 1
-        ? capitalize(`${usersInterviews.length} ${interview.name}`)
-        : capitalize(`${interview.name}`);
+        ? capitalize(
+            `We interviewed ${usersInterviews.length} ${
+              (interview.badge as Badge).pluralName
+            } |${interview.questions.length} Questions`
+          )
+        : capitalize(
+            `We interviewed ${(interview.badge as Badge).pluralName} |${
+              interview.questions.length
+            } Questions`
+          );
 
-    const metaDescription = `${badge.pluralName} ${slugsToKeywords}`;
+    const metaDescription = `We asked ${badge.pluralName} about ${slugsToKeywords}`;
 
     const authors = usersInterviews.map((item) => {
       return {
@@ -201,21 +210,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     const metaTitle = capitalize(
-      `${user.displayName || user.userName}: ${interview.name}`
+      `Interview with ${badge.singularName} ${
+        user.displayName || user.userName
+      } | ${relevantInterview.answersAmount} answers`
     );
 
-    const metaDescription =
-      user.seo.excerpt ||
-      `${badge.singularName} ${
-        user.displayName || user.userName
-      } about ${slugsToKeywords}`;
+    const metaDescription = `${badge.singularName} ${
+      user.displayName || user.userName
+    } about ${slugsToKeywords}`;
 
-    const authors = usersInterviews.map((item) => {
-      return {
-        name: (item.user as User).displayName || (item.user as User).userName,
-        url: `https://www.weasker.com/user/${(item.user as User).seo.slug}`,
-      };
-    });
+    const author = {
+      name:
+        (relevantInterview.user as User).displayName ||
+        (relevantInterview.user as User).userName,
+      url: `https://www.weasker.com/user/${
+        (relevantInterview.user as User).seo.slug
+      }`,
+    };
 
     const ogImage = `${process.env.SITE_URL}/api/og?img=${
       (interview.seo.image as Media).url
@@ -226,7 +237,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: metaTitle,
       description: metaDescription,
-      authors: authors,
+      authors: author,
       alternates: {
         canonical: `https://www.weasker.com/interview/${slugA}/all/${slugC}`,
       },

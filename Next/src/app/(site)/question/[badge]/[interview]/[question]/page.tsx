@@ -222,7 +222,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       name: user.displayName || user.userName,
-      url: `https://www.weasker/user/${item.userSlug}`,
+      url: `https://www.weasker/user/${user.seo.slug}`,
     };
   });
 
@@ -260,6 +260,7 @@ async function getData(badgeParam: string, interviewParam: string) {
       }
     ) {
     docs {
+      createdAt
             name
             id
             badge {

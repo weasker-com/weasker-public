@@ -110,6 +110,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
     setActiveModal(null);
   };
 
+  console.log("interview.createdAt", interview.createdAt);
+
   const jsonLd: WithContext<QAPage> = {
     "@context": "https://schema.org",
     "@type": "QAPage",
