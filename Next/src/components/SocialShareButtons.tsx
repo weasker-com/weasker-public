@@ -9,6 +9,20 @@ import {
   RedditShareButton,
   TwitterShareButton,
   TwitterIcon,
+  TelegramShareButton,
+  TelegramIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+  FacebookShareButton,
+  FacebookIcon,
+  LineShareButton,
+  LineIcon,
+  PinterestShareButton,
+  PinterestIcon,
+  EmailShareButton,
+  EmailIcon,
+  TumblrShareButton,
+  TumblrIcon,
 } from "next-share";
 
 const SocialShareButtons = () => {
@@ -44,6 +58,17 @@ const SocialShareButtons = () => {
       <span className="text-lg font-extrabold smallCaps text-tl-dark-blue">
         Share
       </span>
+      <button onClick={handleCopy} className="focus:outline-none">
+        <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+          <IoLinkOutline size={20} />
+          <>Copy link</>
+        </div>
+      </button>
+      {copied && (
+        <div className="text-tl-light-blue text-sm">
+          Link copied to clipboard
+        </div>
+      )}
       <div className="flex flex-row flex-wrap gap-3 font-bold">
         <TwitterShareButton
           url={`https://www.weasker.com${pathname}`}
@@ -75,18 +100,73 @@ const SocialShareButtons = () => {
             <>Reddit</>
           </div>
         </RedditShareButton>
-        <button onClick={handleCopy} className="focus:outline-none">
+
+        <TelegramShareButton
+          url={`https://weasker.com${pathname}`}
+          title={ogTitle}
+        >
           <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
-            <IoLinkOutline size={20} />
-            <>Copy link</>
+            <TelegramIcon size={25} round />
+            <>Telegram</>
           </div>
-        </button>
+        </TelegramShareButton>
+        <WhatsappShareButton
+          url={`https://weasker.com${pathname}`}
+          title={ogTitle}
+          separator=":: "
+        >
+          <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+            <WhatsappIcon size={25} round />
+            <>WhatsApp</>
+          </div>
+        </WhatsappShareButton>
+        <FacebookShareButton
+          url={`https://weasker.com${pathname}`}
+          quote={ogTitle}
+          hashtag={"#weasker"}
+        >
+          <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+            <FacebookIcon size={25} round />
+            <>Facebook</>
+          </div>
+        </FacebookShareButton>
+
+        <LineShareButton url={`https://weasker.com${pathname}`} title={ogTitle}>
+          <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+            <LineIcon size={25} round />
+            <>Line</>
+          </div>
+        </LineShareButton>
+
+        <PinterestShareButton
+          url={`https://weasker.com${pathname}`}
+          media={ogTitle}
+        >
+          <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+            <PinterestIcon size={25} round />
+            <>Pinterest</>
+          </div>
+        </PinterestShareButton>
+        <EmailShareButton
+          url={`https://weasker.com${pathname}`}
+          subject={ogTitle}
+          body={ogDescription}
+        >
+          <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+            <EmailIcon size={25} round />
+            <>Email</>
+          </div>
+        </EmailShareButton>
+        <TumblrShareButton
+          url={`https://weasker.com${pathname}`}
+          title={ogTitle}
+        >
+          <div className="flex flex-row items-center gap-1 hover:text-tl-light-blue">
+            <TumblrIcon size={25} round />
+            <>Tumblr</>
+          </div>
+        </TumblrShareButton>
       </div>
-      {copied && (
-        <div className="text-tl-light-blue text-sm">
-          Link copied to clipboard
-        </div>
-      )}
     </div>
   );
 };
