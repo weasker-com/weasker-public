@@ -7,7 +7,7 @@ type HeroProps = {
   title: string | React.JSX.Element;
   preTitle?: string | React.JSX.Element;
   image: string | null;
-  alt?: string;
+  alt: string;
   cta?: ReactNode;
   about?: string | React.JSX.Element;
   longTitle?: boolean;

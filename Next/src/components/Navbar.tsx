@@ -61,12 +61,12 @@ const Navbar = () => {
         <div className="flex flex-row gap-5 justify-between items-center my-auto py-1 ">
           <div className="flex flex-col items-center select-none">
             <InternalLink
-              element={<>Weasker</>}
+              element={<>Weasker&nbsp;</>}
               className="text-4xl leading-none font-extrabold smallCaps text-tl-dark-blue"
               href="/"
             />
             <span className="text-xs text-tl-dark-blue pb-1">
-              Interviewing Experts
+              Interviewing Experts&nbsp;
             </span>
           </div>
           {pathname !== "/login" &&
@@ -122,7 +122,7 @@ const Navbar = () => {
                   ) : (
                     <div className="flex flex-row items-center gap-1">
                       <PiSignIn />
-                      Log in
+                      &nbsp;Log in
                     </div>
                   )}
                 </div>

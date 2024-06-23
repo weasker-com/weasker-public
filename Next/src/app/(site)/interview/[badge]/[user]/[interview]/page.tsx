@@ -384,6 +384,15 @@ async function getDataAllInterviews({ params }: Props) {
 
 async function getDataSingleInterview({ params }: Props) {
   const query = `{
+  Interviews
+  (
+    where: { seo__slug: {equals:"${params.interview}"} }
+  ) 
+    {
+    docs {
+       userInterviews{userSlug user{seo{image{url filename}}userName}}
+      }
+  }
     UsersInterviews(where: {
         AND: [
           {
@@ -474,13 +483,17 @@ async function getDataSingleInterview({ params }: Props) {
     }
   }`;
 
-  const data: { data: { UsersInterviews: { docs: UsersInterview[] } } } | null =
-    await fetchData({
-      query: query,
-      method: "POST",
-      collection: "UsersInterviews",
-      mustHave: ["UsersInterviews"],
-    });
+  const data: {
+    data: {
+      UsersInterviews: { docs: UsersInterview[] };
+      Interviews: { docs: InterviewType[] };
+    };
+  } | null = await fetchData({
+    query: query,
+    method: "POST",
+    collection: "UsersInterviews",
+    mustHave: ["UsersInterviews"],
+  });
 
   if (!data) {
     return null;

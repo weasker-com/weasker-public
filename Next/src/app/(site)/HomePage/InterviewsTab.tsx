@@ -55,6 +55,7 @@ export const InterviewsTab = ({
                 <WideBox className="transition-shadow ease-in-out duration-300 p-5 hover:shadow-tl-dark-blue">
                   <div className="w-full">
                     <ImageAndText
+                      alt={`Image of the interview: ${interview.name}`}
                       image={(interview.seo.image as Media)?.filename}
                       defaultImage={defaultImages.defaultInterviewImage}
                       imageClassName="w-24 h-24"

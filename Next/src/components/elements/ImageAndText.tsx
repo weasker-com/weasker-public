@@ -6,7 +6,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 interface ImageAndTextProps {
   image?: string;
   defaultImage?: string;
-  alt?: string;
+  alt: string;
   number?: number;
   preTitle?: string | ReactNode;
   title?: string | ReactNode;

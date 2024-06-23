@@ -100,6 +100,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ params, data }) => {
       />
       <Hero
         title={user.displayName || userName}
+        alt={user.displayName || userName}
         preTitle={"Expert"}
         image={pfp || defaultImages.defaultUserImage}
         about={userExcerpt || badges[0]?.bio}

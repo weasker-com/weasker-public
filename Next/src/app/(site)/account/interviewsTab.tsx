@@ -61,6 +61,7 @@ export const InterviewsTab = ({
                 return (
                   <div key={index} className="flex flex-col gap-5">
                     <ImageAndText
+                      alt={user.displayName || user.userName}
                       image={(user.seo.image as Media)?.filename}
                       defaultImage={defaultImages.defaultUserImage}
                       preTitle={user.displayName || user.userName}
@@ -121,6 +122,7 @@ export const InterviewsTab = ({
                     <li key={index}>
                       <div key={index} className="flex flex-col gap-3">
                         <ImageAndText
+                          alt={`Image of ${badge.singularName} badge`}
                           image={
                             (badge.seo?.image as Media)?.filename ||
                             defaultImages.defaultBadgeImage

@@ -42,6 +42,7 @@ export const BadgesTab = ({
                   element={
                     <div className="transition-shadow ease-in-out duration-300 flex flex-col items-start shadow rounded rounded-t-lg p-2 sm:p-4 w-full hover:shadow-tl-dark-blue">
                       <ImageAndText
+                        alt={`Image of the ${item.pluralName}`}
                         image={(item.seo.image as Media).filename}
                         imageClassName="w-11 h-11 sm:w-24 sm:h-24"
                         preTitle={<h2>{item.pluralName}</h2>}

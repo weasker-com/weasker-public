@@ -19,6 +19,7 @@ import {
   Interview,
   Media,
   User,
+  Interview as InterviewType,
   UsersInterview,
 } from "@/payload/payload-types";
 import { ImageAndText } from "@/components/elements/ImageAndText";
@@ -28,7 +29,12 @@ import BadgeApplyComp from "@/components/elements/BadgeApplyComp";
 import { defaultImages } from "@/utils/defaultImages";
 
 interface InterviewPageProps {
-  data: { data: { UsersInterviews: { docs: UsersInterview[] } } };
+  data: {
+    data: {
+      UsersInterviews: { docs: UsersInterview[] };
+      Interviews: { docs: InterviewType[] };
+    };
+  };
   params: { badge: string; user: string; interview: string };
 }
 
@@ -125,6 +131,9 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero
+        alt={`Profile image of ${badge.singularName}, ${
+          interviewUser.displayName || interviewUser.userName
+        }`}
         title={interview.name}
         longTitle={true}
         preTitle={
@@ -159,19 +168,39 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                   >
                     <div className="flex flex-col gap-5 w-full">
                       <div>
-                        <InternalLink
-                          href={`/question/${params.badge}/${params.interview}/${question.question.seo.slug}`}
-                          newTab={true}
-                          element={
-                            <ImageAndText
-                              number={index + 1}
-                              title={<h2>{question.question.shortQuestion}</h2>}
+                        <ImageAndText
+                          alt={`Question number ${index + 1}`}
+                          number={index + 1}
+                          preTitle={
+                            <InternalLink
+                              className="text-xs"
+                              style="blue"
+                              href={`#${question.question.seo.slug}`}
+                              element={`#${question.question.seo.slug}`}
                             />
+                          }
+                          title={
+                            <InternalLink
+                              href={`/question/${params.badge}/${params.interview}/${question.question.seo.slug}`}
+                              element={
+                                <h2 className="pb-1">
+                                  {question.question.mediumQuestion}
+                                </h2>
+                              }
+                            />
+                          }
+                          about={
+                            <span className="text-sm">
+                              {question.question.longQuestion}
+                            </span>
                           }
                         />
                       </div>
                       <div>
                         <ImageAndText
+                          alt={`${
+                            interviewUser.displayName || interviewUser.userName
+                          }, ${badge.singularName}`}
                           image={(interviewUser.seo.image as Media)?.filename}
                           defaultImage={defaultImages.defaultUserImage}
                           imageClassName="w-11 h-11"
@@ -212,7 +241,14 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                           }
                         />
                       </div>
-                      <Answer answer={relevantAnswer} />
+                      <Answer
+                        answer={relevantAnswer}
+                        alt={`Image uploaded by ${badge.singularName}, ${
+                          interviewUser.displayName || interviewUser.userName
+                        } for the question: ${
+                          question.question.mediumQuestion
+                        }`}
+                      />
                       <div className="flex flex-row gap-2 sm:px-5">
                         <InternalLink
                           href={`/interview/${params.badge}/all/${params.interview}#${question.question.seo.slug}`}
@@ -231,11 +267,11 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
             })}
           </div>
         </div>
-        <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
+        <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex max-h-screen sm:w-[30%] overflow-y-scroll pb-5">
           <WideBox className="p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
               <GentleButton
-                className=" border border-tl-dark-blue"
+                className="block sm:hidden border border-tl-dark-blue"
                 onClick={() => handleModalOpen("questions")}
                 text="Question list"
               />
@@ -304,6 +340,73 @@ const InterviewPage: React.FC<InterviewPageProps> = ({ data, params }) => {
                   setActiveModal("contact"), setModalIsOpen(true);
                 }}
               />
+            </div>
+          </WideBox>
+          <WideBox className="p-3 sm:p-5">
+            <div className="flex flex-col gap-5">
+              <span className="smallCaps text-base font-bold">
+                Question list
+              </span>
+              <ul className="flex flex-col gap-3 text-sm">
+                {questionsWithAnswer.map((question, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className="hover:pointer-cursor hover:text-tl-light-blue"
+                      onClick={() => setModalIsOpen(false)}
+                    >
+                      {
+                        <InternalLink
+                          href={`#${question.question.seo.slug}`}
+                          element={
+                            <div className="flex flex-row gap-1">
+                              <div className="font-bold">{index + 1}.</div>
+                              <span>{question.question.shortQuestion}</span>
+                            </div>
+                          }
+                        />
+                      }
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </WideBox>
+          <WideBox className="p-3 sm:p-5">
+            <div className="flex flex-col gap-5">
+              <span className="smallCaps text-base font-bold">
+                More interviews
+              </span>
+              <ul className="flex flex-row flex-wrap gap-2">
+                {data.data.Interviews.docs[0].userInterviews.map(
+                  (item, index) => {
+                    console.log("item", item);
+                    return (
+                      <li key={index}>
+                        <InternalLink
+                          href={`/interview/${badge.seo.slug}/${
+                            (item as UsersInterview).userSlug
+                          }/${interview.seo.slug}`}
+                          element={
+                            <ImageAndText
+                              imageClassName="w-11 h-11"
+                              alt={
+                                ((item as UsersInterview).user as User).userName
+                              }
+                              image={
+                                (
+                                  ((item as UsersInterview).user as User).seo
+                                    ?.image as Media
+                                )?.filename || defaultImages.defaultUserImage
+                              }
+                            />
+                          }
+                        />
+                      </li>
+                    );
+                  }
+                )}
+              </ul>
             </div>
           </WideBox>
         </div>

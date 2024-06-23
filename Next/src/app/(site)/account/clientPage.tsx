@@ -66,6 +66,7 @@ const ClientPage: React.FC<AccountPageProps> = () => {
   return (
     <>
       <Hero
+        alt={userName}
         title={userName}
         preTitle={"Account"}
         image={pfp || defaultImages.defaultUserImage}

@@ -42,6 +42,7 @@ export const InterviewsTab = ({
                   }/${user.seo.slug}/${interview.seo.slug}`}
                   element={
                     <ImageAndText
+                      alt={`Interview with ${user.userName}: ${interview.name}`}
                       preTitle={`Interview with ${user.userName}`}
                       title={<h2>{interview.name}</h2>}
                       image={

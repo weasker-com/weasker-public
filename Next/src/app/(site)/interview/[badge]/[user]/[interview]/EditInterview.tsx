@@ -665,6 +665,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
     <>
       <Hero
         title={interview.name}
+        alt={interview.name}
         longTitle={true}
         preTitle={
           <>
@@ -782,6 +783,7 @@ export const EditInterview: React.FC<EditInterviewProps> = ({
                             </div>
                           ))}
                         <ImageAndText
+                          alt={`Question number ${index + 1}`}
                           number={index + 1}
                           title={<h2>{question.shortQuestion}</h2>}
                         />

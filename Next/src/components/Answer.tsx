@@ -10,9 +10,10 @@ import { leftArrowIcon, rightArrowIcon } from "@/utils/defaultIcons";
 
 interface AnswerProps {
   answer: UsersInterview["answers"][number]["answer"];
+  alt: string;
 }
 
-const Answer: React.FC<AnswerProps> = ({ answer }) => {
+const Answer: React.FC<AnswerProps> = ({ answer, alt }) => {
   const [imagesModalOpen, setImagesModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [imagesArray, setImagesArray] = useState<Media[] | null>();
@@ -60,7 +61,7 @@ const Answer: React.FC<AnswerProps> = ({ answer }) => {
                     setImagesModalOpen(true);
                   }}
                   key={index}
-                  alt={answer.questionSlug}
+                  alt={alt}
                   width={200}
                   height={200}
                   className="h-[100px] w-[100px] cover hover:cursor-pointer border rounded rounded-t-lg"
@@ -75,7 +76,7 @@ const Answer: React.FC<AnswerProps> = ({ answer }) => {
                   width={1000}
                   height={1000}
                   src={currentImage}
-                  alt={"name"}
+                  alt={alt}
                   className="h-[100%] w-auto rounded rounded-t-lg w-full"
                 />
                 {imagesArray.length > 1 && (

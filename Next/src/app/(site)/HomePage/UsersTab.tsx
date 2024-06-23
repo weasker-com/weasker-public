@@ -41,6 +41,9 @@ export const UsersTab = ({
                   element={
                     <div className="transition-shadow ease-in-out duration-300 flex flex-col items-start shadow rounded rounded-t-lg p-2 sm:p-4 hover:shadow-tl-dark-blue w-full">
                       <ImageAndText
+                        alt={`Profile picture of user ${
+                          item.displayName || item.userName
+                        }`}
                         image={
                           (item?.seo?.image as Media)?.filename ||
                           defaultImages.defaultUserImage
