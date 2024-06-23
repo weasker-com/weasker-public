@@ -33,6 +33,7 @@ export const BadgesTab = ({
                   href={`/badge/${badge.seo.slug}`}
                   element={
                     <ImageAndText
+                      alt={`${badge.pluralName} badge image`}
                       preTitle={<span>Badge</span>}
                       title={<h2>{badge.singularName}</h2>}
                       image={

@@ -154,6 +154,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero
+        alt={`Interview with ${badge.pluralName}`}
         title={interview.name}
         longTitle={true}
         preTitle={
@@ -263,6 +264,7 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                 <InterviewAnswer
                   key={index}
                   badgeSlug={data.params.badge}
+                  interviewSlug={data.params.interview}
                   badgeName={badge.singularName}
                   questionNumber={index + 1}
                   question={question}
@@ -291,7 +293,16 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
                 >
                   <div>
                     <ImageAndText
+                      alt={`Question number ${index + 1}`}
                       number={index + 1}
+                      preTitle={
+                        <InternalLink
+                          className="text-xs"
+                          style="blue"
+                          href={`#${question.question.seo.slug}`}
+                          element={`#${question.question.seo.slug}`}
+                        />
+                      }
                       title={<h2>{question.question.shortQuestion}</h2>}
                       about={
                         <span className="text-sm mt-1">
@@ -306,15 +317,9 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
             })}
           </div>
         )}
-
-        <div className="hidden lg:flex sticky z-10 top-2 h-max flex-col gap-2  w-[30%]">
-          <WideBox className="p-3 sm:p-5">
+        <div className="flex flex-col gap-2 sticky z-10 top-2 h-max sm:w-[30%]">
+          <WideBox className="hidden lg:block p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
-              <GentleButton
-                onClick={() => handleModalOpen("questions")}
-                className="border border-tl-dark-blue"
-                text="Question list"
-              />
               <GentleButton
                 onClick={() => handleModalOpen("share")}
                 className="border border-tl-dark-blue"
@@ -362,7 +367,38 @@ const InterviewAllPage: React.FC<InterviewAllPageProps> = (data) => {
               />
             </div>
           </WideBox>
+          <WideBox className="p-3 sm:p-5">
+            <div className="flex flex-col gap-5">
+              <span className="smallCaps text-base font-bold">
+                Question list
+              </span>
+              <ul className="flex flex-col gap-3 text-sm">
+                {questionsWithAnswer.map((question, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className="hover:pointer-cursor hover:text-tl-light-blue"
+                      onClick={() => setModalIsOpen(false)}
+                    >
+                      {
+                        <div className="flex flex-row gap-1">
+                          <div className="font-bold">{index + 1}.</div>
+                          <InternalLink
+                            href={`#${question.question.seo.slug}`}
+                            element={
+                              <span>{question.question.shortQuestion}</span>
+                            }
+                          />
+                        </div>
+                      }
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </WideBox>
         </div>
+
         <div className="fixed flex flex-col items-center bottom-0 left-0 z-10 h-max lg:hidden w-full py-3 px-1 border-t bg-white mt-2">
           <div className="flex flex-wrap gap-3">
             <GentleButton

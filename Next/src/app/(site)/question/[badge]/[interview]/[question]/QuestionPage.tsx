@@ -163,6 +163,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero
+        alt={`Image of the ${badge.pluralName} badge`}
         title={relevantQuestion.mediumQuestion}
         longTitle={true}
         cta={ctaButton}
@@ -191,6 +192,9 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                 <WideBox className="p-5" key={index} id={item.user.seo.slug}>
                   <div className="flex flex-col gap-5 w-full">
                     <ImageAndText
+                      alt={`${item.user.displayName || item.user.userName}, ${
+                        badge.singularName
+                      }`}
                       preTitle={
                         <InternalLink
                           className="hover:underline max-w-max"
@@ -198,6 +202,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                           element={
                             <h2 className="text-base font-normal">
                               {item.user.displayName || item.user.userName}
+                              &nbsp;
                             </h2>
                           }
                         />
@@ -229,7 +234,12 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                       defaultImage={defaultImages.defaultUserImage}
                       imageClassName="w-11 h-11"
                     />
-                    <Answer answer={item.answer.answer} />
+                    <Answer
+                      answer={item.answer.answer}
+                      alt={`Image uploaded by ${badge.singularName}, ${
+                        item.user.displayName || item.user.userName
+                      } for the question: ${relevantQuestion.mediumQuestion}`}
+                    />
                     <div className="flex flex-row gap-2 sm:px-5">
                       <InternalLink
                         href={`/interview/${params.badge}/${item.user.seo.slug}/${params.interview}`}
@@ -264,12 +274,12 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
             </WideBox>
           )}
         </div>
-        <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-          <WideBox className="p-3 sm:p-5">
+        <div className="flex flex-col gap-2 sticky z-10 top-2 pb-5 h-max max-h-screen sm:w-[30%] overflow-y-scroll">
+          <WideBox className="hidden lg:block p-3 sm:p-5">
             <div className="flex flex-row flex-wrap gap-2">
               {relevantAnswers && relevantAnswers.length > 0 && (
                 <GentleButton
-                  className=" border border-tl-dark-blue"
+                  className="block sm:hidden border border-tl-dark-blue"
                   onClick={() => handleModalOpen("users")}
                   text="Answers list"
                 />
@@ -281,7 +291,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
               />
               <GentleButton
                 onClick={() => handleModalOpen("siblingQuestions")}
-                className="border border-tl-dark-blue"
+                className="block sm:hidden border border-tl-dark-blue"
                 text="Sibling questions"
               />
               <InternalLink
@@ -302,6 +312,63 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ params, data }) => {
                   />
                 }
               />
+            </div>
+          </WideBox>
+          <WideBox className="p-3 sm:p-5">
+            <div className="flex flex-col gap-5">
+              <span className="smallCaps text-base font-bold">Answers</span>
+              <ul className="flex flex-row flex-wrap gap-1 text-sm">
+                {relevantAnswers.map((item, index) => {
+                  return (
+                    <li key={index} className="">
+                      <InternalLink
+                        href={`#${item.user.seo.slug}`}
+                        element={
+                          <ImageAndText
+                            imageClassName="w-11"
+                            image={(item.user.seo.image as Media)?.url}
+                            alt={`View answer by ${
+                              item.user.displayName || item.user.userName
+                            }`}
+                          />
+                        }
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </WideBox>
+          <WideBox className="p-3 sm:p-5">
+            <div className="flex flex-col gap-5">
+              <span className="smallCaps text-base font-bold">
+                Sibling questions
+              </span>
+              <ul className="flex flex-col gap-3 text-sm">
+                {interview.questions.map((item, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className="hover:pointer-cursor hover:text-tl-light-blue"
+                      onClick={() => setModalIsOpen(false)}
+                    >
+                      {
+                        <div className="flex flex-row gap-1">
+                          <div className="font-bold">{index + 1}.</div>
+                          <InternalLink
+                            href={`/question/${badge.seo.slug}/${interview.seo.slug}/${item.question.seo.slug}`}
+                            element={
+                              <div className="flex flex-row gap-1">
+                                <span>{item.question.shortQuestion}</span>
+                              </div>
+                            }
+                          />
+                        </div>
+                      }
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </WideBox>
         </div>

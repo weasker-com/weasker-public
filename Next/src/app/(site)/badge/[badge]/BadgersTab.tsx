@@ -47,6 +47,9 @@ export const BadgersTab = ({
                       className="hover: border-tl-light-blue"
                       element={
                         <ImageAndText
+                          alt={`Profile picture of ${
+                            user.displayName || user.userName
+                          }`}
                           preTitle={
                             <span className="text-sm text-weasker-grey">
                               {data.singularName}

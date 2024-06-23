@@ -12,6 +12,7 @@ import Answer from "./Answer";
 import { defaultImages } from "../utils/defaultImages";
 import { InternalLink } from "./links/InternalLink";
 import { useCallback, useLayoutEffect, useRef } from "react";
+import { GentleButton } from "./ui/buttons";
 
 function getElementOffset(el: HTMLElement | Element | null) {
   let left = 0;
@@ -31,6 +32,7 @@ function getElementOffset(el: HTMLElement | Element | null) {
 
 export type InterviewAnswerProps = {
   badgeSlug: string;
+  interviewSlug: string;
   badgeName: string;
   currentUser: User;
   relevantAnswers: Array<{
@@ -49,6 +51,7 @@ export type InterviewAnswerProps = {
 
 const InterviewAnswer = ({
   badgeSlug,
+  interviewSlug,
   badgeName,
   currentUser,
   questionNumber,
@@ -104,8 +107,25 @@ const InterviewAnswer = ({
       <div ref={containerRef} className="flex flex-col gap-5 w-full">
         <div>
           <ImageAndText
+            alt={`Question numbering`}
             number={questionNumber}
-            title={<h2>{question.question.shortQuestion}</h2>}
+            preTitle={
+              <InternalLink
+                className="text-xs"
+                style="blue"
+                href={`#${question.question.seo.slug}`}
+                element={`#${question.question.seo.slug}`}
+              />
+            }
+            about={
+              <span className="text-sm">{question.question.longQuestion}</span>
+            }
+            title={
+              <InternalLink
+                href={`/question/${badgeSlug}/${interviewSlug}/${question.question.seo.slug}`}
+                element={<h2>{question.question.mediumQuestion}</h2>}
+              />
+            }
           />
         </div>
         {relevantAnswers.length > 1 && (
@@ -130,6 +150,9 @@ const InterviewAnswer = ({
                     className="flex-shrink-0"
                   >
                     <ImageAndText
+                      alt={`${badgeName}, ${
+                        item.user.displayName || item.user.userName
+                      }`}
                       imageClassName="w-11 h-11 rounded-full m-1"
                       selected={item.user.seo.slug === currentUser.seo.slug}
                       image={(item.user.seo.image as Media)?.filename}
@@ -156,6 +179,9 @@ const InterviewAnswer = ({
             <div>
               <ImageAndText
                 image={(currentAnswer.user.seo.image as Media)?.filename}
+                alt={`${badgeName}, ${
+                  currentUser.displayName || currentAnswer.user.userName
+                }`}
                 defaultImage={defaultImages.defaultUserImage}
                 imageClassName="w-11 h-11"
                 preTitle={
@@ -163,9 +189,9 @@ const InterviewAnswer = ({
                     className="hover:underline max-w-max"
                     href={`/user/${currentAnswer.user.seo.slug}`}
                     element={
-                      <span>
+                      <h3 className="text-sm font-normal">
                         {currentUser.displayName || currentAnswer.user.userName}
-                      </span>
+                      </h3>
                     }
                   />
                 }
@@ -193,8 +219,25 @@ const InterviewAnswer = ({
                 }
               />
             </div>
-            <div>
-              <Answer answer={currentAnswer.answer} />
+            <div className="flex flex-col gap-2">
+              <Answer
+                answer={currentAnswer.answer}
+                alt={`Image uploaded by ${currentAnswer.user.userName} for the question: ${question.question.mediumQuestion}`}
+              />
+              <div className="flex flex-row gap-2 sm:px-5">
+                <InternalLink
+                  href={`/interview/${badgeSlug}/${currentAnswer.user.seo.slug}/${interviewSlug}`}
+                  element={
+                    <GentleButton
+                      className="text-xs"
+                      text={`${
+                        currentAnswer.user.displayName ||
+                        currentAnswer.user.userName
+                      } full interview`}
+                    />
+                  }
+                />
+              </div>
             </div>
           </>
         )}

@@ -86,6 +86,7 @@ export const InterviewsTab = ({
                 className="hover: border-tl-light-blue"
                 element={
                   <ImageAndText
+                    alt={`Image of the interview: ${interview.name}`}
                     preTitle="Interview"
                     title={<h2 className="capitalize">{interview.name}</h2>}
                     image={(interview.seo.image as Media)?.filename}
@@ -113,7 +114,6 @@ export const InterviewsTab = ({
                   <span className="font-bold">Interview questions</span>
                   <ul className="flex flex-col gap-2 text-weasker-grey text-sm">
                     {interview.questions.map((item, index) => {
-                      console.log("interviewHasAnswers", interviewHasAnswers);
                       return interviewHasAnswers ? (
                         <InternalLink
                           key={index}

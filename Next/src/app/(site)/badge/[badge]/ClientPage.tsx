@@ -123,6 +123,7 @@ const ClientPage: React.FC<ClientPageProps> = ({ data, params }) => {
   return (
     <div className="max-h-min">
       <Hero
+        alt={badge.singularName}
         title={badge.singularName}
         preTitle={"Badge"}
         image={
