@@ -3,8 +3,9 @@ import capitalize from "@/helpers/capitalize";
 import { fetchData } from "@/utils/payloadFetch";
 import { defaultImages } from "../../../utils/defaultImages";
 import { notFound } from "next/navigation";
-import GenericPage from "@/app/(site)/[page]/GenericPage";
 import { Media, Page as PageType } from "@/payload/payload-types";
+import parse from "html-react-parser";
+import React from "react";
 
 type Props = {
   params: { page: string };
@@ -120,5 +121,26 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
-  return <GenericPage data={data} params={params} />;
+  const page = data?.data.Pages.docs[0];
+  const title = page.name;
+  const excerpt = page.seo.excerpt;
+  const content = page.richText_html;
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] w-full">
+      <div className="lg:w-[70%] flex flex-col w-full">
+        <div className="flex flex-col gap-5 sm:gap-7 w-full">
+          <div className="flex flex-col gap-5">
+            <div className="text-5xl smallCaps font-black">{title}</div>
+            <span className="text-page">{excerpt && parse(excerpt)}</span>
+          </div>
+          <div className="">
+            <div className="w-full">
+              <div className="text-page">{content && parse(content)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
