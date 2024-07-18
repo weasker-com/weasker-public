@@ -27,7 +27,10 @@ interface PayLoadFetchInterface {
     | "Badges"
     | "Interviews"
     | "Questions"
+    | "Question"
+    | "Community"
     | "Users"
+    | "User"
     | "UsersInterviews";
   mustHave?: string[];
   cache?: boolean;

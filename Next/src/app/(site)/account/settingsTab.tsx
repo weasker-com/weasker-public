@@ -12,19 +12,12 @@ import ChangeEmailComp from "@/components/UpdateEmailComp";
 import ChangePasswordComp from "@/components/UpdatePasswordComp";
 import DeleteAccountComp from "@/components/DeleteAccountComp";
 import Loading from "../loading";
-import { GentleButton } from "@/components/ui/buttons";
-import { badgeIcon, interviewIcon, profileIcon } from "@/utils/defaultIcons";
 import { WideBox } from "@/components/ui/boxes";
 import { TextAreaInput, TextInput } from "@/components/ui/inputs";
 import { revalidateByServerAction } from "@/utils/revalidate";
 import { usePathname } from "next/navigation";
 
-interface ProfileTabProps {
-  handleTabSelect: any;
-  activeTab: string;
-}
-
-export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
+export const SettingsTab = () => {
   const {
     user,
     setUser,
@@ -338,42 +331,7 @@ export const ProfileTab = ({ handleTabSelect, activeTab }: ProfileTabProps) => {
           </div>
         </div>
       </WideBox>
-      <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-        <WideBox className="p-3 sm:p-5">
-          <div className="flex flex-row flex-wrap gap-2">
-            <GentleButton
-              className={`border border-tl-dark-blue ${
-                (activeTab == "profile" || activeTab == null) &&
-                "border-tl-light-blue text-tl-light-blue"
-              }`}
-              text={<>{profileIcon(20)} Profile</>}
-              onClick={() => {
-                handleTabSelect("profile");
-              }}
-            />
-            <GentleButton
-              className={`border border-tl-dark-blue ${
-                activeTab == "badges" &&
-                "border-tl-light-blue text-tl-light-blue"
-              }`}
-              text={<>{badgeIcon(20)} Badges</>}
-              onClick={() => {
-                handleTabSelect("badges");
-              }}
-            />
-            <GentleButton
-              className={`border border-tl-dark-blue ${
-                activeTab == "interviews" &&
-                "border-tl-light-blue text-tl-light-blue"
-              }`}
-              text={<>{interviewIcon(20)} Interviews</>}
-              onClick={() => {
-                handleTabSelect("interviews");
-              }}
-            />
-          </div>
-        </WideBox>
-      </div>
+
       {emailModalIsOpen && (
         <Modal onclick={() => setEmailModalIsOpen(false)}>
           <ChangeEmailComp />

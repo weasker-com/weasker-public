@@ -21,7 +21,7 @@ export const BigButton = ({
     <button
       disabled={disabled ? disabled : null}
       onClick={onClick}
-      className={`flex flex-row gap-1 centerAbsolute rounded rounded-t-lg text-white text-xs disabled:bg-slate-100 disabled:text-weasker-grey sm:text-base py-2 px-3 disabled:hover:opacity-100 hover:opacity-80 ${className}`}
+      className={`flex flex-row gap-1 centerAbsolute rounded-lg text-white text-xs disabled:bg-slate-100 disabled:text-weasker-grey sm:text-base py-2 px-3 disabled:hover:opacity-100 hover:opacity-80 ${className}`}
     >
       {loading ? <Loading /> : text}
     </button>

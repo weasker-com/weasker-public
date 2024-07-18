@@ -12,8 +12,12 @@ import { handleBadgeRemoval } from "./hooks/handleBadgeRemoval";
 import { updateBadgeAndInterviews } from "./hooks/updateBadgeAndInterviews";
 import { updateBadgeUsers } from "./hooks/updateBadgeUsers";
 import { countBy } from "lodash";
+import { populateUserSlugAndPath } from "./hooks/populateUserSlugAndPath";
+import { updateQuestionCount } from "./hooks/updateQuestionCount";
+import { updateAnswerCount } from "./hooks/updateAnswerCount";
+import { updateCommunityCount } from "./hooks/updateCommunityCount";
 
-const Users: CollectionConfig = {
+export const Users: CollectionConfig = {
   slug: "users",
   auth: {
     tokenExpiration: 60 * 60 * 24 * 30,
@@ -25,6 +29,12 @@ const Users: CollectionConfig = {
     lockTime: 60 * 60 * 24,
   },
   hooks: {
+    beforeChange: [
+      populateUserSlugAndPath,
+      updateQuestionCount,
+      updateAnswerCount,
+      updateCommunityCount,
+    ],
     beforeValidate: [validatePassword, validateUserName],
     afterChange: [loginAfterCreate, updateBadgeUsers, handleBadgeRemoval],
     afterDelete: [updateBadgeAndInterviews],
@@ -41,6 +51,13 @@ const Users: CollectionConfig = {
   },
   fields: [
     {
+      name: "image",
+      label: "Featured image",
+      type: "upload",
+      relationTo: "media",
+      required: false,
+    },
+    {
       name: "displayName",
       label: "Display name",
       type: "text",
@@ -54,6 +71,29 @@ const Users: CollectionConfig = {
       required: true,
       unique: true,
       maxLength: 20,
+    },
+    {
+      name: "bio",
+      label: "Bio",
+      type: "textarea",
+      required: false,
+    },
+    {
+      name: "slug",
+      label: "Slug",
+      type: "text",
+      unique: true,
+      hidden: true,
+    },
+    {
+      name: "path",
+      label: "Path",
+      type: "text",
+      required: true,
+      unique: true,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: "roles",
@@ -171,10 +211,145 @@ const Users: CollectionConfig = {
       ],
     },
     {
+      name: "communities",
+      label: "Communities",
+      type: "array",
+      required: false,
+      fields: [
+        {
+          name: "community",
+          label: "Community",
+          type: "relationship",
+          relationTo: "communities",
+          required: true,
+          validate: (value, { data }) => {
+            if (!value) return `Must have a value`;
+            const chosenCommunities = data?.communities
+              ? data.communities
+                  .map((item) => {
+                    return item.community?.id
+                      ? item.community.id
+                      : item.community;
+                  })
+                  .filter((item) => {
+                    return item !== undefined;
+                  })
+              : [];
+
+            const counts = countBy(chosenCommunities);
+
+            if (counts[value] > 1)
+              return `The community "${value}" was already chosen once.`;
+          },
+        },
+
+        {
+          name: "bio",
+          label: "Bio",
+          type: "text",
+          required: false,
+        },
+        {
+          name: "links",
+          label: "Links",
+          type: "group",
+          fields: [
+            {
+              name: "linkOne",
+              label: "Link one",
+              type: "text",
+              hooks: {
+                beforeValidate: [validateUrl],
+              },
+            },
+            {
+              name: "linkTwo",
+              label: "Link two",
+              type: "text",
+              hooks: {
+                beforeValidate: [validateUrl],
+              },
+            },
+            {
+              name: "linkThree",
+              label: "Link three",
+              type: "text",
+              hooks: {
+                beforeValidate: [validateUrl],
+              },
+            },
+            {
+              name: "linkFour",
+              label: "Link four",
+              type: "text",
+              hooks: {
+                beforeValidate: [validateUrl],
+              },
+            },
+            {
+              name: "linkFive",
+              label: "Link five",
+              type: "text",
+              hooks: {
+                beforeValidate: [validateUrl],
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: "userInterviews",
       label: "User interviews",
       type: "relationship",
       relationTo: "users-interviews",
+      hasMany: true,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: "communityCount",
+      label: "Community count",
+      type: "number",
+      defaultValue: 0,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: "questionCount",
+      label: "Questions count",
+      type: "number",
+      defaultValue: 0,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: "questions",
+      label: "Questions",
+      type: "relationship",
+      relationTo: "questions",
+      hasMany: true,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: "answerCount",
+      label: "Answers count",
+      type: "number",
+      defaultValue: 0,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: "answers",
+      label: "Answers",
+      type: "relationship",
+      relationTo: "answers",
       hasMany: true,
       admin: {
         readOnly: true,
@@ -194,5 +369,3 @@ const Users: CollectionConfig = {
     seo,
   ],
 };
-
-export default Users;

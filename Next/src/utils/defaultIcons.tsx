@@ -9,7 +9,6 @@ import { PiUserCircleGearThin } from "react-icons/pi";
 import { LiaUserCheckSolid } from "react-icons/lia";
 import { PiQuestionThin } from "react-icons/pi";
 import { PiChatTeardropTextLight } from "react-icons/pi";
-import { PiTextAlignLeftThin } from "react-icons/pi";
 import { PiArrowSquareIn } from "react-icons/pi";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
@@ -23,8 +22,10 @@ import { BiMessageSquareError } from "react-icons/bi";
 import { GrLanguage } from "react-icons/gr";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { SlClock } from "react-icons/sl";
+import { PiArticleLight } from "react-icons/pi";
 
 export const badgeIcon = (size: number) => <PiShieldCheckLight size={size} />;
+// export const answerIcon = (size: number) => <PiArticleLight size={size} />;
 export const interviewIcon = (size: number) => (
   <LiaMicrophoneSolid size={size} />
 );
@@ -40,7 +41,7 @@ export const contactIcon = (size: number) => (
   <PiChatTeardropTextLight size={size} />
 );
 
-export const answerIcon = (size: number) => <PiTextAlignLeftThin size={size} />;
+export const answerIcon = (size: number) => <PiArticleLight size={size} />;
 
 export const externalLinkIcon = (size: number) => (
   <FaExternalLinkAlt size={size} />

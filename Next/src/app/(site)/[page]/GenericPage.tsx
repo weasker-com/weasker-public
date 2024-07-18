@@ -1,6 +1,5 @@
 import parse from "html-react-parser";
 import React from "react";
-import { WideBox } from "@/components/ui/boxes";
 import { Page } from "@/payload/payload-types";
 
 interface GenericPageProps {
@@ -15,18 +14,18 @@ const GenericPage: React.FC<GenericPageProps> = (data) => {
   const content = page.richText_html;
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
+    <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] w-full">
       <div className="lg:w-[70%] flex flex-col w-full">
-        <div className="flex flex-col gap-2 w-full">
-          <WideBox className="p-3 sm:p-5 sm:p-10">
+        <div className="flex flex-col gap-5 sm:gap-7 w-full">
+          <div className="flex flex-col gap-5">
             <div className="text-5xl smallCaps font-black">{title}</div>
-            <span className="text-sm">{excerpt && parse(excerpt)}</span>
-          </WideBox>
-          <WideBox className="p-3 sm:p-5 sm:p-10">
+            <span className="text-page">{excerpt && parse(excerpt)}</span>
+          </div>
+          <div className="">
             <div className="w-full">
               <div className="text-page">{content && parse(content)}</div>
             </div>
-          </WideBox>
+          </div>
         </div>
       </div>
     </div>

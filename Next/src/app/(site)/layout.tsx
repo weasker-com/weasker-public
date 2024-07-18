@@ -1,21 +1,21 @@
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import Footer from "@/components/Footer";
-import { defaultImages } from "@/utils/defaultImages";
 import PlausibleProvider from "next-plausible";
 import { AuthProvider } from "../../providers/Auth/Auth";
 import NextTopLoader from "nextjs-toploader";
 import React from "react";
+import Scroll from "../../../patches/FixScollBug";
 
-const noto_Sans = Noto_Sans({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-const ogImage = `${process.env.SITE_URL}/api/og?img=${defaultImages.weaskerLogoUrl}&preTitle=Interviewing experts&title=weasker.com`;
-const metaTitle = `${process.env.SITE_NAME} - Interviewing Experts`;
+const ogImage = `${process.env.SITE_URL}/api/og/hp`;
+const metaTitle = `${process.env.SITE_NAME} - Ask The Right Community`;
 const metaDescription =
   "We interview groups of experts and compare their answers, generating diverse and reliable information sources.";
 
@@ -58,19 +58,20 @@ export default function RootLayout({
           taggedEvents={true}
         />
       </head>
-      <body className={`bg-[#F4F4F4] ${noto_Sans.className}`}>
+      <Scroll />
+      <body className={`bg-white ${inter.className}`}>
         <NextTopLoader showSpinner={false} color="#007BFF" shadow={false} />
-        <AuthProvider>
-          <header className="top-0">
+        <header className="top-0 max-w-[90%] mx-auto">
+          <AuthProvider>
             <Navbar />
-          </header>
-          <main className="flex min-h-screen flex-col items-center">
-            {children}
-          </main>
-          <footer>
-            <Footer />
-          </footer>
-        </AuthProvider>
+          </AuthProvider>
+        </header>
+        <main className="flex min-h-screen flex-col items-center max-w-[90%] my-5 md:my-10 mx-auto">
+          {children}
+        </main>
+        <footer>
+          <Footer />
+        </footer>
       </body>
     </html>
   );

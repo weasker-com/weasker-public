@@ -30,6 +30,13 @@ export const Applications: CollectionConfig = {
       required: true,
     },
     {
+      name: "community",
+      label: "Community",
+      type: "relationship",
+      relationTo: "communities",
+      required: true,
+    },
+    {
       name: "user",
       label: "User name",
       type: "relationship",

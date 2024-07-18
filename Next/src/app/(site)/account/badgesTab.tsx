@@ -12,17 +12,11 @@ import Modal from "@/components/ui/Modal";
 import { RemoveBadgeComp } from "@/components/RemoveBadgeComp";
 import { InternalLink } from "@/components/links/InternalLink";
 import { WideBox } from "@/components/ui/boxes";
-import { GentleButton } from "@/components/ui/buttons";
-import { badgeIcon, interviewIcon, profileIcon } from "@/utils/defaultIcons";
 import { defaultImages } from "@/utils/defaultImages";
 
 const serviceLinkNames = ["one", "two", "three", "four", "five"];
-interface BadgesTabProps {
-  handleTabSelect: any;
-  activeTab: string;
-}
 
-export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
+export const CommunitiesTab = () => {
   const { user, setUser, updateUser } = useAuth();
   const [expandedBadge, setExpandedBadge] = useState(null);
   const [about, setAbout] = useState("");
@@ -367,42 +361,6 @@ export const BadgesTab = ({ handleTabSelect, activeTab }: BadgesTabProps) => {
             />
           </WideBox>
         )}
-      </div>
-      <div className="sticky z-10 top-2 h-max flex-col gap-2 hidden lg:flex w-[30%]">
-        <WideBox className="p-3 sm:p-5">
-          <div className="flex flex-row flex-wrap gap-2">
-            <GentleButton
-              className={`border border-tl-dark-blue ${
-                (activeTab == "profile" || activeTab == null) &&
-                "border-tl-light-blue text-tl-light-blue"
-              }`}
-              text={<>{profileIcon(20)} Profile</>}
-              onClick={() => {
-                handleTabSelect("profile");
-              }}
-            />
-            <GentleButton
-              className={`border border-tl-dark-blue ${
-                activeTab == "badges" &&
-                "border-tl-light-blue text-tl-light-blue"
-              }`}
-              text={<>{badgeIcon(20)} Badges</>}
-              onClick={() => {
-                handleTabSelect("badges");
-              }}
-            />
-            <GentleButton
-              className={`border border-tl-dark-blue ${
-                activeTab == "interviews" &&
-                "border-tl-light-blue text-tl-light-blue"
-              }`}
-              text={<>{interviewIcon(20)} Interviews</>}
-              onClick={() => {
-                handleTabSelect("interviews");
-              }}
-            />
-          </div>
-        </WideBox>
       </div>
     </div>
   );

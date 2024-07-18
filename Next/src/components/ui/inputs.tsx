@@ -55,7 +55,7 @@ export const TextInput = ({
         name={name}
         onChange={onChange}
         onBlur={onBlur}
-        className={`flex flex-col w-full p-2 border rounded rounded-t-lg text-left ${className}`}
+        className={`flex flex-col w-full p-2 border rounded-lg text-left ${className}`}
         placeholder={placeHolder}
       />
       <div className="flex flex-row items-center justify-between text-xs ">

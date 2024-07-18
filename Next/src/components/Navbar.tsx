@@ -11,6 +11,7 @@ import { Media } from "@/payload/payload-types";
 import { PiSignIn } from "react-icons/pi";
 import Loading from "@/app/(site)/loading";
 import {
+  answerIcon,
   badgeIcon,
   interviewIcon,
   logoutIcon,
@@ -56,8 +57,8 @@ const Navbar = () => {
   };
 
   return (
-    <div className="h-max border-b border-zinc-100 bg-white rounded rounded-t-lg">
-      <div className="relative max-w-[1000px] lg:mx-auto m-auto mx-3 z-20">
+    <div className="h-max border-b border-zinc-100 bg-white rounded rounded-t-lg max-w-[1000px] mx-auto">
+      <div className="relative lg:mx-auto m-auto mx-3 z-20">
         <div className="flex flex-row gap-5 justify-between items-center my-auto py-1 ">
           <div className="flex flex-col items-center select-none">
             <InternalLink
@@ -66,7 +67,7 @@ const Navbar = () => {
               href="/"
             />
             <span className="text-xs text-tl-dark-blue pb-1">
-              Interviewing Experts&nbsp;
+              Ask The Right Community&nbsp;
             </span>
           </div>
           {pathname !== "/login" &&
@@ -132,23 +133,36 @@ const Navbar = () => {
         </div>
         {showDropdown && (
           <div
-            className="absolute right-0 bg-white border rounded rounded-t-lg w-28 sm:w-40 p-3 mt-2"
+            className="absolute right-0 bg-white border rounded rounded-t-lg w-32 sm:w-40 p-3 mt-2"
             ref={ref}
           >
             <ul className="flex flex-col gap-2 text-xs sm:text-base">
               <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
                 {profileIcon(20)}
-                <InternalLink element={"Profile"} href={"/account"} />
+                <InternalLink
+                  element={"Settings"}
+                  href={"/account?tab=settings"}
+                />
               </li>
               <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
                 {badgeIcon(20)}
-                <InternalLink element={"Badges"} href={"/account?tab=badges"} />
+                <InternalLink
+                  element={"Communities"}
+                  href={"/account?tab=communities"}
+                />
               </li>
               <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
                 {interviewIcon(20)}
                 <InternalLink
-                  element={"Interviews"}
-                  href={"/account?tab=interviews"}
+                  element={"Questions"}
+                  href={"/account?tab=questions"}
+                />
+              </li>
+              <li className="flex flex-row items-center gap-1 hover:cursor-pointer hover:text-tl-light-blue">
+                {answerIcon(20)}
+                <InternalLink
+                  element={"Answers"}
+                  href={"/account?tab=answers"}
                 />
               </li>
               <hr />

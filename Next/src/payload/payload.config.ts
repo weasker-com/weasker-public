@@ -4,14 +4,17 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { buildConfig } from "payload/config";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import Users from "./collections/Users/index";
+import { Users } from "./collections/Users/index";
 import { Pages } from "./collections/Pages/index";
+import { Questions } from "./collections/Questions/index";
 import { Media } from "./collections/Media/index";
 import { Badges } from "./collections/Badges/index";
 import { Applications } from "./collections/Applications/index";
 import { Interviews } from "./collections/Interviews/index";
 import cloudinaryPlugin from "payload-cloudinary-plugin/dist/plugins";
 import UsersInterviews from "./collections/UsersInterviews";
+import { Answers } from "./collections/Answers";
+import { Communities } from "./collections/Communities";
 
 const mockModulePath = path.resolve(__dirname, "./emptyModule.js");
 
@@ -24,6 +27,9 @@ export default buildConfig({
     Interviews,
     Applications,
     UsersInterviews,
+    Communities,
+    Questions,
+    Answers,
   ],
   serverURL: process.env.PAYLOAD_PUBLIC_EXTERNAL_SERVER_URL,
   rateLimit: {

@@ -3,6 +3,7 @@ export const defaultImages = {
   defaultUserImage: "media/p7wrnjh8imdnbynmkmvi.png",
   defaultQuestionImage: "weasker-logo-badger_hwf4ke.png",
   defaultBadgeImage: "weasker-logo-badger_hwf4ke.png",
+  defaultCommunityImage: "weasker-logo-badger_hwf4ke.png",
   defaultInterviewImage: "weasker-logo-badger_hwf4ke.png",
   pending: "media/dvweyhves7pcsw6sup5b",
   weaskerLogo: "weasker-logo-badger_hwf4ke.png",

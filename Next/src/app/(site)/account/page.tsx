@@ -1,5 +1,10 @@
+import { AuthProvider } from "@/providers/Auth/Auth";
 import ClientPage from "./clientPage";
 
 export default async function Account() {
-  return <ClientPage />;
+  return (
+    <AuthProvider>
+      <ClientPage />
+    </AuthProvider>
+  );
 }

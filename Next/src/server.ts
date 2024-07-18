@@ -47,6 +47,101 @@ const setRobotsHeader = (req, res, next) => {
 
 app.use(setRobotsHeader);
 
+app.get(
+  "/question/:communitiesSlug/:questionSlug/:id",
+  async (req, res, next) => {
+    const { id } = req.params;
+
+    // Fetch the latest communitySlug and questionSlug using the id
+    const payload = await getPayloadClient();
+
+    try {
+      const result = await payload.find({
+        collection: "questions",
+        where: { id: { equals: id } },
+      });
+
+      if (result.docs.length > 0) {
+        const question = result.docs[0];
+        const latestCommunitiesSlug = question.communitiesSlug;
+        const latestQuestionSlug = question.questionSlug;
+
+        const expectedPath = `/question/${latestCommunitiesSlug}/${latestQuestionSlug}/${id}`;
+        if (req.url !== expectedPath) {
+          return res.redirect(301, expectedPath);
+        }
+      }
+
+      // If the document was not found or URL is already correct, continue to Next.js
+      next();
+    } catch (err) {
+      console.error(err);
+      next();
+    }
+  }
+);
+
+// New route for community
+app.get("/community/:communitiesSlug/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  // Fetch the latest communitySlug using the id
+  const payload = await getPayloadClient();
+
+  try {
+    const result = await payload.find({
+      collection: "communities",
+      where: { id: { equals: id } },
+    });
+
+    if (result.docs.length > 0) {
+      const community = result.docs[0];
+      const latestCommunitiesSlug = community.slug; // Assuming you store the latest slug in the community document
+
+      const expectedPath = `/community/${latestCommunitiesSlug}/${id}`;
+      if (req.url !== expectedPath) {
+        return res.redirect(301, expectedPath);
+      }
+    }
+
+    // If the document was not found or URL is already correct, continue to Next.js
+    next();
+  } catch (err) {
+    console.error(err);
+    next();
+  }
+});
+
+app.get("/user/:userSlug/:id", async (req, res, next) => {
+  const { id } = req.params;
+
+  // Fetch the latest userSlug using the id
+  const payload = await getPayloadClient();
+
+  try {
+    const result = await payload.find({
+      collection: "users",
+      where: { id: { equals: id } },
+    });
+
+    if (result.docs.length > 0) {
+      const user = result.docs[0];
+      const latestUserSlug = user.slug; // Assuming you store the latest slug in the user document
+
+      const expectedPath = `/user/${latestUserSlug}/${id}`;
+      if (req.url !== expectedPath) {
+        return res.redirect(301, expectedPath);
+      }
+    }
+
+    // If the document was not found or URL is already correct, continue to Next.js
+    next();
+  } catch (err) {
+    console.error(err);
+    next();
+  }
+});
+
 const start = async (): Promise<void> => {
   const payload = await getPayloadClient({
     initOptions: {

@@ -13,6 +13,9 @@ export const seo: Field = {
       required: true,
       unique: true,
       maxLength: 100,
+      admin: {
+        readOnly: true,
+      },
     },
     {
       name: "title",

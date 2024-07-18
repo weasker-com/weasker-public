@@ -14,7 +14,7 @@ const Footer = () => {
               href="/"
             />
             <span className="text-xs text-tl-dark-blue pb-1">
-              Interviewing Experts
+              Ask The Right Community
             </span>
           </div>
           <div className="text-sm select-none">
@@ -22,25 +22,8 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex flex-row gap-20">
-          <div className="flex flex-row flex-col items-start justify-start">
-            <InternalLink element="Home" href="/" style="blue-hover" />
-            <InternalLink
-              element="Badges"
-              href="/?tab=badges"
-              style="blue-hover"
-            />
-            <InternalLink
-              element="Interviews"
-              href="/?tab=interviews"
-              style="blue-hover"
-            />
-            <InternalLink
-              element="Experts"
-              href="/?tab=users"
-              style="blue-hover"
-            />
-          </div>
           <div className="flex flex-col items-start justify-start">
+            <InternalLink element="Home" href="/" style="blue-hover" />
             <InternalLink element="About" href="/about" style="blue-hover" />
             <InternalLink
               element="Privacy Policy"

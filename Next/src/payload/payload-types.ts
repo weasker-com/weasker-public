@@ -15,15 +15,26 @@ export interface Config {
     interviews: Interview;
     applications: Application;
     'users-interviews': UsersInterview;
+    communities: Community;
+    questions: Question;
+    answers: Answer;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   globals: {};
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
 export interface User {
   id: string;
+  image?: string | Media | null;
   displayName?: string | null;
   userName: string;
+  bio?: string | null;
+  slug?: string | null;
+  path: string;
   roles?: ('admin' | 'editor' | 'endUser' | 'qa')[] | null;
   userBadges?:
     | {
@@ -39,7 +50,26 @@ export interface User {
         id?: string | null;
       }[]
     | null;
+  communities?:
+    | {
+        community: string | Community;
+        bio?: string | null;
+        links?: {
+          linkOne?: string | null;
+          linkTwo?: string | null;
+          linkThree?: string | null;
+          linkFour?: string | null;
+          linkFive?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
   userInterviews?: (string | UsersInterview)[] | null;
+  communityCount?: number | null;
+  questionCount?: number | null;
+  questions?: (string | Question)[] | null;
+  answerCount?: number | null;
+  answers?: (string | Answer)[] | null;
   userApplications?: (string | Application)[] | null;
   seo: Seo;
   updatedAt: string;
@@ -53,6 +83,33 @@ export interface User {
   lockUntil?: string | null;
   password: string | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt?: string | null;
+  cloudinary?: {
+    public_id?: string | null;
+    original_filename?: string | null;
+    format?: string | null;
+    secure_url?: string | null;
+    resource_type?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "badges".
+ */
 export interface Badge {
   id: string;
   singularName: string;
@@ -64,6 +121,10 @@ export interface Badge {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "interviews".
+ */
 export interface Interview {
   id: string;
   name: string;
@@ -82,6 +143,10 @@ export interface Interview {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users-interviews".
+ */
 export interface UsersInterview {
   id: string;
   badge: string | Badge;
@@ -113,25 +178,10 @@ export interface UsersInterview {
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
-export interface Media {
-  id: string;
-  alt?: string | null;
-  cloudinary?: {
-    public_id?: string | null;
-    original_filename?: string | null;
-    format?: string | null;
-    secure_url?: string | null;
-    resource_type?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo".
+ */
 export interface Seo {
   slug: string;
   title?: string | null;
@@ -140,9 +190,82 @@ export interface Seo {
   image?: string | Media | null;
   keywords?: string[] | null;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "communities".
+ */
+export interface Community {
+  id: string;
+  image?: string | Media | null;
+  slug?: string | null;
+  path: string;
+  singularName: string;
+  pluralName: string;
+  userCount?: number | null;
+  users?: (string | User)[] | null;
+  questionCount?: number | null;
+  questions?: (string | Question)[] | null;
+  terms: string;
+  description: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "questions".
+ */
+export interface Question {
+  id: string;
+  questionSlug?: string | null;
+  communitiesSlug?: string | null;
+  path?: string | null;
+  user: string | User;
+  question: string;
+  description: string;
+  communities?: (string | Community)[] | null;
+  images?:
+    | {
+        image?: string | Media | null;
+        id?: string | null;
+      }[]
+    | null;
+  video?: string | Media | null;
+  answersSum?: number | null;
+  answers?: (string | Answer)[] | null;
+  upvotesSum?: number | null;
+  upvotes?: (string | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "answers".
+ */
+export interface Answer {
+  id: string;
+  user?: (string | null) | User;
+  question?: (string | null) | Question;
+  textAnswer?: string | null;
+  images?:
+    | {
+        image?: string | Media | null;
+        id?: string | null;
+      }[]
+    | null;
+  video?: string | Media | null;
+  upvotesSum?: number | null;
+  upvotes?: (string | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "applications".
+ */
 export interface Application {
   id: string;
   badge: string | Badge;
+  community: string | Community;
   user: string | User;
   about: string;
   links?: {
@@ -154,10 +277,14 @@ export interface Application {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
 export interface Page {
   id: string;
   name: string;
-  category: 'help' | 'noCategory';
+  category?: ('help' | 'noCategory') | null;
   richText?: {
     root: {
       children: {
@@ -178,6 +305,10 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences".
+ */
 export interface PayloadPreference {
   id: string;
   user: {
@@ -197,6 +328,10 @@ export interface PayloadPreference {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations".
+ */
 export interface PayloadMigration {
   id: string;
   name?: string | null;
