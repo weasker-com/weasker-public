@@ -277,13 +277,6 @@ export default async function UserPage({ params }: Props) {
               title={
                 <div>
                   <h1 className="text-base md:text-5xl">{userName}</h1>{" "}
-                  <div className="text-xs sm:text-base font-normal underline">
-                    <ContactButton
-                      userName={userName}
-                      user={userObject}
-                      links={userLinks()}
-                    />
-                  </div>
                 </div>
               }
               imageClassName="w-11 h-11"
@@ -293,7 +286,7 @@ export default async function UserPage({ params }: Props) {
           about={
             <div className="flex flex-col gap-2 md:ml-14">
               <div className="text-sm font-normal">{userObject.bio}</div>
-              <div className="text-xs sm:text-sm mt-5 flex flex-row justify-around flex-wrap sm:justify-start sm:gap-7">
+              <div className="text-xs sm:text-sm mt-5 flex flex-row flex-wrap gap-3 sm:justify-start sm:gap-7">
                 <span className="flex flex-row">
                   {userObject.questionCount} questions
                 </span>
@@ -302,6 +295,13 @@ export default async function UserPage({ params }: Props) {
                 </span>
                 <span className="flex flex-row">
                   {userObject.answerCount} answers
+                </span>
+                <span className="flex flex-row">
+                  <ContactButton
+                    userName={userName}
+                    user={userObject}
+                    links={userLinks()}
+                  />
                 </span>
                 <ShareButton />
               </div>
@@ -329,7 +329,7 @@ export default async function UserPage({ params }: Props) {
                             element={
                               <ImageAndText
                                 title={
-                                  <h2 className="text-xl">
+                                  <h2 className="text-base md:text-3xl hover:text-tl-light-blue">
                                     {questionObject.question}
                                   </h2>
                                 }
@@ -376,25 +376,23 @@ export default async function UserPage({ params }: Props) {
                             (item.user as User).userName
                           }
                       }`}
-                          preTitle={
-                            <div className="flex flex-row gap-1 content-center font-normal text-base">
-                              <span className="">
-                                {(item.user as User).displayName ||
-                                  (item.user as User).userName}
-                                &nbsp;
-                              </span>
-                              &#8226;
-                              <div className="text-xs underline self-center">
-                                <ContactButton
-                                  userName={
-                                    userObject.displayName ||
-                                    userObject.userName
-                                  }
-                                  user={userObject}
-                                  links={userLinks()}
-                                />
-                              </div>
+                          title={
+                            <div className="text-xs text-tl-light-blue">
+                              <ContactButton
+                                userName={
+                                  userObject.displayName || userObject.userName
+                                }
+                                user={userObject}
+                                links={userLinks()}
+                              />
                             </div>
+                          }
+                          preTitle={
+                            <span className="">
+                              {(item.user as User).displayName ||
+                                (item.user as User).userName}
+                              &nbsp;
+                            </span>
                           }
                           image={
                             (userObject.image as Media)?.filename ||

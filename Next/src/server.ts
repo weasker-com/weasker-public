@@ -48,25 +48,49 @@ const setRobotsHeader = (req, res, next) => {
 app.use(setRobotsHeader);
 
 app.get(
-  "/question/:communitiesSlug/:questionSlug/:id",
+  "/question/:communitiesSlugOrBadgeSlug/:questionSlugOrInterviewSlug/:idOrQuestionSlug?",
   async (req, res, next) => {
-    const { id } = req.params;
+    const { communitiesSlugOrBadgeSlug, idOrQuestionSlug } = req.params;
 
     const payload = await getPayloadClient();
 
     try {
-      const result = await payload.find({
-        collection: "questions",
-        where: { id: { equals: id } },
-      });
+      let questionFound = false;
 
-      if (result.docs.length > 0) {
-        const question = result.docs[0];
-        const latestCommunitiesSlug = question.communitiesSlug;
-        const latestQuestionSlug = question.questionSlug;
+      // First, check if we can find a question by its ID
+      if (idOrQuestionSlug && /^[0-9a-fA-F]{24}$/.test(idOrQuestionSlug)) {
+        const result = await payload.find({
+          collection: "questions",
+          where: { id: { equals: idOrQuestionSlug } },
+        });
 
-        const expectedPath = `/question/${latestCommunitiesSlug}/${latestQuestionSlug}/${id}`;
-        if (req.url !== expectedPath) {
+        if (result.docs.length > 0) {
+          questionFound = true;
+          const question = result.docs[0];
+          const latestCommunitiesSlug = question.communitiesSlug;
+          const latestQuestionSlug = question.questionSlug;
+
+          const expectedPath = `/question/${latestCommunitiesSlug}/${latestQuestionSlug}/${idOrQuestionSlug}`;
+          if (req.url !== expectedPath) {
+            return res.redirect(301, expectedPath);
+          }
+        }
+      }
+
+      // If not found or not a valid ID, check if we can find a community by its slug (badgeSlug)
+      if (!questionFound) {
+        const communityResult = await payload.find({
+          collection: "communities",
+          where: { slug: { equals: communitiesSlugOrBadgeSlug } },
+        });
+
+        if (communityResult.docs.length > 0) {
+          console.log("question not found, found community");
+          const community = communityResult.docs[0];
+          const communityId = community.id;
+          const communitySlug = community.slug;
+
+          const expectedPath = `/community/${communitySlug}/${communityId}`;
           return res.redirect(301, expectedPath);
         }
       }
@@ -106,35 +130,6 @@ app.get("/community/:communitiesSlug/:id", async (req, res, next) => {
     next();
   }
 });
-
-app.get(
-  "/question/:badgeSlug/:interviewSlug/:questionSlug",
-  async (req, res, next) => {
-    const { badgeSlug } = req.params;
-
-    const payload = await getPayloadClient();
-
-    try {
-      const result = await payload.find({
-        collection: "communities",
-        where: { slug: { equals: badgeSlug } },
-      });
-
-      if (result.docs.length > 0) {
-        const community = result.docs[0];
-        const communityId = community.id;
-
-        const expectedPath = `/community/${badgeSlug}/${communityId}`;
-        return res.redirect(301, expectedPath);
-      }
-
-      next();
-    } catch (err) {
-      console.error(err);
-      next();
-    }
-  }
-);
 
 app.get("/badge/:badgeSlug", async (req, res, next) => {
   const { badgeSlug } = req.params;

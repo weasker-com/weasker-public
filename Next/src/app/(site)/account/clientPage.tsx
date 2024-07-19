@@ -48,7 +48,7 @@ const ClientPage: React.FC<AccountPageProps> = () => {
         preTitle={"Account"}
         image={pfp || defaultImages.defaultUserImage}
         about={
-          <div className="text-xs sm:text-sm mt-5 flex flex-row flex-wrap gap-3 sm:justify-around sm:justify-start sm:gap-7">
+          <div className="text-xs sm:text-sm mt-5 flex flex-row flex-wrap gap-3 sm:justify-start sm:gap-7">
             <span
               onClick={() => {
                 handleTabSelect("settings");

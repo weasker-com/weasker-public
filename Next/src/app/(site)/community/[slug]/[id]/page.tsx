@@ -183,7 +183,7 @@ export default async function CommunityPage({ params }: Props) {
               {communityObject.description}
             </div>
             <div className="text-sm font-normal">{communityObject.terms}</div>
-            <div className="text-xs sm:text-sm mt-5 flex flex-row justify-around sm:justify-start sm:gap-7">
+            <div className="text-xs sm:text-sm mt-5 flex flex-row flex-wrap gap-3 sm:justify-start sm:gap-7">
               <span className="flex flex-row">
                 {communityObject.questions.length} questions
               </span>

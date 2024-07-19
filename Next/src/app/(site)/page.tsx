@@ -58,7 +58,7 @@ async function getData() {
     query,
     method: "POST",
     collection: "Questions",
-    cache: true,
+    cache: false,
     mustHave: ["Questions"],
   });
 
