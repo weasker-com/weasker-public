@@ -81,6 +81,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Question",
+    mustHave: ["Question"],
   });
 
   if (!data) {
@@ -244,6 +245,7 @@ async function getData(id: string) {
     query,
     method: "POST",
     collection: "Question",
+    mustHave: ["Question"],
   });
 
   if (!data) {

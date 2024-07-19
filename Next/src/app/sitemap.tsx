@@ -63,7 +63,8 @@ async function getData() {
   } | null = await fetchData({
     query,
     method: "POST",
-    collection: "Interviews",
+    collection: "Questions",
+    mustHave: ["Questions"],
   });
 
   if (!data) {

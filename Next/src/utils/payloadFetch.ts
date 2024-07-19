@@ -62,9 +62,10 @@ export async function fetchData<T>({
       .then(parseJSON);
 
     if (mustHave && mustHave.length > 0) {
-      const hasAllRequiredFields = mustHave.every(
-        (field) => response && response.data?.[field]?.docs?.length > 0
-      );
+      const hasAllRequiredFields = mustHave.every((field) => {
+        const fieldValue = response?.data?.[field];
+        return Array.isArray(fieldValue) ? fieldValue.length > 0 : !!fieldValue;
+      });
 
       if (hasAllRequiredFields) {
         return response;

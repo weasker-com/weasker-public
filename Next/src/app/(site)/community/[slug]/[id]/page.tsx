@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     query,
     method: "POST",
     collection: "Community",
+    mustHave: ["Community"],
   });
 
   if (!data) {
@@ -134,6 +135,7 @@ userName
     query,
     method: "POST",
     collection: "Community",
+    mustHave: ["Community"],
   });
 
   if (!data) {
