@@ -83,7 +83,7 @@ export const Users: CollectionConfig = {
       label: "Slug",
       type: "text",
       unique: true,
-      hidden: true,
+      hidden: false,
     },
     {
       name: "path",

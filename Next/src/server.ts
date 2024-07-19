@@ -52,7 +52,6 @@ app.get(
   async (req, res, next) => {
     const { id } = req.params;
 
-    // Fetch the latest communitySlug and questionSlug using the id
     const payload = await getPayloadClient();
 
     try {
@@ -72,7 +71,6 @@ app.get(
         }
       }
 
-      // If the document was not found or URL is already correct, continue to Next.js
       next();
     } catch (err) {
       console.error(err);
@@ -81,11 +79,9 @@ app.get(
   }
 );
 
-// New route for community
 app.get("/community/:communitiesSlug/:id", async (req, res, next) => {
   const { id } = req.params;
 
-  // Fetch the latest communitySlug using the id
   const payload = await getPayloadClient();
 
   try {
@@ -96,7 +92,7 @@ app.get("/community/:communitiesSlug/:id", async (req, res, next) => {
 
     if (result.docs.length > 0) {
       const community = result.docs[0];
-      const latestCommunitiesSlug = community.slug; // Assuming you store the latest slug in the community document
+      const latestCommunitiesSlug = community.slug;
 
       const expectedPath = `/community/${latestCommunitiesSlug}/${id}`;
       if (req.url !== expectedPath) {
@@ -104,7 +100,6 @@ app.get("/community/:communitiesSlug/:id", async (req, res, next) => {
       }
     }
 
-    // If the document was not found or URL is already correct, continue to Next.js
     next();
   } catch (err) {
     console.error(err);
@@ -112,35 +107,102 @@ app.get("/community/:communitiesSlug/:id", async (req, res, next) => {
   }
 });
 
-app.get("/user/:userSlug/:id", async (req, res, next) => {
-  const { id } = req.params;
+app.get(
+  "/question/:badgeSlug/:interviewSlug/:questionSlug",
+  async (req, res, next) => {
+    const { badgeSlug } = req.params;
 
-  // Fetch the latest userSlug using the id
+    const payload = await getPayloadClient();
+
+    try {
+      const result = await payload.find({
+        collection: "communities",
+        where: { slug: { equals: badgeSlug } },
+      });
+
+      if (result.docs.length > 0) {
+        const community = result.docs[0];
+        const communityId = community.id;
+
+        const expectedPath = `/community/${badgeSlug}/${communityId}`;
+        return res.redirect(301, expectedPath);
+      }
+
+      next();
+    } catch (err) {
+      console.error(err);
+      next();
+    }
+  }
+);
+
+app.get("/badge/:badgeSlug", async (req, res, next) => {
+  const { badgeSlug } = req.params;
+
   const payload = await getPayloadClient();
 
   try {
     const result = await payload.find({
-      collection: "users",
-      where: { id: { equals: id } },
+      collection: "communities",
+      where: { slug: { equals: badgeSlug } },
     });
 
     if (result.docs.length > 0) {
-      const user = result.docs[0];
-      const latestUserSlug = user.slug; // Assuming you store the latest slug in the user document
+      const community = result.docs[0];
+      const communityId = community.id;
 
-      const expectedPath = `/user/${latestUserSlug}/${id}`;
-      if (req.url !== expectedPath) {
-        return res.redirect(301, expectedPath);
-      }
+      const expectedPath = `/community/${badgeSlug}/${communityId}`;
+      return res.redirect(301, expectedPath);
     }
 
-    // If the document was not found or URL is already correct, continue to Next.js
     next();
   } catch (err) {
     console.error(err);
     next();
   }
 });
+
+app.get(
+  "/interview/:badgeSlug/:userSlugOrAll/:interviewSlug",
+  async (req, res, next) => {
+    const { badgeSlug, userSlugOrAll } = req.params;
+
+    const payload = await getPayloadClient();
+
+    try {
+      if (userSlugOrAll === "all") {
+        const communityResult = await payload.find({
+          collection: "communities",
+          where: { slug: { equals: badgeSlug } },
+        });
+
+        if (communityResult.docs.length > 0) {
+          const community = communityResult.docs[0];
+          const communityId = community.id;
+          const expectedPath = `/community/${badgeSlug}/${communityId}`;
+          return res.redirect(301, expectedPath);
+        }
+      } else {
+        const userResult = await payload.find({
+          collection: "users",
+          where: { slug: { equals: userSlugOrAll } },
+        });
+
+        if (userResult.docs.length > 0) {
+          const user = userResult.docs[0];
+          const userId = user.id;
+          const expectedPath = `/user/${userSlugOrAll}/${userId}`;
+          return res.redirect(301, expectedPath);
+        }
+      }
+
+      next();
+    } catch (err) {
+      console.error(err);
+      next();
+    }
+  }
+);
 
 const start = async (): Promise<void> => {
   const payload = await getPayloadClient({
