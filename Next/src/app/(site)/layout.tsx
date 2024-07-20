@@ -51,6 +51,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <head>
+        <meta
+          name="google-site-verification"
+          content="CMFMmY0qS9bCFIfs6t76xxNPda9IbLo8fvcbydupzWU"
+        />
         <PlausibleProvider
           domain={process.env.SITE_NAKED_URL}
           // trackLocalhost={true}
