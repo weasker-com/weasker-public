@@ -19,7 +19,7 @@ const ContactButton = ({ userName, links, user }: ContactButtonProps) => {
   return (
     <>
       <span
-        className="flex flex-row hover:cursor-pointer hover:underline"
+        className={`flex flex-row hover:cursor-pointer`}
         onClick={() => setModalIsOpen(true)}
       >
         <>contact</>

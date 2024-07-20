@@ -3,7 +3,7 @@ import { InternalLink } from "./links/InternalLink";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="bg-white absolute w-full z-10 mt-10 border-t-2 border-tl-dark-blue/80">
+    <div className="bg-white absolute w-full z-10 border-t-2 border-tl-dark-blue/80">
       <div className="flex flex-col gap-3 justify-between sm:flex-row max-w-[1000px] sm:mx-auto m-2 sm:my-5 ">
         <div className="flex flex-col items-start sm:gap-5">
           {" "}

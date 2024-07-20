@@ -57,8 +57,8 @@ const Navbar = () => {
   };
 
   return (
-    <div className="h-max border-b border-zinc-100 bg-white rounded rounded-t-lg max-w-[1000px] mx-auto">
-      <div className="relative lg:mx-auto m-auto mx-3 z-20">
+    <div className="h-max border-b max-w-[1000px] mx-auto">
+      <div className="relative z-20">
         <div className="flex flex-row gap-5 justify-between items-center my-auto py-1 ">
           <div className="flex flex-col items-center select-none">
             <InternalLink
@@ -77,7 +77,7 @@ const Navbar = () => {
               <div>
                 <div
                   ref={menuRef}
-                  className="flex flex-row items-center justify-between hover:cursor-pointer hover:text-tl-light-blue border p-2 min-w-28 sm:min-w-40 w-full rounded rounded-t-lg"
+                  className="flex flex-row items-center justify-between hover:cursor-pointer hover:text-tl-light-blue border p-2 min-w-28 sm:min-w-40 w-full rounded rounded-t-lg bg-white"
                 >
                   {loginLoading || logOutLoading || registerLoading ? (
                     <Loading />
@@ -117,7 +117,7 @@ const Navbar = () => {
                   handleSignInClick();
                 }}
               >
-                <div className="hover:text-tl-light-blue border p-2 w-28 sm:w-40 rounded-t smallCaps">
+                <div className="hover:text-tl-light-blue font-normal border border-tl-dark-blue bg-slate-100 p-2 w-28 rounded-t smallCaps">
                   {loginLoading || logOutLoading || registerLoading ? (
                     <Loading />
                   ) : (

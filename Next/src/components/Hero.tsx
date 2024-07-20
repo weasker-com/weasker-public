@@ -65,7 +65,7 @@ const Hero = ({
                 </span>
               )}
               {(!isMobile || !longTitle) && (
-                <div className="text-lg sm:text-xl capitalize sm:my-2 font-bold">
+                <div className="text-lg sm:text-xl sm:my-2 font-bold">
                   {title}
                 </div>
               )}
@@ -78,7 +78,7 @@ const Hero = ({
           </div>
         </div>
         {isMobile && longTitle && (
-          <h1 className="text-lg sm:text-xl capitalize sm:my-2">{title}</h1>
+          <h1 className="text-lg sm:text-xl sm:my-2">{title}</h1>
         )}
         {isMobile && about && (
           <div className="text-xs text-left w-full p-1">{about}</div>

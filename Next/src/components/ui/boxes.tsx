@@ -29,7 +29,7 @@ export const WideBox: React.FC<WhiteBoxProps> = ({
   return (
     <div
       id={id || ""}
-      className={`flex flex-col items-start gap-3 bg-white rounded rounded-t-lg max-w-screen sm:w-full mx-1 sm:m-0 shadow ${className}`}
+      className={`flex flex-col items-start gap-3 bg-white rounded rounded-t-lg max-w-screen sm:w-full sm:m-0 shadow ${className}`}
     >
       {children}
     </div>

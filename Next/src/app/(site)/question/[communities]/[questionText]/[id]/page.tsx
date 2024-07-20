@@ -378,7 +378,7 @@ export default async function Question({ params }: Props) {
             image={((questionObject.user as User).image as Media).filename}
             alt={`image of ${(questionObject.user as User).userName}`}
             title={
-              <h1 className="text-base md:text-5xl">
+              <h1 className="text-base md:text-4xl">
                 {questionObject.question}
               </h1>
             }
@@ -431,7 +431,7 @@ export default async function Question({ params }: Props) {
         }
       />
       <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
-        <div className="lg:w-[70%] flex flex-col gap-2">
+        <div className="lg:w-[70%] flex flex-col gap-3">
           {questionObject.answers && questionObject.answers.length > 0 ? (
             sortedAnswers.map((item: AnswerType, index) => {
               const user = item.user as User;
@@ -480,7 +480,7 @@ export default async function Question({ params }: Props) {
                               return (
                                 <InternalLink
                                   key={index}
-                                  className="hover:underline hover:text-tl-light-blue"
+                                  className="hover:underline underline-offset-4 decoration-inherit decoration-1 hover:text-tl-light-blue"
                                   href={`/community/${item.path}`}
                                   element={
                                     <div className="flex flex-row gap-1 items-center hover:text-tl-light-blue">
@@ -493,7 +493,7 @@ export default async function Question({ params }: Props) {
                             }
                           )}{" "}
                           &#8226;{" "}
-                          <span className="text-tl-light-blue">
+                          <span className="text-tl-light-blue hover:underline underline-offset-4 decoration-inherit decoration-1">
                             <ContactButton
                               user={user}
                               userName={user.displayName || user.userName}
@@ -564,20 +564,24 @@ export default async function Question({ params }: Props) {
               {questionObject.communities.map((community: Community, index) => (
                 <ul key={index} className="flex flex-col text-sm">
                   {community.questions.map((item: QuestionType, index) => (
-                    <InternalLink
+                    <li
                       key={index}
-                      href={`/question/${item.path}`}
-                      element={
-                        <li className="flex flex-col gap-1 border-b py-1">
-                          <span className="font-bold">{item.question}</span>
-                          <div className="flex flex-row gap-2">
-                            <span>{item.answersSum} answers</span>
-                            <span>{item.upvotesSum} upvotes</span>
-                          </div>
-                        </li>
-                      }
-                      style="blue-hover"
-                    />
+                      className="flex flex-col gap-1 border-b py-1"
+                    >
+                      <InternalLink
+                        href={`/question/${item.path}`}
+                        element={
+                          <>
+                            <span className="font-bold">{item.question}</span>
+                            <div className="flex flex-row gap-2">
+                              <span>{item.answersSum} answers</span>
+                              <span>{item.upvotesSum} upvotes</span>
+                            </div>
+                          </>
+                        }
+                        style="blue-hover"
+                      />
+                    </li>
                   ))}
                 </ul>
               ))}

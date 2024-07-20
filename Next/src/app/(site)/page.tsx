@@ -95,16 +95,16 @@ export default async function Home() {
     <div className="flex flex-col gap-5 w-full max-w-[1000px]">
       <div className="flex flex-col md:flex-col w-full">
         <div className="text-center w-full">
-          <h1 className="text-[40px] md:text-[85px] leading-[3rem] md:leading-[6rem] font-black mb-10">
+          <h1 className="text-[40px] md:text-[85px] leading-[3rem] md:leading-[6rem] font-black my-5 md:my-10">
             Ask{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
               The Right Community
             </span>{" "}
-            to Answer Your Question
+            to Answer Your Questions
           </h1>
         </div>
       </div>
-      <div className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-2 w-full">
         {curatedQuestions.map((item, index) => {
           const questionObject = item;
           return (
@@ -120,7 +120,7 @@ export default async function Home() {
                     <InternalLink
                       href={`/question/${questionObject.path}`}
                       element={
-                        <h2 className="text-base md:text-5xl hover:text-tl-light-blue">
+                        <h2 className="text-base md:text-4xl hover:text-tl-light-blue">
                           {questionObject.question}
                         </h2>
                       }

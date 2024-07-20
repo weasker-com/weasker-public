@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ogMeta = `${userObject.communityCount} Communities • ${userObject.answerCount} Answers • ${userObject.questionCount} Questions`;
 
   const ogImage = `${process.env.SITE_URL}/api/og/user?img=${
-    (userObject.image as Media).url
+    (userObject.image as Media)?.url || defaultImages.defaultUserImage
   }&preTitle=${communitySingularNames}&title=${userName}&description=${
     userObject.bio
   }&meta=${ogMeta}`;
@@ -234,7 +234,7 @@ export default async function UserPage({ params }: Props) {
       "@type": "Person",
       name: userName,
       jobTitle: userCommunitiesSingularNamesArray,
-      image: (userObject.image as Media).url || defaultImages.defaultUserImage,
+      image: (userObject.image as Media)?.url || defaultImages.defaultUserImage,
       url: `https://www.weasker.com/usernew/${userObject.path}`,
     },
   };
@@ -296,7 +296,7 @@ export default async function UserPage({ params }: Props) {
                 <span className="flex flex-row">
                   {userObject.answerCount} answers
                 </span>
-                <span className="flex flex-row">
+                <span className="flex flex-row hover:text-tl-light-blue">
                   <ContactButton
                     userName={userName}
                     user={userObject}
@@ -310,7 +310,7 @@ export default async function UserPage({ params }: Props) {
         />
         <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
           <div className="lg:w-[70%] flex flex-col gap-2">
-            <div className="flex flex-col gap-5 w-full">
+            <div className="flex flex-col gap-3 w-full">
               {userObject.answerCount < 1 ? (
                 <WideBox className="p-3 sm:p-5">
                   <div>This user answered no questions yet</div>
@@ -377,7 +377,7 @@ export default async function UserPage({ params }: Props) {
                           }
                       }`}
                           title={
-                            <div className="text-xs text-tl-light-blue">
+                            <div className="text-xs text-tl-light-blue hover:underline underline-offset-4 decoration-inherit decoration-1">
                               <ContactButton
                                 userName={
                                   userObject.displayName || userObject.userName
@@ -472,12 +472,11 @@ export default async function UserPage({ params }: Props) {
                     {userObject.questions.map((item: Question, index) => {
                       const questionObject = item;
                       return (
-                        <InternalLink
-                          key={index}
-                          style={"blue-hover"}
-                          href={`/question/${questionObject.path}`}
-                          element={
-                            <li>
+                        <li key={index}>
+                          <InternalLink
+                            style={"blue-hover"}
+                            href={`/question/${questionObject.path}`}
+                            element={
                               <div className="flex flex-col gap-1 border-b py-3">
                                 <div className="text-sm flex flex-row gap-2">
                                   {item.communities.map(
@@ -501,9 +500,9 @@ export default async function UserPage({ params }: Props) {
                                   <span>{item.upvotesSum} upvotes</span>
                                 </div>
                               </div>
-                            </li>
-                          }
-                        />
+                            }
+                          />
+                        </li>
                       );
                     })}
                   </ul>

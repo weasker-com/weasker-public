@@ -9,11 +9,11 @@
 }
 
 html {
-  height: 100%;
+  min-height: 100%;
+  position: relative;
 }
 
 body {
-  min-height: 100vh;
   @apply text-tl-dark-blue;
   @apply text-sm;
   @apply sm:text-base;
@@ -96,9 +96,6 @@ text p {
 
 .smallCaps {
   font-variant: small-caps;
-}
-
-.page {
 }
 
 .centerAbsolute {

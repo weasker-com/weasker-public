@@ -198,7 +198,7 @@ export default async function CommunityPage({ params }: Props) {
       />
       <div className="flex flex-col sm:flex-row gap-3 max-w-[1000px] mt-2 w-full">
         <div className="lg:w-[70%] flex flex-col gap-2">
-          <div className="flex flex-col gap-5 w-full">
+          <div className="flex flex-col gap-1 w-full">
             {communityObject.questionCount < 1 ? (
               <WideBox className="p-3 sm:p-5">
                 <div>This community has no questions yet</div>

@@ -59,14 +59,16 @@ export default function RootLayout({
         />
       </head>
       <Scroll />
-      <body className={`bg-white ${inter.className}`}>
+      <body
+        className={`bg-gradient-to-b from-slate-100 to-slate-300 ${inter.className}`}
+      >
         <NextTopLoader showSpinner={false} color="#007BFF" shadow={false} />
         <header className="top-0 max-w-[90%] mx-auto">
           <AuthProvider>
             <Navbar />
           </AuthProvider>
         </header>
-        <main className="flex min-h-screen flex-col items-center max-w-[90%] my-5 md:my-10 mx-auto">
+        <main className="flex min-h-screen flex-col items-center max-w-[95%] my-5 mx-auto flex-grow">
           {children}
         </main>
         <footer>
