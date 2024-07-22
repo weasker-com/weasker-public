@@ -17,7 +17,7 @@ const inter = Inter({
 const ogImage = `${process.env.SITE_URL}/api/og/hp`;
 const metaTitle = `${process.env.SITE_NAME} - Ask The Right Community`;
 const metaDescription =
-  "We interview groups of experts and compare their answers, generating diverse and reliable information sources.";
+  "Weasker is a platform where you can have your questions answered by the right communities of members with verified expertise.";
 
 export const metadata: Metadata = {
   applicationName: process.env.SITE_NAME,
