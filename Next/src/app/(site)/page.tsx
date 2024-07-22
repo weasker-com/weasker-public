@@ -7,7 +7,7 @@ import {
   UsersInterview,
   User,
 } from "@/payload/payload-types";
-
+//test
 async function getData() {
   const query = `{
     UsersInterviews {
